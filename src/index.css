@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
   box-sizing: border-box;
@@ -6,4 +10,21 @@ body {
 
 html {
   font-size: 62.5%;
+}
+.custom-search .ant-btn-primary {
+  background-color: #d9d9d9; /* Màu nền nhạt hơn */
+  border-color: #d9d9d9; /* Màu viền nhạt hơn */
+  color: #333; /* Màu chữ tối hơn */
+
+  /* Hiệu ứng khi hover */
+  &:hover {
+    background-color: #b3b3b3; /* Màu nền khi hover */
+    border-color: #b3b3b3; /* Màu viền khi hover */
+    color: #fff; /* Màu chữ khi hover */
+  }
+}
+
+/* Tùy chỉnh màu chữ khi nút không được focus */
+.custom-search .ant-btn-primary:not(:focus) {
+  color: #333; /* Màu chữ khi nút không được focus */
 }
