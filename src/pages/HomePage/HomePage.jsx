@@ -4,6 +4,7 @@ import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slide1 from "../../assets/images/slide1.webp";
 import slide2 from "../../assets/images/slide2.webp";
 import CardComponent from "../../components/CardComponent/CardComponent";
+import NavbarComponent from "../../components/NavbarComponent/NavbarComponent";
 
 const HomePage = () => {
   const arr = ["Thức ăn", "Quần áo", "Đồ chơi", "Dụng cụ chăm sóc"];
@@ -16,10 +17,18 @@ const HomePage = () => {
           })}
         </div>
       </div>
-      <div id="container" className=" bg-[#efefef] h-[1000px]" style={{ padding: "0 120px" }}>
+      <div
+        id="container"
+        className=" bg-[#efefef] h-[1000px]"
+        style={{ padding: "0 120px" }}
+      >
         <SliderComponent arrImages={[slide1, slide2]} />
         <div className="mt-[20px] flex items-center gap-[20px]">
-          <CardComponent/>
+          <CardComponent />
+          <CardComponent />
+          <CardComponent />
+          <CardComponent />
+          <CardComponent />
         </div>
       </div>
     </>

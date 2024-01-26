@@ -4,16 +4,19 @@ import { StarFilled } from "@ant-design/icons";
 const CardComponent = () => {
   return (
     <Card
-      className="border border-solid border-gray-300 rounded-lg p-[15px] w-[202.88px] h-[383.78px]"
+      className="border border-solid border-gray-300 rounded-lg p-4 sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
       hoverable
       bodyStyle={{ padding: "10px" }}
-      style={{ width: 240 }}
       cover={
-        <img
-          className="h-[169.28px] w-[169.28px] mx-auto mb-[10px] relative"
-          alt="example"
-          src="https://www.petmart.vn/wp-content/uploads/2021/06/thuc-an-cho-meo-truong-thanh-royal-canin-regular-fit-321-400x400.jpg"
-        />
+        <div className="h-40 w-full mb-2 sm:h-32 md:h-40 lg:h-48 relative overflow-hidden">
+          <div className="w-full h-full bg-gray-200 relative">
+            <img
+              className="object-cover object-center h-full w-full"
+              alt="example"
+              src="https://www.petmart.vn/wp-content/uploads/2021/06/thuc-an-cho-meo-truong-thanh-royal-canin-regular-fit-321-400x400.jpg"
+            />
+          </div>
+        </div>
       }
     >
     <div className="bg-[#ffe97a] w-[40px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
