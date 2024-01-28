@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Badge, Col, Row } from "antd";
 import React from "react";
 
 import {
@@ -21,9 +21,9 @@ const HeaderComponent = () => {
         </Col>
         <Col span={12}>
           <ButtonInputSearch
-          size = 'large'
-          placeholder = 'Tìm kiếm thông tin tại đây'
-          textButton = 'Tìm kiếm'
+            size="large"
+            placeholder="Tìm kiếm thông tin tại đây"
+            textButton="Tìm kiếm"
           />
         </Col>
         <Col span={6} className="flex items-center gap-8">
@@ -38,9 +38,13 @@ const HeaderComponent = () => {
             </div>
           </div>
           <div className="text-white text-[12px] ml-[20px]">
-            <ShoppingCartOutlined className="text-[30px] " />
-            <div><span className="whitespace-nowrap">Giỏ hàng</span></div>
-            
+            <Badge count={4} size="small">
+              <ShoppingCartOutlined className="text-[30px] text-white" />
+            </Badge>
+
+            <div>
+              <span className="whitespace-nowrap">Giỏ hàng</span>
+            </div>
           </div>
         </Col>
       </Row>
