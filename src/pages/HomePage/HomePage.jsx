@@ -3,6 +3,7 @@ import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slide1 from "../../assets/images/slide1.webp";
 import slide2 from "../../assets/images/slide2.webp";
+import slide3 from "../../assets/images/slide3.webp";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import { Button } from "antd";
 
@@ -10,7 +11,7 @@ const HomePage = () => {
   const arr = ["Thức ăn", "Quần áo", "Đồ chơi", "Dụng cụ chăm sóc"];
   return (
     <>
-      <div style={{ padding: "0 120px" }} className="h-[50px]">
+      <div style={{ width: '1270px', margin: '0 auto'}}>
         <div className="flex items-center gap-[24px] justify-start text-[20px] font-bold">
           {arr.map((item) => {
             return <TypeProduct name={item} key={item} />;
@@ -19,12 +20,11 @@ const HomePage = () => {
       </div>
       <div
         id="container"
-        className="bg-[#efefef] h-[100%]"
-        style={{ padding: "0 120px" }}
+        className="bg-[#efefef] h-[100%] px-10" 
+        style={{ boxSizing: "border-box" }}
       >
-        <SliderComponent arrImages={[slide1, slide2]} />
-        <div className="mt-[20px] w-full flex items-center gap-[20px] flex-wrap">
-          <CardComponent  />
+        <SliderComponent arrImages={[slide1, slide2, slide3]} />
+        <div className="mt-[20px] w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[17px]"> 
           <CardComponent />
           <CardComponent />
           <CardComponent />
