@@ -3,11 +3,29 @@ import InputForm from "../../components/InputForm/InputForm";
 import { Image } from "antd";
 import imageLogo from "../../assets/images/logo.png";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 const SignUpPage = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const handleOnchangeEmail = (value) => {
+    setEmail(value);
+  };
+  const handleOnchangePassword = (value) => {
+    setPassword(value);
+  };
+  const handleOnchangeConfirmPassword = (value) => {
+    setConfirmPassword(value);
+  };
+  const handleNavigateSignIn = () => {
+    navigate("/Sign-in");
+  };
+  const handleSignUp = () => {
+    console.log(email, password, confirmPassword);
+  };
   return (
     <div className="flex items-center justify-center bg-[rgba(0,0,0,0.53)] h-[100vh]">
       <div className="w-[800px] h-[445px] rounded-[6px] bg-white flex">
@@ -19,6 +37,8 @@ const SignUpPage = () => {
           <InputForm
             className="mb-[10px] border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
             placeholder="abc@gmail.com"
+            value={email}
+            onChange={handleOnchangeEmail}
           />
           <div style={{ position: "relative" }}>
             <span
@@ -41,7 +61,7 @@ const SignUpPage = () => {
               placeholder="password"
               type={isShowPassword ? "text" : "password"}
               value={password}
-              // onChange={handleOnchangePassword}
+              onChange={handleOnchangePassword}
             />
           </div>
           <div style={{ position: "relative" }}>
@@ -65,16 +85,27 @@ const SignUpPage = () => {
               placeholder="comfirm password"
               type={isShowConfirmPassword ? "text" : "password"}
               value={confirmPassword}
-              // onChange={handleOnchangeConfirmPassword}
+              onChange={handleOnchangeConfirmPassword}
             />
           </div>
 
-          <button className="bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px]">
+          <button
+            onClick={handleSignUp}
+            className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
+              !email || !password || !confirmPassword
+                ? "cursor-not-allowed bg-gray-400"
+                : "cursor-pointer"
+            }`}
+          >
             Đăng ký
           </button>
+
           <p className="text-[13px]">
             Bạn đã có tài khoản?{" "}
-            <span className="text-blue-500 text-[13px] cursor-pointer">
+            <span
+              className="text-blue-500 text-[13px] cursor-pointer"
+              onClick={handleNavigateSignIn}
+            >
               Đăng nhập
             </span>
           </p>

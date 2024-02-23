@@ -1,10 +1,19 @@
 import { Input } from "antd";
-import React, { useState } from "react";
+import React from "react";
 
 const InputForm = (props) => {
-  const [valueInput, setvalueInput] = useState("");
   const { placeholder = "Nhập thông tin", ...rests } = props;
-  return <Input placeholder={placeholder} value={valueInput} {...rests} />;
+  const handleOnChangeinput =(e) =>{
+    props.onChange(e.target.value)
+  }
+  return (
+    <Input
+      placeholder={placeholder}
+      value={props.value}
+      {...rests}
+      onChange={handleOnChangeinput}
+    />
+  );
 };
 
 export default InputForm;
