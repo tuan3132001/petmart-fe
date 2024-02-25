@@ -1,14 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputForm from "../../components/InputForm/InputForm";
 import { Image } from "antd";
 import imageLogo from "../../assets/images/logo.png";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import * as UserService from "../../services/UserService";
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import Loading from "../../components/LoadingComponent/Loading";
+import * as message from "../../components/Message/Message";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const mutation = useMutationHooks((data) => UserService.loginUser(data));
+
+  const { data, isPending } = mutation;
+  console.log(mutation)
+  useEffect(()=>{
+    if(data?.status === 'OK'){
+      navigate('/')
+    }
+  },[data])
   const handleNavigateSignUp = () => {
     navigate("/Sign-up");
   };
@@ -19,6 +32,10 @@ const SignInPage = () => {
     setPassword(value);
   };
   const handleSignIn = () => {
+    mutation.mutate({
+      email,
+      password,
+    });
     console.log(email, password);
   };
   return (
@@ -59,18 +76,19 @@ const SignInPage = () => {
               onChange={handleOnchangePassword}
             />
           </div>
-
+          {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+          <Loading isPending={isPending}>
           <button
             onClick={handleSignIn}
             className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
               !email || !password
-                ? "cursor-not-allowed bg-gray-400"
+                ? "bg-[#ccc] cursor-not-allowed pointer-events-none"
                 : "cursor-pointer"
             }`}
           >
             Đăng nhập
           </button>
-
+          </Loading>
           <p className="text-blue-500 text-[13px] cursor-pointer">
             Quên mật khẩu?
           </p>

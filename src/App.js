@@ -2,10 +2,11 @@ import React, { Fragment } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 function App() {
- 
+  const queryClient = new QueryClient();
   return (
-    <div>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
           {routes.map((route) => {
@@ -25,7 +26,7 @@ function App() {
           })}
         </Routes>
       </BrowserRouter>
-    </div>
+    </QueryClientProvider>
   );
 }
 export default App;

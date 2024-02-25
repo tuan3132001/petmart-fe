@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputForm from "../../components/InputForm/InputForm";
 import { Image } from "antd";
 import imageLogo from "../../assets/images/logo.png";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import * as UserService from "../../services/UserService";
+import * as message from "../../components/Message/Message";
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import Loading from "../../components/LoadingComponent/Loading";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -11,6 +15,19 @@ const SignUpPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const mutation = useMutationHooks((data) => UserService.signupUser(data));
+  const { data, isPending } = mutation;
+  console.log(mutation)
+  useEffect(() => {
+    if (data?.status === 'OK') {
+      message.success()
+      handleNavigateSignIn()
+    } else if (data?.status === 'ERR'){
+      message.error()
+    }
+  }, [data])
+
   const handleOnchangeEmail = (value) => {
     setEmail(value);
   };
@@ -24,7 +41,7 @@ const SignUpPage = () => {
     navigate("/Sign-in");
   };
   const handleSignUp = () => {
-    console.log(email, password, confirmPassword);
+    mutation.mutate({ email, password, confirmPassword })
   };
   return (
     <div className="flex items-center justify-center bg-[rgba(0,0,0,0.53)] h-[100vh]">
@@ -88,18 +105,19 @@ const SignUpPage = () => {
               onChange={handleOnchangeConfirmPassword}
             />
           </div>
-
-          <button
-            onClick={handleSignUp}
-            className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
-              !email || !password || !confirmPassword
-                ? "cursor-not-allowed bg-gray-400"
-                : "cursor-pointer"
-            }`}
-          >
-            Đăng ký
-          </button>
-
+          {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+          <Loading isPending={isPending}>
+            <button
+              onClick={handleSignUp}
+              className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
+                !email || !password || !confirmPassword
+                  ? "cursor-not-allowed bg-[#ccc] pointer-events-none"
+                  : "cursor-pointer"
+              }`}
+            >
+              Đăng ký
+            </button>
+          </Loading>
           <p className="text-[13px]">
             Bạn đã có tài khoản?{" "}
             <span
