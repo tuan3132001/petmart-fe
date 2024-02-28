@@ -3,25 +3,54 @@ import InputForm from "../../components/InputForm/InputForm";
 import { Image } from "antd";
 import imageLogo from "../../assets/images/logo.png";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
-import * as message from "../../components/Message/Message";
+import { useDispatch } from "react-redux";
+import { jwtDecode } from 'jwt-decode';
+import { updateUser } from "../../redux/slides/userSlide";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const location = useLocation();
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
 
   const { data, isPending } = mutation;
-  console.log(mutation)
+  console.log("data",data?.newRequest?.access_token)
   useEffect(()=>{
-    if(data?.status === 'OK'){
+    if(data?.newRequest?.status === 'OK'){
+      // if(location?.state) {
+      //   navigate(location?.state)
+      // }else {
+      //   navigate('/')
+      // }
       navigate('/')
+      localStorage.setItem('access_token', JSON.stringify(data?.newRequest?.access_token))
+      // localStorage.setItem('refresh_token', JSON.stringify(data?.newRequest?.refresh_token))
+      if (data?.newRequest?.access_token) {
+        const decoded = jwtDecode(data?.newRequest?.access_token);
+        console.log('decode',decoded)
+        console.log('data',data?.newRequest?.access_token)
+        if (decoded?.id) {
+          handleGetDetailsUser(decoded?.id, data?.newRequest?.access_token)
+        }
+      }
     }
+    
   },[data])
+
+  const handleGetDetailsUser = async (id, token) => {
+    // const storage = localStorage.getItem('refresh_token')
+    // console.log(storage, 'storage')
+    // const refreshToken = JSON.parse(storage)
+    const res = await UserService.getDetailsUser(id, token)
+    console.log('res', res)
+    dispatch(updateUser({ ...res?.data, access_token:token}))
+  }
   const handleNavigateSignUp = () => {
     navigate("/Sign-up");
   };
@@ -76,7 +105,7 @@ const SignInPage = () => {
               onChange={handleOnchangePassword}
             />
           </div>
-          {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+          {data?.newRequest?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.newRequest?.message}</span>}
           <Loading isPending={isPending}>
           <button
             onClick={handleSignIn}
