@@ -15,7 +15,7 @@ export const userSlide = createSlice({
            state.name = name || email;
            state.email =email;
            state.access_token = access_token;
-           console.log('action', action)
+         
         },
         
     },
