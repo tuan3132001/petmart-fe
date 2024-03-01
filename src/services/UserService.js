@@ -16,7 +16,7 @@ export const signupUser = async (data) => {
 
 export const getDetailsUser = async (id, access_token) => {
   const res = await axiosJWT.get(
-    `http://localhost:3000/user/get-details/${id}`,
+    `http://localhost:3000/user/get-detail/${id}`,
     {
       headers: {
         token: `Bearer ${access_token}`,
@@ -27,7 +27,7 @@ export const getDetailsUser = async (id, access_token) => {
   return res.data;
 };
 
-export const refreshToken = async (refreshToken) => {
+export const refreshToken = async () => {
   console.log("refreshToken", refreshToken);
   const res = await axios.post(
     `http://localhost:3000/user/refresh-token`,
@@ -38,5 +38,10 @@ export const refreshToken = async (refreshToken) => {
       withCredentials: true,
     }
   );
+  return res.data;
+};
+
+export const logoutUser = async () => {
+  const res = await axios.post( `http://localhost:3000/user/log-out`,);
   return res.data;
 };

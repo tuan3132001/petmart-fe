@@ -8,7 +8,7 @@ import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useDispatch } from "react-redux";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { updateUser } from "../../redux/slides/userSlide";
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -18,39 +18,43 @@ const SignInPage = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
-
   const { data, isPending } = mutation;
-  console.log("data",data?.newRequest?.access_token)
-  useEffect(()=>{
-    if(data?.newRequest?.status === 'OK'){
-      // if(location?.state) {
-      //   navigate(location?.state)
-      // }else {
-      //   navigate('/')
-      // }
-      navigate('/')
-      localStorage.setItem('access_token', JSON.stringify(data?.newRequest?.access_token))
+  console.log('data', data)
+  useEffect(() => {
+    if (data?.newRequest?.status === "OK") {
+      if (location?.state) {
+        navigate(location?.state);
+      } else {
+        navigate("/");
+      }
+      // navigate('/')
+      localStorage.setItem(
+        "access_token",
+        JSON.stringify(data?.newRequest?.access_token)
+      );
       // localStorage.setItem('refresh_token', JSON.stringify(data?.newRequest?.refresh_token))
       if (data?.newRequest?.access_token) {
         const decoded = jwtDecode(data?.newRequest?.access_token);
-        console.log('decode',decoded)
-        console.log('data',data?.newRequest?.access_token)
+        console.log("decode", decoded);
         if (decoded?.id) {
-          handleGetDetailsUser(decoded?.id, data?.newRequest?.access_token)
+          handleGetDetailsUser(decoded?.id, data?.newRequest?.access_token);
         }
+      }else{
+        console.log("LocalStorage trống. Không thể thực hiện các hành động sau khi lấy dữ liệu.");
+      return;
       }
     }
-    
-  },[data])
+  }, [data]);
 
   const handleGetDetailsUser = async (id, token) => {
     // const storage = localStorage.getItem('refresh_token')
     // console.log(storage, 'storage')
     // const refreshToken = JSON.parse(storage)
-    const res = await UserService.getDetailsUser(id, token)
-    console.log('res', res)
-    dispatch(updateUser({ ...res?.data, access_token:token}))
-  }
+    const res = await UserService.getDetailsUser(id, token);
+    dispatch(updateUser({ ...res?.data, access_token: token }));
+    
+  };
+
   const handleNavigateSignUp = () => {
     navigate("/Sign-up");
   };
@@ -105,18 +109,23 @@ const SignInPage = () => {
               onChange={handleOnchangePassword}
             />
           </div>
-          {data?.newRequest?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.newRequest?.message}</span>}
+          {data?.newRequest?.status === "ERR" && (
+            <span style={{ color: "red" }}>{data?.newRequest?.message}</span>
+          )}
+           {data?.status === "ERR" && (
+            <span style={{ color: "red" }}>{data?.message}</span>
+          )}
           <Loading isPending={isPending}>
-          <button
-            onClick={handleSignIn}
-            className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
-              !email || !password
-                ? "bg-[#ccc] cursor-not-allowed pointer-events-none"
-                : "cursor-pointer"
-            }`}
-          >
-            Đăng nhập
-          </button>
+            <button
+              onClick={handleSignIn}
+              className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
+                !email || !password
+                  ? "bg-[#ccc] cursor-not-allowed pointer-events-none"
+                  : "cursor-pointer"
+              }`}
+            >
+              Đăng nhập
+            </button>
           </Loading>
           <p className="text-blue-500 text-[13px] cursor-pointer">
             Quên mật khẩu?

@@ -1,6 +1,6 @@
-import { Badge, Col, Row } from "antd";
-import React from "react";
-
+import { Badge, Col, Popover, Row } from "antd";
+import React, { useState } from "react";
+import * as UserService from "../../services/UserService";
 import {
   UserOutlined,
   CaretDownOutlined,
@@ -8,11 +8,50 @@ import {
 } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { resetUser } from "../../redux/slides/userSlide";
+import Loading from "../LoadingComponent/Loading";
 const HeaderComponent = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
   const user = useSelector((state) => state.user);
+  const content = (
+    <div>
+      <p className="cursor-pointer  hover:text-blue-400" >Thông tin người dùng</p>
+      {/* {user?.isAdmin && (
+
+        <WrapperContentPopup onClick={() => handleClickNavigate('admin')}>Quản lí hệ thống</WrapperContentPopup>
+      )} */}
+      {/* <WrapperContentPopup onClick={() => handleClickNavigate(`my-order`)}>Đơn hàng của tôi</WrapperContentPopup> */}
+      <p className="cursor-pointer hover:text-blue-400" onClick={() => handleLogout()}>Đăng xuất</p>
+    </div>
+  );
+  // const handleClickNavigate = (type) => {
+  //   if(type === 'profile') {
+  //     navigate('/profile-user')
+  //   }else if(type === 'admin') {
+  //     navigate('/system/admin')
+  //   }else if(type === 'my-order') {
+  //     navigate('/my-order',{ state : {
+  //         id: user?.id,
+  //         token : user?.access_token
+  //       }
+  //     })
+  //   }else {
+  //     handleLogout()
+  //   }
+  //   setIsOpenPopup(false)
+  // }
+    
+  const handleLogout = async () => {
+    localStorage.removeItem('access_token');
+    setLoading(true)
+    await UserService.logoutUser()
+    dispatch(resetUser())
+    setLoading(false)
+  }
+
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
@@ -35,10 +74,16 @@ const HeaderComponent = () => {
           />
         </Col>
         <Col span={6} className="flex items-center gap-8">
+        <Loading isPending={loading}>
           <div className="flex items-center text-white text-[12px]">
             <UserOutlined className="text-[30px] ml-6" />
             {user?.name ? (
-              <div className="text-[15px]">{user.name}</div>
+              <>
+              <Popover content={content} trigger="click" >
+                    {/* <div style={{ cursor: 'pointer',maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => setIsOpenPopup((prev) => !prev)}>{userName?.length ? userName : user?.email}</div> */}
+                    <div className="cursor-pointer">{user.name}</div>
+                  </Popover>
+              </>
             ) : (
               <div
                 className="ml-2 cursor-pointer"
@@ -52,6 +97,7 @@ const HeaderComponent = () => {
               </div>
             )}
           </div>
+          </Loading>
           <div className="text-white text-[12px] ml-[20px]">
             <Badge count={4} size="small">
               <ShoppingCartOutlined className="text-[30px] text-white" />

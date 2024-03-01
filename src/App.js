@@ -8,13 +8,17 @@ import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
 import * as UserService from "../src/services/UserService";
-
 function App() {
+  
   const queryClient = new QueryClient();
   const dispatch = useDispatch();
   useEffect(()=>{
     const {storageData, decoded} = handleDecoded()
-          handleGetDetailsUser(decoded?.id,storageData)
+    if (decoded?.id) {
+      handleGetDetailsUser(decoded.id, storageData);
+    } else {
+      console.log("Người dùng chưa đăng nhập hoặc đã logout. Không thể lấy dữ liệu.");
+    }
   },[])
 
   const handleDecoded = () => {
