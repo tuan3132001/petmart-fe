@@ -1,5 +1,5 @@
 import { Badge, Col, Popover, Row } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as UserService from "../../services/UserService";
 import {
   UserOutlined,
@@ -14,17 +14,29 @@ import Loading from "../LoadingComponent/Loading";
 const HeaderComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userAvatar, setUserAvatar] = useState("");
   const user = useSelector((state) => state.user);
   const content = (
     <div>
-      <p className="cursor-pointer  hover:text-blue-400" >Thông tin người dùng</p>
+      <p
+        className="cursor-pointer  hover:text-blue-400 mb-[4px]"
+        onClick={() => navigate("/profile-user")}
+      >
+        Thông tin người dùng
+      </p>
       {/* {user?.isAdmin && (
 
-        <WrapperContentPopup onClick={() => handleClickNavigate('admin')}>Quản lí hệ thống</WrapperContentPopup>
+        <p className="cursor-pointer hover:text-blue-400 mb-[4px]" onClick={() => handleClickNavigate('admin')}>Quản lí hệ thống</p>
       )} */}
-      {/* <WrapperContentPopup onClick={() => handleClickNavigate(`my-order`)}>Đơn hàng của tôi</WrapperContentPopup> */}
-      <p className="cursor-pointer hover:text-blue-400" onClick={() => handleLogout()}>Đăng xuất</p>
+      {/* <p className="cursor-pointer hover:text-blue-400 mb-[4px]" onClick={() => handleClickNavigate(`my-order`)}>Đơn hàng của tôi</p> */}
+      <p
+        className="cursor-pointer hover:text-blue-400 mb-[4px]"
+        onClick={() => handleLogout()}
+      >
+        Đăng xuất
+      </p>
     </div>
   );
   // const handleClickNavigate = (type) => {
@@ -43,14 +55,22 @@ const HeaderComponent = () => {
   //   }
   //   setIsOpenPopup(false)
   // }
-    
+
+  useEffect(() => {
+    setLoading(true);
+    setUserName(user?.name);
+    setUserAvatar(user?.avatar)
+    setLoading(false);
+  }, [user?.name, user?.avatar]);
+
   const handleLogout = async () => {
-    localStorage.removeItem('access_token');
-    setLoading(true)
-    await UserService.logoutUser()
-    dispatch(resetUser())
-    setLoading(false)
-  }
+    localStorage.removeItem("access_token");
+    setLoading(true);
+    await UserService.logoutUser();
+    dispatch(resetUser());
+    setLoading(false);
+    navigate("/");
+  };
 
   const handleNavigateLogin = () => {
     navigate("/sign-in");
@@ -74,29 +94,36 @@ const HeaderComponent = () => {
           />
         </Col>
         <Col span={6} className="flex items-center gap-8">
-        <Loading isPending={loading}>
-          <div className="flex items-center text-white text-[12px]">
-            <UserOutlined className="text-[30px] ml-6" />
-            {user?.name ? (
-              <>
-              <Popover content={content} trigger="click" >
+          <Loading isPending={loading}>
+            <div className="flex items-center text-white text-[12px]">
+              {userAvatar ? (
+                <img src={userAvatar} alt='avtar' className="h-[30px] w-[30px] rounded-[50%] object-cover mr-[5px]"/>
+              ) : (
+                <UserOutlined className="text-[30px] ml-6" />
+              )}
+             
+              {user?.access_token ? (
+                <>
+                  <Popover content={content} trigger="click">
                     {/* <div style={{ cursor: 'pointer',maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => setIsOpenPopup((prev) => !prev)}>{userName?.length ? userName : user?.email}</div> */}
-                    <div className="cursor-pointer">{user.name}</div>
+                    <div className="cursor-pointer">
+                      {userName?.length ? userName : user?.email}
+                    </div>
                   </Popover>
-              </>
-            ) : (
-              <div
-                className="ml-2 cursor-pointer"
-                onClick={handleNavigateLogin}
-              >
-                <span className="whitespace-nowrap">Đăng nhập/Đăng ký</span>
-                <div>
-                  <span>Tài khoản</span>
-                  <CaretDownOutlined />
+                </>
+              ) : (
+                <div
+                  className="ml-2 cursor-pointer"
+                  onClick={handleNavigateLogin}
+                >
+                  <span className="whitespace-nowrap">Đăng nhập/Đăng ký</span>
+                  <div>
+                    <span>Tài khoản</span>
+                    <CaretDownOutlined />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
           </Loading>
           <div className="text-white text-[12px] ml-[20px]">
             <Badge count={4} size="small">

@@ -15,7 +15,6 @@ const ButtonInputSearch = (props) => {
       <Input
         placeholder={placeholder}
         size={size}
-        bordered={false}
         style={{ backgroundColor: backgroundColorInput }}
         className=" rounded-none"
       />
