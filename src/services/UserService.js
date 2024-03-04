@@ -23,12 +23,10 @@ export const getDetailsUser = async (id, access_token) => {
       },
     }
   );
-  console.log(res.data);
   return res.data;
 };
 
 export const refreshToken = async () => {
-  console.log("refreshToken", refreshToken);
   const res = await axios.post(
     `http://localhost:3000/user/refresh-token`,
     {

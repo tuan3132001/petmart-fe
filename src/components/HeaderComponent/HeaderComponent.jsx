@@ -11,12 +11,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "../../redux/slides/userSlide";
 import Loading from "../LoadingComponent/Loading";
+import { searchProduct } from "../../redux/slides/productSlide";
 const HeaderComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
+  const [search,setSearch] = useState('')
   const user = useSelector((state) => state.user);
   const content = (
     <div>
@@ -75,7 +77,11 @@ const HeaderComponent = () => {
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
-  console.log("user", user);
+  
+  const onSearch = (e) => {
+    setSearch(e.target.value)
+    dispatch(searchProduct(e.target.value));
+  }
   return (
     <div>
       <Row className="pl-20 pr-120 bg-[#000df7] items-center h-[100px] w-full gap-[16px] flex flex-nowrap">
@@ -90,7 +96,8 @@ const HeaderComponent = () => {
           <ButtonInputSearch
             size="large"
             placeholder="Tìm kiếm thông tin tại đây"
-            textButton="Tìm kiếm"
+            textbutton="Tìm kiếm"
+            onChange={onSearch}
           />
         </Col>
         <Col span={6} className="flex items-center gap-8">

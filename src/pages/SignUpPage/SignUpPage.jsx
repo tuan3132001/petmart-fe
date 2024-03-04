@@ -18,7 +18,6 @@ const SignUpPage = () => {
 
   const mutation = useMutationHooks((data) => UserService.signupUser(data));
   const { data, isPending } = mutation;
-  console.log('mutation',mutation)
   useEffect(() => {
     if (data?.status === 'OK') {
       message.success()
