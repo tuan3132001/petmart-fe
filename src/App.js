@@ -14,14 +14,7 @@ function App() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    fetchApi();
-  }, []);
-
-  const fetchApi = async () => {
-    const res = await axios.get(`http://localhost:3000/product/get-product`);
-    console.log("res", res);
-  };
+ 
   useEffect(() => {
     setIsLoading(true);
     const { storageData, decoded } = handleDecoded();

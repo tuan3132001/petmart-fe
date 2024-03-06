@@ -1,15 +1,21 @@
 import Card from "antd/es/card/Card";
 import React from "react";
 import { StarFilled } from "@ant-design/icons";
+import {useNavigate } from "react-router-dom";
 
 const CardComponent = (props) => {
-  const {costPrice,countInStock,description,image,name,price,status,type,unit} = props;
+  const {costPrice,countInStock,description,image,name,price,status,type,unit,id} = props;
+  const navigate = useNavigate();
+  const handelDetailsProduct = (id) => {
+    navigate(`/product-details/${id}`)
+  }
   return (
     <Card
       className="border border-solid border-gray-300 rounded-lg p-4 sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
       hoverable
       bodyStyle={{ padding: "10px" }}
       style={{ height: "400px", width: "281px" }}
+      onClick={() => handelDetailsProduct(id)}
     >
       <div className="h-1/2 w-full relative overflow-hidden">
         <div className="w-full h-full bg-gray-200 relative">

@@ -10,3 +10,8 @@ export const getAllProduct = async (search, limit) => {
     }
     return res.data
 }
+
+export const getDetailsProduct = async (id) => {
+    const res = await axios.get(`http://localhost:3000/product/get-detail-product/${id}`)
+    return res.data
+}

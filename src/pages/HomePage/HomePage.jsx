@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slide1 from "../../assets/images/slide1.webp";
@@ -8,23 +8,44 @@ import CardComponent from "../../components/CardComponent/CardComponent";
 import { Button } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import * as ProductService from "../../services/ProductService";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
+  const searchProduct = useSelector((state) => state?.product?.search)
+  const refSearch= useRef()
+  const [stateProduct, setStateProduct] = useState([])
   const arr = ["Thức ăn", "Quần áo", "Đồ chơi", "Dụng cụ chăm sóc"];
-  const fetchProductAll = async () => {
-    const res = await ProductService.getAllProduct();
-    console.log("res", res);
-    return res;
+  const fetchProductAll = async (search) => {
+    const res = await ProductService.getAllProduct(search);
+    if(search.length>0){
+     setStateProduct(res?.data)
+    }else{
+      return res;
+    }
   };
-  const { isLoading, data: products } = useQuery({
-    queryKey: ["product"],
+
+  useEffect(()=>{
+    if(refSearch.current){
+      fetchProductAll(searchProduct)
+    }
+    refSearch.current = true; // Thay đổi giá trị của thuộc tính current của refSearch
+  },[searchProduct])
+  
+  
+
+  const { isPending, data: products } = useQuery({
+    queryKey: ["products"],
     queryFn: fetchProductAll,
     config: {
       retries: 3,
       retryDelay: 1000,
     },
   });
-  console.log("data", products);
+  useEffect(()=>{
+    if(products?.data?.length > 0){
+     setStateProduct(products?.data)
+    }
+  },[products])
   return (
     <>
       <div style={{ width: "1270px", margin: "0 auto" }}>
@@ -41,7 +62,7 @@ const HomePage = () => {
       >
         <SliderComponent arrImages={[slide1, slide2, slide3]} />
         <div className="mt-[20px] w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[17px]">
-          {products?.data?.map((product) => {
+          {stateProduct?.map((product) => {
             return (
               <CardComponent
                 key={product._id}
@@ -54,6 +75,7 @@ const HomePage = () => {
                 status={product.status}
                 type={product.type}
                 unit={product.unit}
+                id={product._id}
               />
             );
           })}
