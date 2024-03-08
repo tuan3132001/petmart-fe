@@ -71,7 +71,7 @@ const HeaderComponent = () => {
     await UserService.logoutUser();
     dispatch(resetUser());
     setLoading(false);
-    navigate("/");
+    navigate("/sign-in");
   };
 
   const handleNavigateLogin = () => {
@@ -89,7 +89,8 @@ const HeaderComponent = () => {
           <img
             src="https://www.petmart.vn/wp-content/uploads/2020/09/petmart-logo-trang.png"
             alt=""
-            className="w-[250px] h-[66.28px] box-border"
+            className="w-[250px] h-[66.28px] box-border cursor-pointer"
+            onClick={()=>navigate('/')}
           />
         </Col>
         <Col span={12}>
@@ -132,7 +133,7 @@ const HeaderComponent = () => {
               )}
             </div>
           </Loading>
-          <div className="text-white text-[12px] ml-[20px]">
+          <div className="text-white text-[12px] ml-[20px] cursor-pointer" onClick={()=>navigate('/order')}>
             <Badge count={4} size="small">
               <ShoppingCartOutlined className="text-[30px] text-white" />
             </Badge>

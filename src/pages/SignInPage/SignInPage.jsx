@@ -10,6 +10,7 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { updateUser } from "../../redux/slides/userSlide";
+
 const SignInPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ const SignInPage = () => {
   const location = useLocation();
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
   const { data, isPending } = mutation;
-  console.log('data', data)
+
   useEffect(() => {
     if (data?.newRequest?.status === "OK") {
       if (location?.state) {
@@ -35,7 +36,6 @@ const SignInPage = () => {
       // localStorage.setItem('refresh_token', JSON.stringify(data?.newRequest?.refresh_token))
       if (data?.newRequest?.access_token) {
         const decoded = jwtDecode(data?.newRequest?.access_token);
-        console.log("decode", decoded);
         if (decoded?.id) {
           handleGetDetailsUser(decoded?.id, data?.newRequest?.access_token);
         }
@@ -69,7 +69,6 @@ const SignInPage = () => {
       email,
       password,
     });
-    console.log(email, password);
   };
   return (
     <div className="flex items-center justify-center bg-[rgba(0,0,0,0.53)] h-[100vh]">

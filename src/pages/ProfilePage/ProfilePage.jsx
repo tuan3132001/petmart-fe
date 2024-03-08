@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Radio } from "antd";
 import InputForm from "../../components/InputForm/InputForm";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -7,9 +7,12 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 import * as message from "../../components/Message/Message";
 import { updateUser } from "../../redux/slides/userSlide";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, LeftOutlined } from "@ant-design/icons"; // Import LeftOutlined icon
 import { getBase64 } from "../../utils";
+import moment from 'moment'; // Import moment
 import { WrapperUploadFile } from "./style";
+import { useNavigate } from "react-router-dom";
+
 export const ProfilePage = () => {
   const user = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
@@ -17,22 +20,26 @@ export const ProfilePage = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
-
+  const [gender, setGender] = useState("");
+  const [birthday, setBirthday] = useState(null);
+  const navigate = useNavigate()
   const mutation = useMutationHooks((data) => {
     const { id, access_token, ...rests } = data;
     UserService.updateUser(id, rests, access_token);
   });
   const dispatch = useDispatch();
   const { data, isPending, isSuccess, isError } = mutation;
-  console.log("dataApp", user.name);
+
   useEffect(() => {
     setEmail(user?.email);
     setName(user?.name);
     setPhone(user?.phone);
     setAddress(user?.address);
     setAvatar(user?.avatar);
+    setGender(user?.gender);
+    setBirthday(user?.birthday);
   }, [user]);
- 
+
   useEffect(() => {
     if (isSuccess === true) {
       message.successUpdate();
@@ -40,9 +47,8 @@ export const ProfilePage = () => {
     } else if (isError) {
       message.errorUpdate();
     }
-  }, [user.name]);
+  }, [isSuccess, isError]);
 
-  
   const handleOnchangeEmail = (value) => {
     setEmail(value);
   };
@@ -62,6 +68,12 @@ export const ProfilePage = () => {
     }
     setAvatar(file.preview);
   };
+  const handleOnchangeGender = (e) => {
+    setGender(e.target.value);
+  };
+  const handleOnchangeBirthday = (date) => {
+    setBirthday(date);
+  };
 
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserService.getDetailsUser(id, token);
@@ -72,16 +84,33 @@ export const ProfilePage = () => {
     mutation.mutate({
       id: user?.id,
       email,
-      name,
-      phone,
-      address,
-      avatar,
+      information: {
+        name,
+        phone,
+        address,
+        avatar,
+        gender,
+        birthday,
+      },
       access_token: user?.access_token,
     });
   };
 
+  const handleGoBack = () => {
+    navigate('/')
+  };
+
   return (
-    <div className="w-[1270px] mx-auto h-[500px]">
+    <div className="w-[1270px] mx-auto h-[500px] relative">
+      <div className="absolute top-[20px] left-[20px]">
+        <Button
+          type="text"
+          icon={<LeftOutlined />}
+          onClick={handleGoBack}
+        >
+          Trở về 
+        </Button>
+      </div>
       <h1 className="text-[#030] text-[20px] font-bold mt-[4px] mb-[20px] text-center">
         Thông tin người dùng
       </h1>
@@ -166,6 +195,39 @@ export const ProfilePage = () => {
                 alt="avatar"
               />
             )}
+          </div>
+          <div className="flex items-center gap-[20px]">
+            <label
+              htmlFor="gender"
+              className="text-[#000] text-[14px] leading-[30px] font-[600] "
+              style={{ minWidth: "120px" }}
+            >
+              Giới tính
+            </label>
+            <Radio.Group
+              onChange={handleOnchangeGender}
+              value={gender}
+              id="gender"
+            >
+              <Radio value={"Nam"}>Nam</Radio>
+              <Radio value={"Nữ"}>Nữ</Radio>
+            </Radio.Group>
+          </div>
+          <div className="flex items-center gap-[20px]">
+            <label
+              htmlFor="birthday"
+              className="text-[#000] text-[14px] leading-[30px] font-[600] "
+              style={{ minWidth: "120px" }}
+            >
+              Ngày sinh
+            </label>
+            <input
+              type="date"
+              id="birthday"
+              value={birthday ? moment(birthday).format("YYYY-MM-DD") : ""}
+              onChange={(e) => handleOnchangeBirthday(moment(e.target.value))}
+              className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+            />
           </div>
           <Button onClick={handleUpdate} className="mx-auto">
             Cập nhật

@@ -10,6 +10,8 @@ const initialState = {
     refreshToken: '',
     id: '',
     role: '',
+    gender:'',
+    birthday:'',
 }
 
 export const userSlide = createSlice({
@@ -17,16 +19,20 @@ export const userSlide = createSlice({
     initialState,
     reducers: {
         updateUser: (state, action) => {
-           const {name='', email='', access_token='', address='', avatar='', phone='', _id='',role=''} = action.payload;
-           state.name = name;
-           state.email = email;
-           state.address = address;
-           state.phone = phone;
-           state.avatar = avatar;
-           state.access_token = access_token;
-           state.id = _id;
-           state.role = role;
-         
+            const { email, access_token, role, information, _id='' } = action.payload;
+            if (information) {
+                const { name, address, avatar, phone, gender, birthday } = information;
+                state.name = name || '';
+                state.address = address || '';
+                state.phone = phone || '';
+                state.avatar = avatar || '';
+                state.gender = gender || '';
+                state.birthday = birthday || '';
+            }
+            state.email = email || '';
+            state.id = _id || '';
+            state.access_token = access_token || '';
+            state.role = role || '';
         },
         resetUser: (state) => {
             state.name = '';
