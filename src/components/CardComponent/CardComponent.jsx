@@ -1,17 +1,20 @@
 import Card from "antd/es/card/Card";
 import React from "react";
 import { StarFilled } from "@ant-design/icons";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { convertPrice } from "../../utils";
 
 const CardComponent = (props) => {
-  const {costPrice,countInStock,description,image,name,price,status,type,unit,id} = props;
+  const { costPrice, countInStock, description, image, name, price, status, type, unit, id } = props;
   const navigate = useNavigate();
+
   const handelDetailsProduct = (id) => {
-    navigate(`/product-details/${id}`)
-  }
+    navigate(`/product-details/${id}`);
+  };
+
   return (
     <Card
-      className="border border-solid border-gray-300 rounded-lg p-4 sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
+      className="border border-solid border-gray-300 rounded-lg p-4 sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4 relative"
       hoverable
       bodyStyle={{ padding: "10px" }}
       style={{ height: "400px", width: "281px" }}
@@ -34,17 +37,14 @@ const CardComponent = (props) => {
           <div className="font-[400] font-[roboto] text-[15px] mb-2 leading-[1.4em] text-[#000000]">
             {name}
           </div>
-          <div className="text-[15px] text-[rgb(128,128,137)] flex items-center mb-2">
-            <span>
-              4.5<StarFilled className="text-[13px] text-yellow-400 ml-1" />
-            </span>
-            <span className="ml-1"> | Đã bán 1000+</span>
-          </div>
           <span className="text-[#bc2848] text-[1.8rem] font-[roboto] font-bold">
-            {price}
-            <span className="text-[65%] relative top-[-7px] font-[400]">₫</span>
-            /{unit}
+            {convertPrice(price)}
+           
           </span>
+          {/* Hiển thị phần description */}
+          <div className="text-[15px] mt-2">Mô tả: {description}</div>
+          {/* Hiển thị phần status */}
+          <div className="text-[15px] mt-2">Tình trạng: {status}</div>
         </div>
       </div>
     </Card>

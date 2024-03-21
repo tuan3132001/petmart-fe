@@ -25,10 +25,10 @@ const SignInPage = () => {
     if (data?.newRequest?.status === "OK") {
       if (location?.state) {
         navigate(location?.state);
+        
       } else {
         navigate("/");
       }
-      // navigate('/')
       localStorage.setItem(
         "access_token",
         JSON.stringify(data?.newRequest?.access_token)

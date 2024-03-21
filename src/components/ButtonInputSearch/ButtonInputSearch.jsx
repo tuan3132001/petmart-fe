@@ -1,6 +1,8 @@
 import { Button, Input } from "antd";
 import React from "react";
+import { motion } from "framer-motion";
 import { SearchOutlined } from "@ant-design/icons";
+
 const ButtonInputSearch = (props) => {
   const {
     size,
@@ -10,30 +12,44 @@ const ButtonInputSearch = (props) => {
     backgroundColorInput = '#fff',
     backgroundColorButton = 'rgb(0, 56, 168)',
   } = props;
+
   return (
-    <div className="flex">
-      <Input
-        placeholder={placeholder}
-        size={size}
-        style={{ backgroundColor: backgroundColorInput }}
-        className=" rounded-none"
-        {...props}
-      />
-      <Button
-        style={{
-          borderRadius: 0,
-          backgroundColor: backgroundColorButton,
-          border: !bordered && 'none',
-          color: 'white',
-         
-        }}
-        size={size}
-        icon={<SearchOutlined/>}
-      
-      ><span >{textbutton}</span>
-        
-      </Button>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex"
+    >
+      <div style={{ display: 'flex', alignItems: 'stretch', width: '100%' }}>
+        <div style={{ flex: 1 }}>
+          <Input
+            placeholder={placeholder}
+            size={size}
+            style={{
+              backgroundColor: backgroundColorInput,
+              borderRadius: '20px 0 0 20px',
+              borderRight: 'none', // Xóa đường viền bên phải của Input
+            }}
+            className="rounded-none"
+            {...props}
+          />
+        </div>
+        <Button
+          style={{
+            borderRadius: 0,
+            backgroundColor: backgroundColorButton,
+            borderTopRightRadius: '10px',
+            borderBottomRightRadius: '10px',
+            border: !bordered && 'none',
+            color: 'white',
+          }}
+          size={size}
+          icon={<SearchOutlined/>}
+        >
+          <span>{textbutton}</span>
+        </Button>
+      </div>
+    </motion.div>
   );
 };
 

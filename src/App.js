@@ -7,9 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
 import * as UserService from "../src/services/UserService";
-import axios from "axios";
-import Loading from "./components/LoadingComponent/Loading";
-import { isPending } from "@reduxjs/toolkit";
+import Footer from "./components/FooterComponent/FooterComponent";
 function App() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -54,9 +52,7 @@ function App() {
   );
 
   const handleGetDetailsUser = async (id, token) => {
-    // const storage = localStorage.getItem('refresh_token')
-    // console.log(storage, 'storage')
-    // const refreshToken = JSON.parse(storage)
+    
     const res = await UserService.getDetailsUser(id, token);
     dispatch(updateUser({ ...res?.data, access_token: token }));
     setIsLoading(false);
@@ -72,7 +68,7 @@ function App() {
               user?.role === "admin" ||
               user?.role === "manage";
             const Page = route.page;
-            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+            const Layout = route.isShowHeader || route.isShowFooter ? DefaultComponent : Fragment;
             return (
               <Route
                 key={route.path}

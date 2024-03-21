@@ -1,67 +1,65 @@
-import { Badge, Col, Popover, Row } from "antd";
+// HeaderComponent.js
+
 import React, { useEffect, useState } from "react";
-import * as UserService from "../../services/UserService";
+import { Badge, Col, Popover, Row } from "antd";
 import {
   UserOutlined,
   CaretDownOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "../../redux/slides/userSlide";
-import Loading from "../LoadingComponent/Loading";
 import { searchProduct } from "../../redux/slides/productSlide";
+import Loading from "../LoadingComponent/Loading";
+import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
+import * as UserService from "../../services/UserService";
+import backgroundImage from "../../assets/images/headerLogo.jpg"; 
+
 const HeaderComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const order = useSelector((state) => state.order);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
-  const [search,setSearch] = useState('')
+  const [isOpenPopup, setIsOpenPopup] = useState(false)
+  const [search, setSearch] = useState("");
   const user = useSelector((state) => state.user);
+
   const content = (
     <div>
       <p
-        className="cursor-pointer  hover:text-blue-400 mb-[4px]"
-        onClick={() => navigate("/profile-user")}
+        className="cursor-pointer hover:text-blue-400 mb-[7px]"
+        onClick={() => handleClickNavigate('profile')}  
       >
         Thông tin người dùng
       </p>
-      {/* {user?.isAdmin && (
-
-        <p className="cursor-pointer hover:text-blue-400 mb-[4px]" onClick={() => handleClickNavigate('admin')}>Quản lí hệ thống</p>
-      )} */}
-      {/* <p className="cursor-pointer hover:text-blue-400 mb-[4px]" onClick={() => handleClickNavigate(`my-order`)}>Đơn hàng của tôi</p> */}
       <p
-        className="cursor-pointer hover:text-blue-400 mb-[4px]"
-        onClick={() => handleLogout()}
+        className="cursor-pointer hover:text-blue-400 mb-[7px]"
+        onClick={() => handleClickNavigate(`my-order`)}
+      >
+        Đơn hàng của tôi
+      </p>
+      <p
+        className="cursor-pointer hover:text-blue-400 mb-[7px]"
+        onClick={() => handleClickNavigate(`post`)}
+      >
+        Bài viết
+      </p>
+      <p
+        className="cursor-pointer hover:text-blue-400 mb-[7px]"
+        onClick={() => handleClickNavigate()}
       >
         Đăng xuất
       </p>
     </div>
   );
-  // const handleClickNavigate = (type) => {
-  //   if(type === 'profile') {
-  //     navigate('/profile-user')
-  //   }else if(type === 'admin') {
-  //     navigate('/system/admin')
-  //   }else if(type === 'my-order') {
-  //     navigate('/my-order',{ state : {
-  //         id: user?.id,
-  //         token : user?.access_token
-  //       }
-  //     })
-  //   }else {
-  //     handleLogout()
-  //   }
-  //   setIsOpenPopup(false)
-  // }
 
   useEffect(() => {
     setLoading(true);
     setUserName(user?.name);
-    setUserAvatar(user?.avatar)
+    setUserAvatar(user?.avatar);
     setLoading(false);
   }, [user?.name, user?.avatar]);
 
@@ -74,47 +72,79 @@ const HeaderComponent = () => {
     navigate("/sign-in");
   };
 
+  const handleClickNavigate = (type) => {
+    if(type === 'profile') {
+      navigate('/profile-user')
+    }else if(type === 'my-order') {
+      navigate('/my-order',{ state : {
+          id: user?.id,
+          token : user?.access_token
+        }
+      })
+    }else if(type === 'post') {
+      navigate('/post',{ state : {
+          id: user?.id,
+          token : user?.access_token
+        }
+      })
+    }else {
+      handleLogout()
+    }
+    setIsOpenPopup(false)
+  }
+
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
-  
+
   const onSearch = (e) => {
-    setSearch(e.target.value)
+    setSearch(e.target.value);
     dispatch(searchProduct(e.target.value));
-  }
+  };
+
   return (
-    <div>
-      <Row className="pl-20 pr-120 bg-[#000df7] items-center h-[100px] w-full gap-[16px] flex flex-nowrap">
+    <div
+      className="header-container"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
+      <Row className="pl-20 pr-120 bg-transparent items-center h-[150px] w-full gap-[16px] flex flex-nowrap">
         <Col span={6}>
           <img
             src="https://www.petmart.vn/wp-content/uploads/2020/09/petmart-logo-trang.png"
             alt=""
-            className="w-[250px] h-[66.28px] box-border cursor-pointer"
-            onClick={()=>navigate('/')}
+            className="w-[250px] h-[66.28px] box-border cursor-pointer transition-transform duration-300 transform hover:scale-110"
+            onClick={() => navigate("/")}
           />
         </Col>
         <Col span={12}>
           <ButtonInputSearch
             size="large"
-            placeholder="Tìm kiếm thông tin tại đây"
+            placeholder="Tìm kiếm thông tin tại đây..."
             textbutton="Tìm kiếm"
             onChange={onSearch}
+            className="hover:bg-gray-200 transition-colors duration-300"
           />
         </Col>
         <Col span={6} className="flex items-center gap-8">
           <Loading isPending={loading}>
             <div className="flex items-center text-white text-[12px]">
               {userAvatar ? (
-                <img src={userAvatar} alt='avtar' className="h-[30px] w-[30px] rounded-[50%] object-cover mr-[5px]"/>
+                <img
+                  src={userAvatar}
+                  alt="avtar"
+                  className="h-[30px] w-[30px] rounded-[50%] object-cover mr-[5px] cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                />
               ) : (
-                <UserOutlined className="text-[30px] ml-6" />
+                <UserOutlined className="text-[30px] ml-6 cursor-pointer font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300" />
               )}
-             
+
               {user?.access_token ? (
                 <>
-                  <Popover content={content} trigger="click">
-                    {/* <div style={{ cursor: 'pointer',maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => setIsOpenPopup((prev) => !prev)}>{userName?.length ? userName : user?.email}</div> */}
-                    <div className="cursor-pointer">
+                  <Popover content={content} trigger="click" open={isOpenPopup}>
+                    <div
+                      className="cursor-pointer text-[15px] font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                      onClick={() => setIsOpenPopup((prev) => !prev)}
+                    >
                       {userName?.length ? userName : user?.email}
                     </div>
                   </Popover>
@@ -124,22 +154,34 @@ const HeaderComponent = () => {
                   className="ml-2 cursor-pointer"
                   onClick={handleNavigateLogin}
                 >
-                  <span className="whitespace-nowrap">Đăng nhập/Đăng ký</span>
+                  <span className="text-[15px] cursor-pointer font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                    Đăng nhập/Đăng ký
+                  </span>
                   <div>
-                    <span>Tài khoản</span>
-                    <CaretDownOutlined />
+                    <span className="text-[15px] font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                      Tài khoản
+                    </span>
+                    <CaretDownOutlined className=" text-blue-800 hover:text-blue-950 transition-colors duration-300" />
                   </div>
                 </div>
               )}
             </div>
           </Loading>
-          <div className="text-white text-[12px] ml-[20px] cursor-pointer" onClick={()=>navigate('/order')}>
-            <Badge count={4} size="small">
-              <ShoppingCartOutlined className="text-[30px] text-white" />
+          <div
+            className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300"
+            onClick={() => navigate("/order")}
+          >
+            <Badge
+              count={user?.id ? order?.orderItems?.length : 0}
+              size="small"
+            >
+              <ShoppingCartOutlined className="text-[30px] text-blue-800 hover:text-blue-950 transition-colors duration-300" />
             </Badge>
-
             <div>
-              <span className="whitespace-nowrap">Giỏ hàng</span>
+              <span className="font-[500] text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                {" "}
+                Giỏ hàng
+              </span>
             </div>
           </div>
         </Col>

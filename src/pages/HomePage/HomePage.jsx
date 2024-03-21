@@ -1,24 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slide1 from "../../assets/images/slide1.webp";
 import slide2 from "../../assets/images/slide2.webp";
 import slide3 from "../../assets/images/slide3.webp";
 import CardComponent from "../../components/CardComponent/CardComponent";
-import { Button } from "antd";
+import { Button, BackTop, Menu, Collapse } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import * as ProductService from "../../services/ProductService";
 import { useSelector } from "react-redux";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useDebounce } from "../../hooks/useDebounce";
-
+import Footer from "../../components/FooterComponent/FooterComponent";
+import {
+  SmileOutlined
+} from '@ant-design/icons';
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct, 1000);
   const [typeProducts, setTypeProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(6);
-  // const arr = ["Thức ăn", "Phụ kiện", "Đồ dùng sinh hoạt", "Đồ chơi", "Dụng cụ chăm sóc"];
+  const [openMenu, setOpenMenu] = useState(false);
+  const { Panel } = Collapse;
   const fetchProductAll = async (context) => {
     const limit = context?.queryKey && context?.queryKey[1];
     const search = context?.queryKey && context?.queryKey[2];
@@ -66,32 +70,58 @@ const HomePage = () => {
 
   return (
     <Loading isPending={isPending || loading}>
-      <div style={{ width: "1270px", margin: "0 auto" }}>
-        <div className="flex items-center gap-[100px] justify-around text-[20px] font-bold">
-        {typeProducts.map((item) => {
-  return (
-    <div
-      key={item}
-      className="relative cursor-pointer transition duration-300 ease-in-out hover:text-blue-500 flex items-center"
-    >
-      <TypeProduct name={item} />
-      <span className="ml-1">{typeProductIcons[item]}</span>
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-500 opacity-0 transition duration-300 ease-in-out"></div>
-    </div>
-  );
-})}
-
+      <div style={{ width: "100%", margin: "0 auto" }}>
+        <div className="flex items-center justify-around text-[20px] font-bold flex-wrap">
+        
+          {typeProducts.map((item) => (
+            <div
+              key={item}
+              className="relative cursor-pointer transition duration-300 ease-in-out hover:text-blue-500 flex items-center mb-4"
+            >
+              <TypeProduct name={item} />
+              <span className="ml-1">{typeProductIcons[item]}</span>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-500 opacity-0 transition duration-300 ease-in-out"></div>
+            </div>
+          ))}
         </div>
       </div>
       <div
         id="container"
-        className="bg-[#efefef] h-[100%] px-10"
-        style={{ boxSizing: "border-box" }}
+        className="bg-[#efefef] h-[full] w-full overflow-y-auto px-10 relative"
+        style={{ boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center" }}
       >
-        <SliderComponent arrImages={[slide1, slide2, slide3]} />
-        <div className="mt-[20px] w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[17px]">
-          {products?.data?.map((product) => {
-            return (
+         {/* <Collapse
+          bordered={false}
+          defaultActiveKey={[]}
+          style={{ width: '100%' }}
+          className="mt-4"
+          onChange={() => setOpenMenu(!openMenu)}
+        >
+          <Panel header="Menu" key="1">
+            {typeProducts.map((item, index) => (
+              <div
+                key={index}
+                className="relative cursor-pointer transition duration-300 ease-in-out hover:text-blue-500 flex items-center mb-4"
+              >
+                <TypeProduct name={item} />
+                <span className="ml-1">{typeProductIcons[item]}</span>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-500 opacity-0 transition duration-300 ease-in-out"></div>
+              </div>
+            ))}
+          </Panel>
+        </Collapse> */}
+        <div style={{ maxWidth: "1200px", width: "100%", margin: "0 auto" }}>
+          <SliderComponent
+            arrImages={[slide1, slide2, slide3]}
+            style={{ width: "100%", minWidth: "300px", maxWidth: "100%" }}
+          />
+          
+          <div
+            className="mt-[20px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px]"
+            style={{ width: "100%", minWidth: "300px", maxWidth: "100%" }}
+          >
+            
+            {products?.data?.map((product) => (
               <CardComponent
                 key={product._id}
                 costPrice={product.costPrice}
@@ -104,11 +134,12 @@ const HomePage = () => {
                 type={product.type}
                 unit={product.unit}
                 id={product._id}
+                style={{ minWidth: "200px" }}
               />
-            );
-          })}
+            ))}
+          </div>
         </div>
-        <div className="w-[100%] flex items-center mt-[10px] justify-center">
+        <div className="w-[100%] flex items-center mt-[10px] justify-center mb-[50px]">
           <Button
             type="primary"
             ghost
@@ -120,6 +151,7 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
+      <Footer/>
     </Loading>
   );
 };

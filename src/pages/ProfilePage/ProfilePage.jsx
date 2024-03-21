@@ -21,6 +21,8 @@ export const ProfilePage = () => {
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
   const [gender, setGender] = useState("");
+  const [city, setCity] = useState("");
+  
   const [birthday, setBirthday] = useState(null);
   const navigate = useNavigate()
   const mutation = useMutationHooks((data) => {
@@ -28,7 +30,7 @@ export const ProfilePage = () => {
     UserService.updateUser(id, rests, access_token);
   });
   const dispatch = useDispatch();
-  const { data, isPending, isSuccess, isError } = mutation;
+  const { isPending, isSuccess, isError } = mutation;
 
   useEffect(() => {
     setEmail(user?.email);
@@ -38,6 +40,7 @@ export const ProfilePage = () => {
     setAvatar(user?.avatar);
     setGender(user?.gender);
     setBirthday(user?.birthday);
+    setCity(user?.city); 
   }, [user]);
 
   useEffect(() => {
@@ -60,6 +63,9 @@ export const ProfilePage = () => {
   };
   const handleOnchangeAddress = (value) => {
     setAddress(value);
+  };
+  const handleOnchangeCity = (value) => { 
+    setCity(value);
   };
   const handleOnchangeAvatar = async ({ fileList }) => {
     const file = fileList[0];
@@ -88,6 +94,7 @@ export const ProfilePage = () => {
         name,
         phone,
         address,
+        city,
         avatar,
         gender,
         birthday,
@@ -152,13 +159,28 @@ export const ProfilePage = () => {
               className="text-[#000] text-[14px] leading-[30px] font-[600] "
               style={{ minWidth: "120px" }}
             >
-              Địa chỉ
+              Số nhà, đường
             </label>
             <InputForm
               id="address"
               className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
               value={address}
               onChange={handleOnchangeAddress}
+            />
+          </div>
+          <div className="flex items-center gap-[20px]">
+            <label
+              htmlFor="city" // Thêm label cho trường "city"
+              className="text-[#000] text-[14px] leading-[30px] font-[600] "
+              style={{ minWidth: "120px" }}
+            >
+              Thành phố
+            </label>
+            <InputForm
+              id="city"
+              className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+              value={city} 
+              onChange={handleOnchangeCity}
             />
           </div>
           <div className="flex items-center gap-[20px]">

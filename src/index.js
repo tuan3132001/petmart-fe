@@ -17,9 +17,9 @@ root.render(
   // <React.StrictMode>
   <QueryClientProvider client={queryClient}>
   <Provider store={store}>
-    {/* <PersistGate loading={null} persistor={persistor}> */}
+    <PersistGate loading={null} persistor={persistor}>
       <App />
-    {/* </PersistGate> */}
+    </PersistGate>
   </Provider>
   <ReactQueryDevtools initialIsOpen={false} />
 </QueryClientProvider>
