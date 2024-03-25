@@ -13,7 +13,7 @@ import { convertPrice, initFacebookSDK } from "../../utils";
 import * as message from "../Message/Message";
 import LikeButtonComponent from "../LikeButtonComponent/LikeButtonComponent";
 import CommentComponent from "../CommentComponent/CommentComponent";
-
+import { ShoppingTwoTone } from "@ant-design/icons";
 const ProductDetailsComponent = ({ idProduct }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,8 +26,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
     setNumProduct(Number(value));
   };
   useEffect(() => {
-    initFacebookSDK()
-}, [])
+    initFacebookSDK();
+  }, []);
   const fetchGetDetailsProduct = async (context) => {
     const id = context?.queryKey && context?.queryKey[1];
     if (id) {
@@ -43,7 +43,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
   const handleChangeCount = (type, limited) => {
     if (type === "increase") {
-      if (!limited) {
+      if (!limited && productDetails?.countInStock > 0) {
         setNumProduct(numProduct + 1);
       }
     } else {
@@ -78,7 +78,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
       }
     }
   };
-  console.log("countInStock", productDetails?.countInStock);
+
   return (
     <Loading isPending={isPending}>
       <Row className="p-[16px] bg-white rounded-[4px]">
@@ -156,20 +156,19 @@ const ProductDetailsComponent = ({ idProduct }) => {
               {convertPrice(productDetails?.price)}
             </h1>
           </div>
-          <div>
+          <div className="mt-[10px] mb-[20px]">
             <span>Giao đến </span>
-            <span className="text-[15px] leading-[24px] font-[500]  underline truncate ">
+            <span className="text-[15px]  leading-[24px] font-[500]  underline truncate text-[blue] ">
               {user?.address} {user?.city}
             </span>{" "}
-            
-            
           </div>
           <LikeButtonComponent
-                     dataHref={ true 
-                                ? "https://developers.facebook.com/docs/plugins/" 
-                                : window.location.href
-                            } 
-                    />
+            dataHref={
+              true
+                ? "https://developers.facebook.com/docs/plugins/"
+                : window.location.href
+            }
+          />
           <div className="mt-[10px] mr-0  py-[10px] px-0 border-t-[1px] border-b-[1px] border-solid border-[#e5e5e5] ">
             <div className="text-[15px] text-black ">Số lượng</div>
             <div className="flex  items-center w-[100px]">
@@ -203,21 +202,29 @@ const ProductDetailsComponent = ({ idProduct }) => {
               </div>
             </div>
           </div>
-          <div className="gap-[30px] flex items-center mt-[30px]">
+          <div>
+            <span className="text-[gray]">
+              Mô tả: {productDetails?.description}
+            </span>
+          </div>
+          <div className="gap-[30px] text-center mt-[60px]">
             <button
               onClick={handleAddOrderProduct}
-              className="bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[220px]"
+              className="text-black text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border border-blue-500 bg-white hover:bg-blue-500 hover:text-white hover:border-blue-500 transition duration-300 ease-in-out h-[48px] w-[220px]"
             >
+              <ShoppingTwoTone className="text-[black] mr-[10px] text-[20px]" />
               Thêm vào giỏ hàng
             </button>
-
-           
           </div>
         </Col>
-        <CommentComponent dataHref={true
-                        ? "https://developers.facebook.com/docs/plugins/comments#configurator"
-                        : window.location.href
-                    }  width='1270' />
+        <CommentComponent
+          dataHref={
+            true
+              ? "https://developers.facebook.com/docs/plugins/comments#configurator"
+              : window.location.href
+          }
+          width="1270"
+        />
       </Row>
     </Loading>
   );

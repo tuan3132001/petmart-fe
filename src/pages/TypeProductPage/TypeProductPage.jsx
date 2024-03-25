@@ -88,7 +88,7 @@ const TypeProductPage = () => {
                         image={product.image}
                         name={product.name}
                         price={product.price}
-                        rating={product.rating}
+                        status={product.status}
                         type={product.type}
                         selled={product.selled}
                         discount={product.discount}

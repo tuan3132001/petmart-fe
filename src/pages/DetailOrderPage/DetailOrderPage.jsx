@@ -1,21 +1,25 @@
 import React from 'react'
 import { WrapperAllPrice, WrapperContentInfo, WrapperHeaderUser, WrapperInfoUser, WrapperItem, WrapperItemLabel, WrapperLabel, WrapperNameProduct, WrapperProduct, WrapperStyleContent } from './style'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import * as OrderService from '../../services/OrderService'
 import { useQuery } from '@tanstack/react-query'
 import { orderContant } from '../../contant'
 import { convertPrice } from '../../utils'
 import { useMemo } from 'react'
 import Loading from '../../components/LoadingComponent/Loading'
-
+import { LeftOutlined } from "@ant-design/icons";
+import { Button } from 'antd'
+import { useSelector } from 'react-redux'
 const DetailsOrderPage = () => {
+
   const params = useParams()
   const location = useLocation()
   const { state } = location
-  const { id } = params
-
+  const { id,user } = params
+  
+  const navigate = useNavigate();
   const fetchDetailsOrder = async () => {
-    const res = await OrderService.getDetailsOrder(id, state?.token)
+    const res = await OrderService.getDetailsOrder(id, state?.token,user)
     return res.data
   }
 
@@ -26,19 +30,25 @@ const DetailsOrderPage = () => {
   });
 
   const { isPending, data } = queryOrder
-
+  console.log('data',data)
   const priceMemo = useMemo(() => {
     const result = data?.orderItems?.reduce((total, cur) => {
       return total + ((cur.price * cur.amount))
     },0)
     return result
   },[data])
+  const handleGoBack = () => {
+    navigate(`/my-order`);
+  };
 
   return (
    <Loading isPending ={isPending}>
      <div style={{width: '100%', height: '100%', background: '#f5f5fa'}}>
       <div style={{ width: '1270px', margin: '0 auto', height: '1270px'}}>
-        <h4 className='text-[15px] font-bold mb-[20px] text-center'>Chi tiết đơn hàng</h4>
+        <h4 className='text-[20px] font-bold  text-center'>Chi tiết đơn đặt hàng</h4>
+        <Button type="text" icon={<LeftOutlined />} onClick={handleGoBack} className="mb-[20px] ">
+            Trở về
+          </Button>
         <WrapperHeaderUser>
           <WrapperInfoUser>
             <WrapperLabel >Địa chỉ người nhận</WrapperLabel>
@@ -65,8 +75,8 @@ const DetailsOrderPage = () => {
         </WrapperHeaderUser>
         <WrapperStyleContent>
           <div style={{flex:1,display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-            <div style={{width: '670px'}}>Sản phẩm</div>
-            <WrapperItemLabel>Giá</WrapperItemLabel>
+            <div style={{width: '670px', fontWeight: 'bold'}}>Sản phẩm</div>
+            <WrapperItemLabel>Giá tiền</WrapperItemLabel>
             <WrapperItemLabel>Số lượng</WrapperItemLabel>
             <WrapperItemLabel>Giảm giá</WrapperItemLabel>
           </div>
@@ -91,10 +101,11 @@ const DetailsOrderPage = () => {
                     whiteSpace:'nowrap',
                     marginLeft: '10px',
                     height: '70px',
+              
                   }}>{order?.name}</div>
                 </WrapperNameProduct>
                 <WrapperItem>{convertPrice(order?.price)}</WrapperItem>
-                <WrapperItem>{order?.amount}</WrapperItem>
+                <WrapperItem className='ml-[20px]'>{order?.amount}</WrapperItem>
                 <WrapperItem>{order?.discount ? convertPrice(priceMemo * order?.discount / 100) : '0 VND'}</WrapperItem>
               </WrapperProduct>
             )

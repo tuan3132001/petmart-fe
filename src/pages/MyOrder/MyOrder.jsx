@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { convertPrice } from '../../utils';
 import { WrapperItemOrder, WrapperListOrder, WrapperHeaderItem, WrapperFooterItem, WrapperContainer, WrapperStatus } from './style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as message from '../../components/Message/Message'
 
@@ -19,7 +19,7 @@ const MyOrderPage = () => {
     return res.data
   }
   const user = useSelector((state) => state.user)
-
+  
   const queryOrder = useQuery({
     queryKey: ['orders'],
     queryFn: fetchMyOrder,
@@ -27,7 +27,7 @@ const MyOrderPage = () => {
   });
   const { isPending, data } = queryOrder
 
-  const handleDetailsOrder = (id) => {
+  const handleDetailsOrder = (id,user) => {
     navigate(`/details-order/${id}`, {
       state: {
         token: state?.token
@@ -91,7 +91,7 @@ const MyOrderPage = () => {
     <Loading isPending={isPending || isPendingCancel}>
       <WrapperContainer>
         <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
-          <h4 className='text-center text-[15px] font-bold '>Đơn hàng của tôi</h4>
+          <h4 className='text-center text-[20px] font-bold '>Đơn hàng của tôi</h4>
           <WrapperListOrder>
             {data?.map((order) => {
               return (
@@ -129,7 +129,7 @@ const MyOrderPage = () => {
                       >
                       </ButtonComponent>
                       <ButtonComponent
-                        onClick={() => handleDetailsOrder(order?._id)}
+                        onClick={() => handleDetailsOrder(order?._id,user?.id )}
                         size={40}
                         styleButton={{
                             height: '36px',

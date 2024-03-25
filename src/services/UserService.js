@@ -26,9 +26,9 @@ export const getDetailsUser = async (id, access_token) => {
   return res.data;
 };
 
-export const refreshToken = async () => {
+export const refreshToken = async (refreshToken) => {
   const res = await axios.post(
-    `http://localhost:3000/user/refresh-token`,
+    `http://localhost:3000/user/refresh-token`,{},
     {
       // headers: {
       //     token: `Bearer ${refreshToken}`,

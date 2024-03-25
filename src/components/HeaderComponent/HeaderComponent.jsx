@@ -1,11 +1,10 @@
-// HeaderComponent.js
-
 import React, { useEffect, useState } from "react";
 import { Badge, Col, Popover, Row } from "antd";
 import {
   UserOutlined,
   CaretDownOutlined,
   ShoppingCartOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +13,7 @@ import { searchProduct } from "../../redux/slides/productSlide";
 import Loading from "../LoadingComponent/Loading";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import * as UserService from "../../services/UserService";
-import backgroundImage from "../../assets/images/headerLogo.jpg"; 
+import backgroundImage from "../../assets/images/headerLogo.jpg";
 
 const HeaderComponent = () => {
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ const HeaderComponent = () => {
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
-  const [isOpenPopup, setIsOpenPopup] = useState(false)
+  const [isOpenPopup, setIsOpenPopup] = useState(false);
   const [search, setSearch] = useState("");
   const user = useSelector((state) => state.user);
 
@@ -31,7 +30,7 @@ const HeaderComponent = () => {
     <div>
       <p
         className="cursor-pointer hover:text-blue-400 mb-[7px]"
-        onClick={() => handleClickNavigate('profile')}  
+        onClick={() => handleClickNavigate("profile")}
       >
         Thông tin người dùng
       </p>
@@ -40,12 +39,6 @@ const HeaderComponent = () => {
         onClick={() => handleClickNavigate(`my-order`)}
       >
         Đơn hàng của tôi
-      </p>
-      <p
-        className="cursor-pointer hover:text-blue-400 mb-[7px]"
-        onClick={() => handleClickNavigate(`post`)}
-      >
-        Bài viết
       </p>
       <p
         className="cursor-pointer hover:text-blue-400 mb-[7px]"
@@ -73,33 +66,28 @@ const HeaderComponent = () => {
   };
 
   const handleClickNavigate = (type) => {
-    if(type === 'profile') {
-      navigate('/profile-user')
-    }else if(type === 'my-order') {
-      navigate('/my-order',{ state : {
+    if (type === "profile") {
+      navigate("/profile-user");
+    } else if (type === "my-order") {
+      navigate(`/my-order`, {
+        state: {
           id: user?.id,
-          token : user?.access_token
-        }
-      })
-    }else if(type === 'post') {
-      navigate('/post',{ state : {
-          id: user?.id,
-          token : user?.access_token
-        }
-      })
-    }else {
-      handleLogout()
+          token: user?.access_token,
+        },
+      });
+    } else {
+      handleLogout();
     }
-    setIsOpenPopup(false)
-  }
+    setIsOpenPopup(false);
+  };
 
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
 
-  const onSearch = (e) => {
-    setSearch(e.target.value);
-    dispatch(searchProduct(e.target.value));
+  const onSearch = (value) => {
+    setSearch(value);
+    dispatch(searchProduct(value));
   };
 
   return (
@@ -107,7 +95,7 @@ const HeaderComponent = () => {
       className="header-container"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <Row className="pl-20 pr-120 bg-transparent items-center h-[150px] w-full gap-[16px] flex flex-nowrap">
+      <Row className="pl-20 pr-120 bg-transparent items-center h-[150px] w-full gap-[16px] flex flex-nowrap justify-between">
         <Col span={6}>
           <img
             src="https://www.petmart.vn/wp-content/uploads/2020/09/petmart-logo-trang.png"
@@ -116,7 +104,7 @@ const HeaderComponent = () => {
             onClick={() => navigate("/")}
           />
         </Col>
-        <Col span={12}>
+        <Col span={10}>
           <ButtonInputSearch
             size="large"
             placeholder="Tìm kiếm thông tin tại đây..."
@@ -125,7 +113,7 @@ const HeaderComponent = () => {
             className="hover:bg-gray-200 transition-colors duration-300"
           />
         </Col>
-        <Col span={6} className="flex items-center gap-8">
+        <Col span={8} className="flex items-center ml-[50px]">
           <Loading isPending={loading}>
             <div className="flex items-center text-white text-[12px]">
               {userAvatar ? (
@@ -167,6 +155,20 @@ const HeaderComponent = () => {
               )}
             </div>
           </Loading>
+          <div className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+            <div>
+            
+              <span
+                className="font-[500]
+                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                onClick={()=> navigate('/post')}
+              >
+                {" "}
+                <SolutionOutlined />
+                Bài viết
+              </span>
+            </div>
+          </div>
           <div
             className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300"
             onClick={() => navigate("/order")}
@@ -178,12 +180,34 @@ const HeaderComponent = () => {
               <ShoppingCartOutlined className="text-[30px] text-blue-800 hover:text-blue-950 transition-colors duration-300" />
             </Badge>
             <div>
-              <span className="font-[500] text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+              <span
+                className="font-[500]
+                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+              >
                 {" "}
                 Giỏ hàng
               </span>
             </div>
           </div>
+          {/* <div className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+            <span
+              className="font-[500]
+              text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+            >
+              {" "}
+              Hotline
+            </span>
+
+            <div>
+              <span
+                className="font-[500]
+                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+              >
+                {" "}
+                0362019318
+              </span>
+            </div>
+          </div> */}
         </Col>
       </Row>
     </div>

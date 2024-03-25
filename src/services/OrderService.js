@@ -1,6 +1,7 @@
 import { axiosJWT } from "./UserService";
 
 export const createOrder = async (data, access_token) => {
+  console.log('data',data?.user)
   const res = await axiosJWT.post(
     `http://localhost:3000/order/create/${data.user}`,
     data,
@@ -13,7 +14,7 @@ export const createOrder = async (data, access_token) => {
   return res.data;
 };
 
-export const getDetailsOrder = async (id,access_token) => {
+export const getDetailsOrder = async (id,access_token,user) => {
     const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/get-details-order/${id}`, {
         headers: {
             token: `Bearer ${access_token}`,
@@ -31,8 +32,9 @@ export const getDetailsOrder = async (id,access_token) => {
     return res.data
   }
   export const cancelOrder = async (id, access_token, orderItems, userId ) => {
+    console.log('id',id)
     const data = {orderItems, orderId: id}
-    const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/order/cancel-order/${userId}`, {data}, {
+    const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/order/cancel-order/${userId}/${id}`, {data}, {
         headers: {
             token: `Bearer ${access_token}`,
         }

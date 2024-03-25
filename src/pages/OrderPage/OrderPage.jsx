@@ -49,16 +49,21 @@ const OrderPage = () => {
   };
 
   const handleChangeCount = (type, idProduct, limited) => {
-    if(type === 'increase') {
-      if(!limited) {
-        dispatch(increaseAmount({idProduct}))
+    if (type === 'increase') {
+      if (!limited) {
+        const orderItem = order?.orderItems.find(item => item.product === idProduct);
+        if (orderItem.amount < orderItem.countInStock) { 
+          dispatch(increaseAmount({ idProduct }));
+        } else {
+          message.warning('Số lượng sản phẩm đạt tối đa')
+        }
       }
-    }else {
-      if(!limited) {
-        dispatch(decreaseAmount({idProduct}))
+    } else {
+      if (!limited) {
+        dispatch(decreaseAmount({ idProduct }));
       }
     }
-  }
+  };
 
 
   const handleDeleteOrder = (idProduct) => {
@@ -73,7 +78,6 @@ const OrderPage = () => {
   }, [order]);
   
   const priceDiscountMemo = useMemo(() => {
-    console.log('order',order?.orderItemsSlected)
     const result = order?.orderItemsSlected?.reduce((total, cur) => {
       const totalDiscount = cur.discount ? cur.discount : 0;
       return total + (priceMemo * (totalDiscount * cur.amount)) / 100;
@@ -246,9 +250,9 @@ const OrderPage = () => {
                 </span>
               </div>
               <div className="flex-1 flex items-center justify-between">
-                <span className="text-[13px] font-bold">Đơn giá</span>
-                <span className="text-[13px] font-bold">Số lượng</span>
-                <span className="text-[13px] font-bold">Thành tiền</span>
+                <span className="text-[14px] font-bold">Đơn giá</span>
+                <span className="text-[14px] font-bold">Số lượng</span>
+                <span className="text-[14px] font-bold">Thành tiền</span>
                 <DeleteOutlined
                   style={{ cursor: "pointer", fontSize: "15px" }}
                   onClick={handleRemoveAllOrder}
@@ -258,7 +262,6 @@ const OrderPage = () => {
             <div>
               {order?.orderItems?.map((orderItem) => (
                 <div className="flex items-center px-[16px] py-[9px] bg-white mt-[12px] justify-between">
-                  {console.log('odit',orderItem)}
                   <div
                     style={{ width: "390px" }}
                     className="flex items-center gap-4"
@@ -277,13 +280,13 @@ const OrderPage = () => {
                       }}
                       alt="sản phẩm"
                     />
-                    <div className="overflow-hidden text-[13px] whitespace-nowrap overflow-ellipsis w-[260px]">
+                    <div className="overflow-hidden text-[14px] whitespace-nowrap overflow-ellipsis w-[260px]">
                       {orderItem?.name}
                     </div>
                   </div>
                   <div className="flex-1 flex items-center justify-between">
                     <span>
-                      <span style={{ fontSize: "13px", color: "#242424" }}>
+                      <span style={{ fontSize: "14px", color: "#242424" }}>
                         {convertPrice(orderItem?.price)}
                       </span>
                     </span>
@@ -362,13 +365,13 @@ const OrderPage = () => {
             <div style={{ width: "100%" }}>
               <div className="py-[17px] px-[20px] border-b-[1px] rounded-l-[6px] border-solid border-gray-200 bg-white rounded-t-[6px] w-full">
                 <div>
-                  <span className="text-[13px]">Địa chỉ: </span>
-                  <span className="text-[13px]" style={{ fontWeight: "bold" }}>
+                  <span className="text-[14px]">Địa chỉ: </span>
+                  <span className="text-[14px]" style={{ fontWeight: "bold" }}>
                     {`${user?.address} ${user?.city}`}{" "}
                   </span>
                   <span
                     onClick={handleChangeAddress}
-                    style={{ color: "#9255FD", cursor: "pointer" , fontSize: '13px'}}
+                    style={{ color: "#9255FD", cursor: "pointer" , fontSize: '14px'}}
                   >
                     Thay đổi
                   </span>
@@ -376,7 +379,7 @@ const OrderPage = () => {
               </div>
               <div className="py-[17px] px-[20px] border-b-[1px] rounded-l-[6px] border-solid border-gray-200 bg-white rounded-t-[6px] w-full">
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold">Tạm tính</span>
+                  <span className="text-[14px] ">Tạm tính</span>
                   <span
                     style={{
                       color: "#000",
@@ -388,7 +391,7 @@ const OrderPage = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold">Giảm giá</span>
+                  <span className="text-[14px] ">Giảm giá</span>
                   <span
                     style={{
                       color: "#000",
@@ -400,7 +403,7 @@ const OrderPage = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold">Phí giao hàng</span>
+                  <span className="text-[14px] ">Phí giao hàng</span>
                   <span
                     style={{
                       color: "#000",
@@ -413,7 +416,7 @@ const OrderPage = () => {
                 </div>
               </div>
               <div className="flex items-start justify-between px-[20px] py-[17px] bg-white rounded-bl-[6px] rounded-br-[6px]">
-                <span className="text-[13px] font-bold">Tổng tiền</span>
+                <span className="text-[14px] ">Tổng tiền</span>
                 <span style={{ display: "flex", flexDirection: "column" }}>
                   <span
                     style={{
