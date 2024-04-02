@@ -26,8 +26,7 @@ const MyOrderPage = () => {
     enabled: !!state?.id && !!state?.token // Chuyển đổi thành boolean
   });
   const { isPending, data } = queryOrder
-
-  const handleDetailsOrder = (id,user) => {
+  const handleDetailsOrder = (id) => {
     navigate(`/details-order/${id}`, {
       state: {
         token: state?.token
@@ -37,8 +36,9 @@ const MyOrderPage = () => {
 
   const mutation = useMutationHooks(
     (data) => {
-      const { id, token , orderItems, userId } = data
-      const res = OrderService.cancelOrder(id, token,orderItems, userId)
+      const { id, token , userId } = data
+      console.log('data',data)
+      const res = OrderService.cancelOrder(id, token, userId)
       return res
     }
   )
@@ -61,31 +61,39 @@ const MyOrderPage = () => {
       message.error('Hủy đơn hàng không thành công')
     }
   }, [isErrorCancle, isSuccessCancel])
-
-  const renderProduct = (data) => {
-    return data?.map((order) => {
-      return <WrapperHeaderItem key={order?._id}> 
-              <img src={order?.image} 
-                style={{
-                  width: '70px', 
-                  height: '70px', 
-                  objectFit: 'cover',
-                  border: '1px solid rgb(238, 238, 238)',
-                  padding: '2px'
-                }}
-                alt=''
-              />
-              <div style={{
-                width: 260,
-                overflow: 'hidden',
-                textOverflow:'ellipsis',
-                whiteSpace:'nowrap',
-                marginLeft: '10px'
-              }}>{order?.name}</div>
-              <span style={{ fontSize: '13px', color: '#242424',marginLeft: 'auto' }}>{convertPrice(order?.price)}</span>
-            </WrapperHeaderItem>
-          })
-  }
+ 
+  const renderProduct = (data, userId) => {
+    return data?.orderItems?.map((order) => {
+      // Kiểm tra xem userId của hóa đơn có trùng khớp với userId bạn muốn kiểm tra hay không
+      if (data?.user === userId) {
+        console.log('id',data?.user)
+        console.log('di',userId)
+        return (
+          <WrapperHeaderItem key={order?._id}> 
+            <img src={order?.image} 
+              style={{
+                width: '70px', 
+                height: '70px', 
+                objectFit: 'cover',
+                border: '1px solid rgb(238, 238, 238)',
+                padding: '2px'
+              }}
+              alt=''
+            />
+            <div style={{
+              width: 260,
+              overflow: 'hidden',
+              textOverflow:'ellipsis',
+              whiteSpace:'nowrap',
+              marginLeft: '10px'
+            }}>{order?.name}</div>
+            <span style={{ fontSize: '13px', color: '#242424',marginLeft: 'auto' }}>{convertPrice(order?.price)}</span>
+          </WrapperHeaderItem>
+        );
+      }
+    });
+  };
+  
 
   return (
     <Loading isPending={isPending || isPendingCancel}>
@@ -107,7 +115,8 @@ const MyOrderPage = () => {
                       <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isPaid ? 'Đã thanh toán': 'Chưa thanh toán'}`}</span>
                     </div>
                   </WrapperStatus>
-                  {renderProduct(order?.orderItems)}
+                  {renderProduct(order, user?.id)}
+                  {console.log('order',order)}
                   <WrapperFooterItem>
                     <div>
                       <span style={{color: 'rgb(255, 66, 78)'}}>Tổng tiền: </span>

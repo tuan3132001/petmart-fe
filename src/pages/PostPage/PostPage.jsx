@@ -70,6 +70,7 @@ function PostPage() {
         </div>
       )}
     </div>
+    
   );
 }
 

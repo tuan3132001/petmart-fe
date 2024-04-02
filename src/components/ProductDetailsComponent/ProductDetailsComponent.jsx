@@ -14,6 +14,7 @@ import * as message from "../Message/Message";
 import LikeButtonComponent from "../LikeButtonComponent/LikeButtonComponent";
 import CommentComponent from "../CommentComponent/CommentComponent";
 import { ShoppingTwoTone } from "@ant-design/icons";
+import * as PromotionService from "../../services/PromotionService";
 const ProductDetailsComponent = ({ idProduct }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,10 +22,29 @@ const ProductDetailsComponent = ({ idProduct }) => {
   const [numProduct, setNumProduct] = useState(1);
   const user = useSelector((state) => state.user);
   const order = useSelector((state) => state.order);
-
+  const [promotions, setPromotions] = useState([]);
   const onChange = (value) => {
     setNumProduct(Number(value));
   };
+  useEffect(() => {
+    fetchPromotionAll()
+  }, []);
+  const fetchPromotionAll = async () => {
+    try {
+      const res = await PromotionService.getAllPromotion();
+      setPromotions(res.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error(error);
+    }
+  };
+  const findPromotionById = (promotionId) => {
+    return promotions.find(promotion => promotion._id === promotionId);
+  };
+  
+
+  // Lấy dữ liệu khuyến mãi cho sản phẩm
+  
   useEffect(() => {
     initFacebookSDK();
   }, []);
@@ -40,7 +60,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
     queryFn: fetchGetDetailsProduct,
     enabled: !!idProduct,
   });
-
+  const productPromotion = findPromotionById(productDetails?.promotion);
+ 
   const handleChangeCount = (type, limited) => {
     if (type === "increase") {
       if (!limited && productDetails?.countInStock > 0) {
@@ -58,27 +79,26 @@ const ProductDetailsComponent = ({ idProduct }) => {
       navigate("/sign-in", { state: location?.pathname });
     } else {
       if (productDetails?.countInStock === 0) {
-        // Hiển thị thông báo đã hết hàng
         message.warning("Sản phẩm đã hết hàng");
       } else {
         // Thêm sản phẩm vào giỏ hàng
-        dispatch(
-          addOrderProduct({
-            orderItem: {
-              name: productDetails?.name,
-              amount: numProduct,
-              image: productDetails?.image,
-              price: productDetails?.price,
-              product: productDetails?._id,
-              countInStock: productDetails?.countInStock,
-            },
-          })
-        );
+        const orderItem = {
+          name: productDetails?.name,
+          amount: numProduct,
+          image: productDetails?.image,
+          price: productDetails?.price,
+          product: productDetails?._id,
+          countInStock: productDetails?.countInStock,
+          discount: productPromotion?.discount,
+          userId: user?.id,
+        };
+        // Gọi action addOrderProduct với userId của người dùng hiện tại và thông tin sản phẩm
+        dispatch(addOrderProduct({ orderItem }));
         message.success("Sản phẩm đã được thêm vào giỏ hàng");
       }
     }
   };
-
+ 
   return (
     <Loading isPending={isPending}>
       <Row className="p-[16px] bg-white rounded-[4px]">
@@ -158,9 +178,15 @@ const ProductDetailsComponent = ({ idProduct }) => {
           </div>
           <div className="mt-[10px] mb-[20px]">
             <span>Giao đến </span>
-            <span className="text-[15px]  leading-[24px] font-[500]  underline truncate text-[blue] ">
-              {user?.address} {user?.city}
-            </span>{" "}
+            {user?.address && user?.city ? (
+              <span className="text-[15px]  leading-[24px] font-[500]  underline truncate text-[blue] ">
+                {user.address} {user.city}
+              </span>
+            ) : (
+              <span onClick={()=>navigate('/profile-user')} className="cursor-pointer text-[15px]  leading-[24px] font-[500]  underline truncate text-[red] ">
+                Cập nhật thông tin
+              </span>
+            )}
           </div>
           <LikeButtonComponent
             dataHref={

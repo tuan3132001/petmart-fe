@@ -12,9 +12,8 @@ import { useSelector } from "react-redux";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useDebounce } from "../../hooks/useDebounce";
 import Footer from "../../components/FooterComponent/FooterComponent";
-import {
-  SmileOutlined
-} from '@ant-design/icons';
+import { SmileOutlined } from "@ant-design/icons";
+
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct, 1000);
@@ -70,13 +69,23 @@ const HomePage = () => {
 
   return (
     <Loading isPending={isPending || loading}>
-      <div style={{ width: "100%", margin: "0 auto" }}>
-        <div className="flex items-center justify-around text-[20px] font-bold flex-wrap">
-        
-          {typeProducts.map((item) => (
+      <div
+        style={{
+          width: "100%",
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          className="flex justify-around text-[20px] font-bold flex-wrap"
+          style={{ maxWidth: "800px", margin: "0 auto" }}
+        >
+          {typeProducts.map((item, index) => (
             <div
               key={item}
               className="relative cursor-pointer transition duration-300 ease-in-out hover:text-blue-500 flex items-center mb-4"
+              style={{ marginLeft: index !== 0 ? "80px" : "0" }} // Khoảng cách giữa các loại sản phẩm
             >
               <TypeProduct name={item} />
               <span className="ml-1">{typeProductIcons[item]}</span>
@@ -88,9 +97,14 @@ const HomePage = () => {
       <div
         id="container"
         className="bg-[#efefef] h-[full] w-full overflow-y-auto px-10 relative"
-        style={{ boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center" }}
+        style={{
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
-         {/* <Collapse
+        {/* <Collapse
           bordered={false}
           defaultActiveKey={[]}
           style={{ width: '100%' }}
@@ -115,12 +129,11 @@ const HomePage = () => {
             arrImages={[slide1, slide2, slide3]}
             style={{ width: "100%", minWidth: "300px", maxWidth: "100%" }}
           />
-          
+
           <div
             className="mt-[20px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px]"
             style={{ width: "100%", minWidth: "300px", maxWidth: "100%" }}
           >
-            
             {products?.data?.map((product) => (
               <CardComponent
                 key={product._id}
@@ -134,6 +147,7 @@ const HomePage = () => {
                 type={product.type}
                 unit={product.unit}
                 id={product._id}
+                promotion={product.promotion}
                 style={{ minWidth: "200px" }}
               />
             ))}
@@ -151,7 +165,7 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </Loading>
   );
 };

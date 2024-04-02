@@ -15,7 +15,7 @@ const initialState = {
   paidAt: '',
   isDelivered: false,
   deliveredAt: '',
-  isSucessOrder: false,
+  isSuccessOrder: false,
 }
 
 export const orderSlide = createSlice({
@@ -23,20 +23,31 @@ export const orderSlide = createSlice({
   initialState,
   reducers: {
     addOrderProduct: (state, action) => {
-      const {orderItem} = action.payload
-      const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem.product)
-      if(itemOrder){
-        if(itemOrder.amount <= itemOrder.countInstock) {
-          itemOrder.amount += orderItem?.amount
-          state.isSucessOrder = true
-          state.isErrorOrder = false
-        }
-      }else {
-        state.orderItems.push(orderItem)
+      const { orderItem } = action.payload;
+      const existingOrderItemIndex = state.orderItems.findIndex(item => item.userId === orderItem.userId && item.product === orderItem.product);
+  
+      if (existingOrderItemIndex !== -1) {
+          // Nếu đã có orderItem cho userId và sản phẩm tương ứng trong giỏ hàng, tăng số lượng
+          if (state.orderItems[existingOrderItemIndex].amount + orderItem.amount <= state.orderItems[existingOrderItemIndex].countInStock) {
+              // Kiểm tra xem số lượng yêu cầu có vượt quá số lượng có sẵn trong kho không
+              state.orderItems[existingOrderItemIndex].amount += orderItem.amount;
+              state.isSuccessOrder = true;
+              state.isErrorOrder = false;
+          } else {
+              // Xử lý trường hợp số lượng yêu cầu vượt quá số lượng có sẵn trong kho
+              state.isErrorOrder = true;
+              state.errorMessage = "Số lượng sản phẩm không đủ";
+          }
+      } else {
+          // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới vào giỏ hàng
+          state.orderItems.push(orderItem);
+          state.isSuccessOrder = true;
+          state.isErrorOrder = false;
       }
-    },
+  },
+  
     resetOrder: (state) => {
-      state.isSucessOrder = false
+      state.isSuccessOrder = false
     },
     increaseAmount: (state, action) => {
       const {idProduct} = action.payload

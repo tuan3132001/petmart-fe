@@ -21,6 +21,7 @@ export const WrapperValue = styled.div`
   width: fit-content;
   border-radius: 6px;
   margin-top: 4px;
+  font-weight: bold;
 `
 
 export const WrapperContainer = styled.div`

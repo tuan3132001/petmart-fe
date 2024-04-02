@@ -1,16 +1,38 @@
 import Card from "antd/es/card/Card";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { convertPrice } from "../../utils";
-
+import * as PromotionService from "../../services/PromotionService";
 const CardComponent = (props) => {
-  const { costPrice, countInStock, description, image, name, price, status, type, unit, id } = props;
+  const [promotions, setPromotions] = useState([]);
+
+  const { costPrice, countInStock, description, image, name, price, status, type, unit, id ,promotion} = props;
   const navigate = useNavigate();
 
   const handelDetailsProduct = (id) => {
     navigate(`/product-details/${id}`);
   };
+  useEffect(() => {
+    fetchPromotionAll()
+  }, []);
+  const fetchPromotionAll = async () => {
+    try {
+      const res = await PromotionService.getAllPromotion();
+      setPromotions(res.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error(error);
+    }
+  };
+
+  const findPromotionById = (promotionId) => {
+    return promotions.find(promotion => promotion._id === promotionId);
+  };
+  
+
+  // Lấy dữ liệu khuyến mãi cho sản phẩm
+  const productPromotion = findPromotionById(promotion);
 
   return (
     <Card
@@ -30,9 +52,11 @@ const CardComponent = (props) => {
         </div>
       </div>
       <div className="h-1/2 px-2">
+      {promotions.length > 0 && productPromotion && (
         <div className="bg-[#ffe97a] w-[40px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
-          <span className="text-[#bc2848] text-[12px] font-[roboto] font-[500] block">-25%</span>
+          <span className="text-[#bc2848] text-[12px] font-[roboto] font-[500] block">-{productPromotion.discount}%</span>
         </div>
+         )}
         <div className="mt-4">
           <div className="font-[400] font-[roboto] text-[15px] mb-2 leading-[1.4em] text-[#000000]">
             {name}

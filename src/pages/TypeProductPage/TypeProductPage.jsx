@@ -93,6 +93,7 @@ const TypeProductPage = () => {
                         selled={product.selled}
                         discount={product.discount}
                         id={product._id}
+                        promotion={product.promotion}
                       />
                     );
                   })}

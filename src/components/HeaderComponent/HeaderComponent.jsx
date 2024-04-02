@@ -174,7 +174,7 @@ const HeaderComponent = () => {
             onClick={() => navigate("/order")}
           >
             <Badge
-              count={user?.id ? order?.orderItems?.length : 0}
+              count={user?.id ? order?.orderItems?.filter(orderItem => orderItem?.userId === user?.id).length : 0}
               size="small"
             >
               <ShoppingCartOutlined className="text-[30px] text-blue-800 hover:text-blue-950 transition-colors duration-300" />

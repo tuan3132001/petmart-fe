@@ -11,11 +11,12 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useLocation } from "react-router-dom";
 import { orderContant } from "../../contant";
 import { convertPrice } from "../../utils";
+import { useSelector } from "react-redux";
 
 const OrderSucess = () => {
   const location = useLocation();
   const { state } = location;
-
+  const user = useSelector((state) => state.user);
   return (
     <div style={{ background: "#f5f5fa", with: "100%", height: "100vh" }}>
       <Loading isPending={false}>
@@ -49,63 +50,66 @@ const OrderSucess = () => {
               </WrapperInfo>
               <WrapperItemOrderInfo>
                 {state.orders?.map((order) => {
-                  return (
-                    <WrapperItemOrder key={order?.name}>
-                      <div
-                        style={{
-                          width: "500px",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <img
-                          src={order.image}
-                          style={{
-                            width: "77px",
-                            height: "79px",
-                            objectFit: "cover",
-                          }}
-                          alt=""
-                        />
+                  // Kiểm tra xem order có thuộc người dùng hiện tại không
+                  if (order.userId === user?.id) {
+                    return (
+                      <WrapperItemOrder key={order?.name}>
                         <div
                           style={{
-                            width: 260,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
+                            width: "500px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
                           }}
                         >
-                          {order?.name}
+                          <img
+                            src={order.image}
+                            style={{
+                              width: "77px",
+                              height: "79px",
+                              objectFit: "cover",
+                            }}
+                            alt=""
+                          />
+                          <div
+                            style={{
+                              width: 260,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {order?.name}
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        style={{
-                          flex: 1,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                        }}
-                      >
-                        <span>
-                          <span
-                            style={{ fontSize: "13px", color: "#242424" }}
-                            className="font-bold mr-[120px]"
-                          >
-                            Giá tiền: {convertPrice(order?.price)}
+                        <div
+                          style={{
+                            flex: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                          }}
+                        >
+                          <span>
+                            <span
+                              style={{ fontSize: "13px", color: "#242424" }}
+                              className="font-bold mr-[120px]"
+                            >
+                              Giá tiền: {convertPrice(order?.price)}
+                            </span>
                           </span>
-                        </span>
-                        <span>
-                          <span
-                            style={{ fontSize: "13px", color: "#242424" }}
-                            className="font-bold"
-                          >
-                            Số lượng: {order?.amount}
+                          <span>
+                            <span
+                              style={{ fontSize: "13px", color: "#242424" }}
+                              className="font-bold"
+                            >
+                              Số lượng: {order?.amount}
+                            </span>
                           </span>
-                        </span>
-                      </div>
-                    </WrapperItemOrder>
-                  );
+                        </div>
+                      </WrapperItemOrder>
+                    );
+                  }
                 })}
               </WrapperItemOrderInfo>
               <div>

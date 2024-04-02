@@ -7,7 +7,12 @@ import {
   removeOrderProduct,
   selectedOrder,
 } from "../../redux/slides/orderSlide";
-import { DeleteOutlined, MinusOutlined, PlusOutlined, LeftOutlined} from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  MinusOutlined,
+  PlusOutlined,
+  LeftOutlined,
+} from "@ant-design/icons";
 import { Button, Checkbox, Form } from "antd";
 import { convertPrice } from "../../utils";
 import ModalComponent from "../../components/ModalComponent/ModalComponent";
@@ -35,27 +40,30 @@ const OrderPage = () => {
 
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  
-  
+
   const onChange = (e) => {
-    if (listChecked.includes(e.target.value)) {
-      const newListChecked = listChecked.filter(
-        (item) => item !== e.target.value
-      );
-      setListChecked(newListChecked);
+    const value = e.target.value;
+    const newListChecked = [...listChecked];
+
+    if (newListChecked.includes(value)) {
+      newListChecked.splice(newListChecked.indexOf(value), 1);
     } else {
-      setListChecked([...listChecked, e.target.value]);
+      newListChecked.push(value);
     }
+
+    setListChecked(newListChecked);
   };
 
   const handleChangeCount = (type, idProduct, limited) => {
-    if (type === 'increase') {
+    if (type === "increase") {
       if (!limited) {
-        const orderItem = order?.orderItems.find(item => item.product === idProduct);
-        if (orderItem.amount < orderItem.countInStock) { 
+        const orderItem = order?.orderItems.find(
+          (item) => item.product === idProduct
+        );
+        if (orderItem.amount < orderItem.countInStock) {
           dispatch(increaseAmount({ idProduct }));
         } else {
-          message.warning('Số lượng sản phẩm đạt tối đa')
+          message.warning("Số lượng sản phẩm đạt tối đa");
         }
       }
     } else {
@@ -65,28 +73,38 @@ const OrderPage = () => {
     }
   };
 
-
   const handleDeleteOrder = (idProduct) => {
-    dispatch(removeOrderProduct({ idProduct }));
+    const orderItem = order.orderItems.find(item => item.product === idProduct);
+    if (orderItem.userId === user.id) {
+      dispatch(removeOrderProduct({ idProduct }));
+    } else {
+      // Hiển thị thông báo hoặc thực hiện hành động khác nếu cần
+      console.log("Không thể xóa sản phẩm của người dùng khác");
+    }
   };
 
   const priceMemo = useMemo(() => {
     const result = order?.orderItemsSlected?.reduce((total, cur) => {
-      return total + cur.price * cur.amount;
+      if (cur.userId === user.id) {
+        // Thêm điều kiện kiểm tra userId
+        return total + cur.price * cur.amount;
+      }
+      return total;
     }, 0);
     return result;
-  }, [order]);
-  
+  }, [order, user]);
+
   const priceDiscountMemo = useMemo(() => {
     const result = order?.orderItemsSlected?.reduce((total, cur) => {
-      const totalDiscount = cur.discount ? cur.discount : 0;
-      return total + (priceMemo * (totalDiscount * cur.amount)) / 100;
+      if (cur.userId === user.id) {
+        // Thêm điều kiện kiểm tra userId
+        const totalDiscount = cur.discount ? cur.discount : 0;
+        return total + (cur.price * totalDiscount * cur.amount) / 100;
+      }
+      return total;
     }, 0);
-    if (Number(result)) {
-      return result;
-    }
-    return 0;
-  }, [order]);
+    return result;
+  }, [order, user]);
 
   const diliveryPriceMemo = useMemo(() => {
     if (priceMemo >= 20000 && priceMemo < 500000) {
@@ -96,7 +114,8 @@ const OrderPage = () => {
     } else {
       return 20000;
     }
-  }, [priceMemo]);
+  }, [priceMemo, order]);
+
   const totalPriceMemo = useMemo(() => {
     return (
       Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
@@ -104,12 +123,13 @@ const OrderPage = () => {
   }, [priceMemo, priceDiscountMemo, diliveryPriceMemo]);
 
   const handleOnchangeCheckAll = (e) => {
-    if (e.target.checked) {
-      const newListChecked = order?.orderItems?.map((item) => item?.product);
-      setListChecked(newListChecked);
-    } else {
-      setListChecked([]);
-    }
+    const newCheckedList = e.target.checked
+      ? order.orderItems
+          .filter((item) => item.userId === user.id)
+          .map((item) => item.product)
+      : [];
+
+    setListChecked(newCheckedList);
   };
 
   useEffect(() => {
@@ -117,9 +137,13 @@ const OrderPage = () => {
   }, [listChecked]);
 
   const handleRemoveAllOrder = () => {
-    if (listChecked?.length > 1) {
-      dispatch(removeAllOrderProduct({ listChecked }));
-    }
+    // Lấy ra danh sách các productId cần xóa của người dùng hiện tại
+    const productsToRemove = order.orderItems
+      .filter((item) => item.userId === user.id)
+      .map((item) => item.product);
+  
+    // Gọi action để xóa các orderItem của người dùng hiện tại
+    dispatch(removeAllOrderProduct({ listChecked: productsToRemove }));
   };
 
   useEffect(() => {
@@ -133,10 +157,9 @@ const OrderPage = () => {
     }
   }, [isOpenModalUpdateInfo]);
 
-
   const handleChangeAddress = () => {
-    setIsOpenModalUpdateInfo(true)
-  }
+    setIsOpenModalUpdateInfo(true);
+  };
 
   useEffect(() => {
     form.setFieldsValue(stateUserDetails);
@@ -201,55 +224,76 @@ const OrderPage = () => {
   };
   const itemsDelivery = [
     {
-      title: '20.000 VND',
-      description: 'Dưới 200.000 VND',
+      title: "20.000 VND",
+      description: "Dưới 200.000 VND",
     },
     {
-      title: '10.000 VND',
-      description: 'Từ 200.000 VND đến dưới 500.000 VND',
+      title: "10.000 VND",
+      description: "Từ 200.000 VND đến dưới 500.000 VND",
     },
     {
-      title: 'Free ship',
-      description : 'Trên 500.000 VND',
+      title: "Free ship",
+      description: "Trên 500.000 VND",
     },
-  ]
+  ];
   const handleGoBack = () => {
-    navigate('/')
+    navigate("/");
   };
 
   return (
     <div style={{ background: "#f5f5fa", width: "100%", height: "100vh" }}>
       <div style={{ height: "100%", width: "1270px", margin: "0 auto" }}>
-        <h3 className="text-[20px] font-bold mb-[10px] text-center">Giỏ hàng của tôi</h3>
+        <h3 className="text-[20px] font-bold mb-[10px] text-center">
+          Giỏ hàng của tôi
+        </h3>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          
           <div className="w-[910px]">
-          <div className="absolute top-[150px] left-[2px]">
-        <Button
-          type="text"
-          icon={<LeftOutlined />}
-          onClick={handleGoBack}
-        >
-          Trở về 
-        </Button>
-      </div>
+            <div className="absolute top-[150px] left-[2px]">
+              <Button
+                type="text"
+                icon={<LeftOutlined />}
+                onClick={handleGoBack}
+              >
+                Trở về
+              </Button>
+            </div>
             <div className="bg-white px-[16px] py-[9px] rounded-md flex items-center justify-between mb-[4px]">
-            <StepComponent items={itemsDelivery} current={diliveryPriceMemo === 10000 
-                ? 2 : diliveryPriceMemo === 20000 ? 1 
-                : order.orderItemsSlected.length === 0 ? 0:  3}/>
+              <StepComponent
+                items={itemsDelivery}
+                current={
+                  diliveryPriceMemo === 10000
+                    ? 2
+                    : diliveryPriceMemo === 20000
+                    ? 1
+                    : order.orderItemsSlected.length === 0
+                    ? 0
+                    : 3
+                }
+              />
             </div>
             <div className="bg-white px-[16px] py-[9px] rounded-md flex items-center justify-between">
               <div style={{ width: "390px" }}>
                 <Checkbox
                   onChange={handleOnchangeCheckAll}
-                  checked={listChecked?.length === order?.orderItems?.length}
+                  checked={
+                    listChecked.length ===
+                      order.orderItems.filter((item) => item.userId === user.id)
+                        .length &&
+                    order.orderItems.filter((item) => item.userId === user.id)
+                      .length > 0
+                  }
                 />
-                <span className="text-gray-700 font-bold text-[13px] ml-[5px] ">
+                <span className="text-gray-700 font-bold text-[14px] ml-[5px] ">
                   {" "}
-                  Tất cả ({order?.orderItems?.length} sản phẩm)
+                  Tất cả (
+                  {
+                    order?.orderItems.filter((item) => item.userId === user.id)
+                      .length
+                  }{" "}
+                  sản phẩm)
                 </span>
               </div>
-              <div className="flex-1 flex items-center justify-between">
+              <div className="flex-1 ml-[15px] flex items-center justify-between">
                 <span className="text-[14px] font-bold">Đơn giá</span>
                 <span className="text-[14px] font-bold">Số lượng</span>
                 <span className="text-[14px] font-bold">Thành tiền</span>
@@ -260,105 +304,117 @@ const OrderPage = () => {
               </div>
             </div>
             <div>
-              {order?.orderItems?.map((orderItem) => (
-                <div className="flex items-center px-[16px] py-[9px] bg-white mt-[12px] justify-between">
-                  <div
-                    style={{ width: "390px" }}
-                    className="flex items-center gap-4"
-                  >
-                    <Checkbox
-                      onChange={onChange}
-                      value={orderItem?.product}
-                      checked={listChecked.includes(orderItem?.product)}
-                    />
-                    <img
-                      src={orderItem?.image}
-                      style={{
-                        width: "77px",
-                        height: "79px",
-                        objectFit: "cover",
-                      }}
-                      alt="sản phẩm"
-                    />
-                    <div className="overflow-hidden text-[14px] whitespace-nowrap overflow-ellipsis w-[260px]">
-                      {orderItem?.name}
-                    </div>
-                  </div>
-                  <div className="flex-1 flex items-center justify-between">
-                    <span>
-                      <span style={{ fontSize: "14px", color: "#242424" }}>
-                        {convertPrice(orderItem?.price)}
-                      </span>
-                    </span>
-                    <div className="flex items-center justify-center w-[84px] border border-gray-300 rounded-[4px]">
-                      <div className="flex items-center justify-center w-[84px] border border-gray-300 rounded-[4px]">
-                        <button
-                          style={{
-                            border: "none",
-                            background: "transparent",
-                            cursor: "pointer",
-                            width: "50%",
-                          }}
-                          onClick={() =>
-                            handleChangeCount("decrease",orderItem?.product, orderItem?.amount === 1)
-
-                          }
-                        >
-                          <MinusOutlined
-                            style={{
-                              color: "#000",
-                              fontSize: "10px",
-                              textAlign: "center",
-                            }}
-                          />
-                        </button>
-                        <input
-                          className="w-[30px] border-l-[1px] border-r-[1px] border-solid border-gray-300 rounded-none text-center"
-                          defaultValue={orderItem?.amount} value={orderItem?.amount}
-                          size="small"
-                          style={{ textAlign: "center" }}
-                          min={1}
-                          max={orderItem?.countInStock}
+              {order?.orderItems?.map((orderItem) => {
+                return (
+                  user?.id === orderItem?.userId && ( // Thêm điều kiện kiểm tra userId
+                    <div className="flex items-center px-[16px] py-[9px] bg-white mt-[12px] justify-between">
+                      <div
+                        style={{ width: "390px" }}
+                        className="flex items-center gap-4"
+                      >
+                        <Checkbox
+                          onChange={onChange}
+                          value={orderItem?.product}
+                          checked={listChecked.includes(orderItem?.product)}
                         />
-                        <button
+                        <img
+                          src={orderItem?.image}
                           style={{
-                            border: "none",
-                            background: "transparent",
-                            cursor: "pointer",
-                            width: "50%",
+                            width: "77px",
+                            height: "79px",
+                            objectFit: "cover",
                           }}
-                          onClick={() =>
-                            handleChangeCount("increase", orderItem?.product ,orderItem?.amount === orderItem.countInstock, orderItem?.amount === 1)
-                          }
+                          alt="sản phẩm"
+                        />
+                        <div className="overflow-hidden text-[14px] whitespace-nowrap overflow-ellipsis w-[260px]">
+                          {orderItem?.name}
+                        </div>
+                      </div>
+                      <div className="flex-1 flex items-center justify-between">
+                        <span>
+                          <span style={{ fontSize: "14px", color: "#242424" }}>
+                            {convertPrice(orderItem?.price)}
+                          </span>
+                        </span>
+                        <div className="flex items-center justify-center w-[84px] border border-gray-300 rounded-[4px]">
+                          <div className="flex items-center justify-center w-[84px] border border-gray-300 rounded-[4px]">
+                            <button
+                              style={{
+                                border: "none",
+                                background: "transparent",
+                                cursor: "pointer",
+                                width: "50%",
+                              }}
+                              onClick={() =>
+                                handleChangeCount(
+                                  "decrease",
+                                  orderItem?.product,
+                                  orderItem?.amount === 1
+                                )
+                              }
+                            >
+                              <MinusOutlined
+                                style={{
+                                  color: "#000",
+                                  fontSize: "10px",
+                                  textAlign: "center",
+                                }}
+                              />
+                            </button>
+                            <input
+                              className="w-[30px] border-l-[1px] border-r-[1px] border-solid border-gray-300 rounded-none text-center"
+                              defaultValue={orderItem?.amount}
+                              value={orderItem?.amount}
+                              size="small"
+                              style={{ textAlign: "center" }}
+                              min={1}
+                              max={orderItem?.countInStock}
+                            />
+                            <button
+                              style={{
+                                border: "none",
+                                background: "transparent",
+                                cursor: "pointer",
+                                width: "50%",
+                              }}
+                              onClick={() =>
+                                handleChangeCount(
+                                  "increase",
+                                  orderItem?.product,
+                                  orderItem?.amount === orderItem.countInstock,
+                                  orderItem?.amount === 1
+                                )
+                              }
+                            >
+                              <PlusOutlined
+                                style={{
+                                  color: "#000",
+                                  fontSize: "10px",
+                                  textAlign: "center",
+                                }}
+                              />
+                            </button>
+                          </div>
+                        </div>
+
+                        <span
+                          style={{
+                            color: "rgb(255, 66, 78)",
+                            fontSize: "13px",
+                            fontWeight: 500,
+                          }}
                         >
-                          <PlusOutlined
-                            style={{
-                              color: "#000",
-                              fontSize: "10px",
-                              textAlign: "center",
-                            }}
-                           
-                          />
-                        </button>
+                          {convertPrice(orderItem?.price * orderItem?.amount)}
+                        </span>
+                        <DeleteOutlined
+                          style={{ cursor: "pointer", fontSize: "15px" }}
+                          onClick={() => handleDeleteOrder(orderItem?.product)}
+                        />
                       </div>
                     </div>
-
-                    <span
-                      style={{
-                        color: "rgb(255, 66, 78)",
-                        fontSize: "13px",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {convertPrice(orderItem?.price * orderItem?.amount)}
-                    </span>
-                    <DeleteOutlined
-                      style={{ cursor: "pointer", fontSize: "15px" }}
-                      onClick={() => handleDeleteOrder(orderItem?.product)}
-                    />
-                  </div>
-                </div>
-              ))}
+                  )
+                );
+              })}
             </div>
           </div>
           <div className="w-[320px] ml-[20px] flex flex-col gap-[10px] items-center">
@@ -371,7 +427,11 @@ const OrderPage = () => {
                   </span>
                   <span
                     onClick={handleChangeAddress}
-                    style={{ color: "#9255FD", cursor: "pointer" , fontSize: '14px'}}
+                    style={{
+                      color: "#9255FD",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                    }}
                   >
                     Thay đổi
                   </span>
@@ -399,7 +459,7 @@ const OrderPage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    0
+                    {convertPrice(priceDiscountMemo)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -425,7 +485,7 @@ const OrderPage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    0213
+                    {convertPrice(totalPriceMemo)}
                   </span>
                   <span style={{ color: "#000", fontSize: "11px" }}>
                     (Đã bao gồm VAT nếu có)

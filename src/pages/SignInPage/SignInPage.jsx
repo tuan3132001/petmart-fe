@@ -100,6 +100,7 @@ const SignInPage = () => {
                 <EyeInvisibleFilled className="text-[13px]" />
               )}
             </span>
+            
             <InputForm
               className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
               placeholder="password"

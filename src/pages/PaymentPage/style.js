@@ -73,7 +73,7 @@ export const WrapperTotal = styled.div`
 `
 
 export const Lable = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: #000;
   font-weight: bold
 `

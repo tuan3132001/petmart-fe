@@ -62,21 +62,27 @@ const PaymentPage = () => {
 
   const priceMemo = useMemo(() => {
     const result = order?.orderItemsSlected?.reduce((total, cur) => {
-      return total + cur.price * cur.amount;
+      if (cur.userId === user.id) {
+        // Thêm điều kiện kiểm tra userId
+        return total + cur.price * cur.amount;
+      }
+      return total;
     }, 0);
     return result;
-  }, [order]);
+  }, [order, user]);
+
 
   const priceDiscountMemo = useMemo(() => {
     const result = order?.orderItemsSlected?.reduce((total, cur) => {
-      const totalDiscount = cur.discount ? cur.discount : 0;
-      return total + (priceMemo * (totalDiscount * cur.amount)) / 100;
+      if (cur.userId === user.id) {
+        // Thêm điều kiện kiểm tra userId
+        const totalDiscount = cur.discount ? cur.discount : 0;
+        return total + (cur.price * totalDiscount * cur.amount) / 100;
+      }
+      return total;
     }, 0);
-    if (Number(result)) {
-      return result;
-    }
-    return 0;
-  }, [order]);
+    return result;
+  }, [order, user]);
 
   const diliveryPrice = useMemo(() => {
     if (priceMemo > 200000) {
@@ -117,10 +123,12 @@ const PaymentPage = () => {
       mutationAddOrder.mutate({
         token: user?.access_token,
         orderItems: order?.orderItemsSlected,
-        fullName: user?.name,
-        address: user?.address,
-        phone: user?.phone,
-        city: user?.city,
+        shippingAddress: {
+          fullName: user?.name,
+          address: user?.address,
+          phone: user?.phone,
+          city: user?.city,
+        },   
         paymentMethod: payment,
         itemsPrice: priceMemo,
         shippingPrice: diliveryPriceMemo,
@@ -186,10 +194,12 @@ const PaymentPage = () => {
     mutationAddOrder.mutate({
       token: user?.access_token,
       orderItems: order?.orderItemsSlected,
-      fullName: user?.name,
-      address: user?.address,
-      phone: user?.phone,
-      city: user?.city,
+      shippingAddress: {
+        fullName: user?.name,
+        address: user?.address,
+        phone: user?.phone,
+        city: user?.city,
+      },   
       paymentMethod: payment,
       itemsPrice: priceMemo,
       shippingPrice: diliveryPriceMemo,
