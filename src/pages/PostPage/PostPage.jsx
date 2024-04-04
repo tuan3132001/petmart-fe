@@ -196,6 +196,7 @@ function PostPage() {
               backgroundColor: "#f9f9f9",
             }}
           >
+            <h1 className="text-[15px] font-[600]">Bình luận</h1> 
             {/* Phần hiển thị comment */}
             <div className="comments-section" style={styles.commentsSection}>
               {postComments[post.id] && (

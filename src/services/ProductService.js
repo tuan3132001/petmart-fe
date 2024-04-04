@@ -27,3 +27,10 @@ export const getAllTypeProduct = async () => {
     const res = await axios.get(`http://localhost:3000/product/get-all-type`)
     return res.data
 }
+
+export const getAllProductSelled = async () => {
+    
+     const res = await axios.get(`http://localhost:3000/product/get-product`)
+    
+    return res.data
+}

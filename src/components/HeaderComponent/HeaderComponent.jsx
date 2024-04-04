@@ -113,7 +113,7 @@ const HeaderComponent = () => {
             className="hover:bg-gray-200 transition-colors duration-300"
           />
         </Col>
-        <Col span={8} className="flex items-center ml-[50px]">
+        <Col span={8} className="flex items-center ml-[40px]">
           <Loading isPending={loading}>
             <div className="flex items-center text-white text-[12px]">
               {userAvatar ? (

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as PostService from "../../services/PostService";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../components/FooterComponent/FooterComponent";
-
+import * as ProductService from "../../services/ProductService";
+import { convertPrice } from "../../utils";
 export const FilterPost = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -10,6 +10,7 @@ export const FilterPost = () => {
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(null);
   const [selectedTagIndex, setSelectedTagIndex] = useState(null);
+  const [topSellingProducts, setTopSellingProducts] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     fetchPosts();
@@ -19,10 +20,38 @@ export const FilterPost = () => {
   //   fetchComments(postId);
   // }, [postId]);
 
+  const fetchProductAllSelled = async () => {
+    try {
+      const res = await ProductService.getAllProductSelled();
+      const products = res.data;
+      // Sắp xếp sản phẩm theo số lượng bán giảm dần
+      const sortedProducts = products.sort((a, b) => b.selled - a.selled);
+      // Chọn ra 4 sản phẩm đầu tiên
+      const topSellingProducts = sortedProducts.slice(0, 4);
+      console.log("Top selling products:", topSellingProducts);
+      return topSellingProducts;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchTopSellingProducts = async () => {
+      try {
+        const products = await fetchProductAllSelled();
+        setTopSellingProducts(products);
+      } catch (error) {
+        console.error("Error fetching top selling products:", error);
+      }
+    };
+    fetchTopSellingProducts();
+  }, []);
+
   const fetchComments = async (postId) => {
     try {
       const res = await PostService.getAllComment(postId);
-      console.log("res", res.data);
+
       return res.data;
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -103,16 +132,20 @@ export const FilterPost = () => {
       fetchComments(filteredPosts[0].id);
     }
   }, [filteredPosts]);
-
+  const handelDetailsProduct = (id) => {
+    navigate(`/product-details/${id}`);
+    console.log("id", id);
+  };
   return (
     <div className="grid grid-cols-6 gap-4 ml-[20px] mt-[40px]">
       {/* Menu bên trái */}
-      <div className="col-span-6 md:col-span-2 sticky top-[80px] "
-      style={{ overflowY: 'auto', minHeight: 'calc(100vh - 80px)' }}
+      <div
+        className="col-span-6 md:col-span-2 sticky top-[80px] "
+        style={{ overflowY: "auto", minHeight: "calc(100vh - 80px)" }}
       >
         <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold mb-[30px]">
           Chuyên mục bài viết
-        </h4> 
+        </h4>
         <div className="flex flex-col gap-[12px] text-[15px]">
           {/* Danh sách thể loại */}
           <ul>
@@ -126,7 +159,7 @@ export const FilterPost = () => {
                 marginBottom: "12px",
                 width: "360px",
                 transition: "background-color 0.3s ease",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
               onClick={() => {
                 setSelectedCategory("");
@@ -150,13 +183,15 @@ export const FilterPost = () => {
                     marginBottom: "12px",
                     width: "360px",
                     transition: "background-color 0.3s ease",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                   onClick={() => {
                     setSelectedCategory(category);
                     setSelectedCategoryIndex(index);
                   }}
-                  onMouseEnter={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#f0f0f0")
+                  }
                   onMouseLeave={(e) => (e.target.style.backgroundColor = "")}
                 >
                   {category} ({countPostsInCategory(category)})
@@ -181,7 +216,7 @@ export const FilterPost = () => {
                 marginBottom: "12px",
                 width: "360px",
                 transition: "background-color 0.3s ease",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
               onClick={() => {
                 setSelectedTag("");
@@ -205,13 +240,15 @@ export const FilterPost = () => {
                     marginBottom: "12px",
                     width: "360px",
                     transition: "background-color 0.3s ease",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                   onClick={() => {
                     setSelectedTag(tag);
                     setSelectedTagIndex(index);
                   }}
-                  onMouseEnter={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#f0f0f0")
+                  }
                   onMouseLeave={(e) => (e.target.style.backgroundColor = "")}
                 >
                   {tag} ({countPostsWithTag(tag)})
@@ -219,6 +256,53 @@ export const FilterPost = () => {
               )
             )}
           </ul>
+          <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold mb-[30px]">
+            Sản phẩm bán chạy
+          </h4>
+          <div className="flex flex-col gap-6 mb-[20px]">
+            {topSellingProducts.map((product) => (
+              <div
+                key={product._id}
+                className="cursor-pointer flex items-center product-item"
+                onClick={() => handelDetailsProduct(product?._id)}
+                style={{
+                  maxWidth: "360px",
+                  paddingBottom: "10px",
+                  marginBottom: "12px",
+                  width: "360px",
+                  transition: "all 0.3s ease",
+                  borderBottom: "1px solid #ccc",
+                  backgroundColor: "inherit",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.querySelector(".text-container").style.color =
+                    "#007bff"; 
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.querySelector(".text-container").style.color =
+                    "inherit"; 
+                }}
+              >
+                <img
+                  className="w-[60px] h-[60px] mr-4"
+                  src={product.image}
+                  alt={product.name}
+                  style={{ marginRight: "4px" }}
+                />
+                <div
+                  className="text-container"
+                  style={{
+                    overflowWrap: "break-word",
+                    flex: "1",
+                    transition: "color 0.3s ease", 
+                  }}
+                >
+                  <p className="font-[500] text-[15px] mb-1">{product.name}</p>
+                  <p className="text-blue-700">{convertPrice(product.price)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       {/* Sản phẩm chiếm 18 phần bên phải */}
@@ -261,7 +345,4 @@ export const FilterPost = () => {
       </div>
     </div>
   );
-  
-  
 };
-
