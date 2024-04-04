@@ -13,6 +13,7 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useDebounce } from "../../hooks/useDebounce";
 import Footer from "../../components/FooterComponent/FooterComponent";
 import { SmileOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
@@ -20,6 +21,7 @@ const HomePage = () => {
   const [typeProducts, setTypeProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(6);
+  const navigate = useNavigate()
   const fetchProductAll = async (context) => {
     const limit = context?.queryKey && context?.queryKey[1];
     const search = context?.queryKey && context?.queryKey[2];
@@ -77,6 +79,23 @@ const HomePage = () => {
           flexDirection: "column",
         }}
       >
+        <div
+          className="flex justify-around text-[20px] font-bold flex-wrap"
+          style={{ maxWidth: "800px", margin: "0 auto" }}
+
+        >
+          {typeProducts.map((item, index) => (
+            <div
+              key={item}
+              className="relative cursor-pointer transition duration-300 ease-in-out hover:text-blue-500 flex items-center mb-4"
+              style={{ marginLeft: index !== 0 ? "90px" : "0" }}
+            >
+              <TypeProduct name={item} />
+              <span className="ml-1">{typeProductIcons[item]}</span>
+            </div>
+          ))}
+        </div>
+
         <div style={{ maxWidth: "1200px", width: "100%", margin: "0 auto" }}>
           <SliderComponent
             arrImages={[slide1, slide2, slide3]}
@@ -129,13 +148,15 @@ const HomePage = () => {
           className="text-left mt-[20px] mb-4 ml-4"
           style={{ maxWidth: "1200px", width: "100%", margin: "0 auto" }}
         >
-          <h2 className="text-[20px] font-[700] mb-[25px]">Hệ thống của hàng</h2>
+          <h2 className="text-[20px] font-[700] mb-[25px]">
+            Hệ thống của hàng
+          </h2>
         </div>
         <div
           className="flex justify-between w-full"
           style={{ maxWidth: "1200px", width: "100%", margin: "0 auto" }}
         >
-          <div className="w-[570px] h-[750px] bg-[#00205B] p-4 ml-1 rounded-xl mb-[60px]" >
+          <div className="w-[570px] h-[750px] bg-[#00205B] p-4 ml-1 rounded-xl mb-[60px]">
             <h2 className="text-white text-[20px] font-[700] mb-[15px]">
               {" "}
               📍 Pet Mart tại Hà Nội (12)
