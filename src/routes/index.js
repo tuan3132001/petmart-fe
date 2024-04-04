@@ -1,5 +1,6 @@
 
 import DetailsOrderPage from "../pages/DetailOrderPage/DetailOrderPage";
+import { FilterPost } from "../pages/FilterPost/FilterPost";
 import HomePage from "../pages/HomePage/HomePage";
 import MyOrderPage from "../pages/MyOrder/MyOrder";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
@@ -58,6 +59,11 @@ export const routes = [
     },
     {
         path: '/post',
+        page: FilterPost,
+        isShowHeader: true
+    },
+    {
+        path: '/postDetail/:id',
         page: PostPage,
         isShowHeader: true
     },

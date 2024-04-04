@@ -73,6 +73,13 @@ const ProductDetailsComponent = ({ idProduct }) => {
       }
     }
   };
+  const handleUpdate = () => {
+    if (!user?.id) {
+      navigate("/sign-in", { state: location?.pathname });
+    }else{
+      navigate('/profile-user')
+    }
+  }
 
   const handleAddOrderProduct = () => {
     if (!user?.id) {
@@ -183,7 +190,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 {user.address} {user.city}
               </span>
             ) : (
-              <span onClick={()=>navigate('/profile-user')} className="cursor-pointer text-[15px]  leading-[24px] font-[500]  underline truncate text-[red] ">
+              <span onClick={handleUpdate} className="cursor-pointer text-[15px]  leading-[24px] font-[500]  underline truncate text-[red] ">
                 Cập nhật thông tin
               </span>
             )}

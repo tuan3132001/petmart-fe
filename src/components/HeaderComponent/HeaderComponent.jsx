@@ -157,11 +157,10 @@ const HeaderComponent = () => {
           </Loading>
           <div className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
             <div>
-            
               <span
                 className="font-[500]
                 text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
-                onClick={()=> navigate('/post')}
+                onClick={() => navigate("/post")}
               >
                 {" "}
                 <SolutionOutlined />
@@ -170,25 +169,28 @@ const HeaderComponent = () => {
             </div>
           </div>
           <div
-            className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300"
+            className="flex items-center ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300"
             onClick={() => navigate("/order")}
           >
             <Badge
-              count={user?.id ? order?.orderItems?.filter(orderItem => orderItem?.userId === user?.id).length : 0}
+              count={
+                user?.id
+                  ? order?.orderItems?.filter(
+                      (orderItem) => orderItem?.userId === user?.id
+                    ).length
+                  : 0
+              }
               size="small"
             >
               <ShoppingCartOutlined className="text-[30px] text-blue-800 hover:text-blue-950 transition-colors duration-300" />
             </Badge>
-            <div>
-              <span
-                className="font-[500]
-                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
-              >
-                {" "}
+            <div className="ml-2">
+              <span className="font-[500] text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
                 Giỏ hàng
               </span>
             </div>
           </div>
+
           {/* <div className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
             <span
               className="font-[500]
