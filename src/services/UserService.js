@@ -52,3 +52,9 @@ export const updateUser = async (id, data, access_token) => {
   })
   return res.data
 }
+
+
+export const getUsersInfo = async () => {
+  const res = await axiosJWT.get(`http://localhost:3000/user/getUsersInfo/`)
+  return res.data
+}

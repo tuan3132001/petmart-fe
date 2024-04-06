@@ -6,6 +6,7 @@ import {
   WrapperValue,
   WrapperItemOrder,
   WrapperItemOrderInfo,
+  WrapperValueTotal
 } from "./style";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useLocation } from "react-router-dom";
@@ -16,12 +17,13 @@ import { useSelector } from "react-redux";
 const OrderSucess = () => {
   const location = useLocation();
   const { state } = location;
+  console.log("state", state);
   const user = useSelector((state) => state.user);
   return (
-    <div style={{ background: "#f5f5fa", with: "100%", height: "100vh" }}>
+    <div style={{ background: "#f5f5fa", with: "100%", height: "100%" }}>
       <Loading isPending={false}>
         <div style={{ height: "100%", width: "1270px", margin: "0 auto" }}>
-          <h3 className="text-center font-bold text-[15px] mb-[10px]">
+          <h3 className="text-center font-bold text-[20px]  mb-[10px]">
             Đơn hàng đặt thành công
           </h3>
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -48,7 +50,22 @@ const OrderSucess = () => {
                   </WrapperValue>
                 </div>
               </WrapperInfo>
+              <WrapperInfo>
+                <div>
+                  <Lable>Thông tin nhận hàng</Lable>
+                  <WrapperValue>
+                    <p class="mb-2">Người nhận: {state?.name}</p>
+                    <p class="mb-2">Số điện thoại: {state?.phone}</p>
+                    <p class="mb-2">
+                      {" "}
+                      Địa chỉ: {state?.address}, {state?.city}
+                    </p>
+                  </WrapperValue>
+                </div>
+              </WrapperInfo>
+
               <WrapperItemOrderInfo>
+                <h1 className="text-[15px] font-bold">Đơn hàng</h1>
                 {state.orders?.map((order) => {
                   // Kiểm tra xem order có thuộc người dùng hiện tại không
                   if (order.userId === user?.id) {
@@ -92,7 +109,7 @@ const OrderSucess = () => {
                         >
                           <span>
                             <span
-                              style={{ fontSize: "13px", color: "#242424" }}
+                              style={{ fontSize: "14px", color: "#242424" }}
                               className="font-bold mr-[120px]"
                             >
                               Giá tiền: {convertPrice(order?.price)}
@@ -100,7 +117,7 @@ const OrderSucess = () => {
                           </span>
                           <span>
                             <span
-                              style={{ fontSize: "13px", color: "#242424" }}
+                              style={{ fontSize: "14px", color: "#242424" }}
                               className="font-bold"
                             >
                               Số lượng: {order?.amount}
@@ -111,15 +128,24 @@ const OrderSucess = () => {
                     );
                   }
                 })}
+                {/* <div className="mt-[30px]">
+                  <span
+                    style={{ fontSize: "16px", color: "red" }}
+                    className="font-bold "
+                  >
+                    Tổng tiền: {convertPrice(state?.totalPriceMemo)}
+                  </span>
+                </div> */}
+                
               </WrapperItemOrderInfo>
-              <div>
-                <span
-                  style={{ fontSize: "16px", color: "red" }}
-                  className="font-bold "
-                >
-                  Tổng tiền: {convertPrice(state?.totalPriceMemo)}
-                </span>
-              </div>
+              <WrapperInfo>
+                <div>
+                  {/* <Lable>Thông tin nhận hàng</Lable> */}
+                  <WrapperValueTotal >
+                     Tổng tiền: {convertPrice(state?.totalPriceMemo)}
+                  </WrapperValueTotal>
+                </div>
+              </WrapperInfo>
             </WrapperContainer>
           </div>
         </div>

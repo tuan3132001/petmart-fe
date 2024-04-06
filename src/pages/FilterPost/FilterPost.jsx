@@ -3,6 +3,7 @@ import * as PostService from "../../services/PostService";
 import { useNavigate } from "react-router-dom";
 import * as ProductService from "../../services/ProductService";
 import { convertPrice } from "../../utils";
+import { Spin } from "antd";
 export const FilterPost = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -11,6 +12,7 @@ export const FilterPost = () => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(null);
   const [selectedTagIndex, setSelectedTagIndex] = useState(null);
   const [topSellingProducts, setTopSellingProducts] = useState([]);
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
   useEffect(() => {
     fetchPosts();
@@ -22,6 +24,7 @@ export const FilterPost = () => {
 
   const fetchProductAllSelled = async () => {
     try {
+
       const res = await ProductService.getAllProductSelled();
       const products = res.data;
       // Sắp xếp sản phẩm theo số lượng bán giảm dần
@@ -39,14 +42,18 @@ export const FilterPost = () => {
   useEffect(() => {
     const fetchTopSellingProducts = async () => {
       try {
+        setLoading(true); // Bắt đầu fetching dữ liệu, hiển thị loading
         const products = await fetchProductAllSelled();
         setTopSellingProducts(products);
       } catch (error) {
         console.error("Error fetching top selling products:", error);
+      } finally {
+        setLoading(false); // Kết thúc fetching dữ liệu, ẩn loading
       }
     };
     fetchTopSellingProducts();
   }, []);
+
 
   const fetchComments = async (postId) => {
     try {
@@ -59,12 +66,12 @@ export const FilterPost = () => {
     }
   };
 
-  const fetchPosts = async () => {
+ const fetchPosts = async () => {
     try {
+      setLoading(true); // Bắt đầu fetching dữ liệu, hiển thị loading
       const res = await PostService.getAllPost();
       const formattedPosts = await Promise.all(
         res.data.map(async (post) => {
-          // Lấy danh sách comment cho mỗi bài viết
           const commentRes = await PostService.getAllComment(post._id);
           const comments = commentRes.data;
           return {
@@ -83,7 +90,7 @@ export const FilterPost = () => {
               alt: image.alt,
               key: image.url,
             })),
-            comments: comments, // Cập nhật thuộc tính comments với danh sách comment
+            comments: comments,
           };
         })
       );
@@ -92,6 +99,8 @@ export const FilterPost = () => {
     } catch (error) {
       console.error("Error fetching products:", error);
       throw new Error(error);
+    } finally {
+      setLoading(false); // Kết thúc fetching dữ liệu, ẩn loading
     }
   };
 
@@ -148,6 +157,7 @@ export const FilterPost = () => {
         </h4>
         <div className="flex flex-col gap-[12px] text-[15px]">
           {/* Danh sách thể loại */}
+          <Spin spinning={loading}> {/* Hiển thị loading nếu đang fetching dữ liệu */}
           <ul>
             <li
               className={`menu-item ${
@@ -199,6 +209,7 @@ export const FilterPost = () => {
               )
             )}
           </ul>
+          </Spin>
         </div>
         <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold mt-[30px] mb-[30px]">
           Tag bài viết
@@ -318,7 +329,7 @@ export const FilterPost = () => {
               {post.images.length > 0 && (
                 <div className="flex justify-center">
                   <img
-                    src="https://www.petmart.vn/wp-content/uploads/2015/04/cach-tri-ran-cho-meo.jpg"
+                    src={post.images[0].image}
                     style={{ width: "470px", height: "264px" }}
                     alt={post.images[0].alt}
                     className="mb-2 rounded-lg"

@@ -70,15 +70,21 @@ const DetailsOrderPage = () => {
             <WrapperInfoUser>
               <WrapperLabel>Địa chỉ người nhận</WrapperLabel>
               <WrapperContentInfo>
-                <div className="name-info">
-                  {data?.shippingAddress?.fullName}
+                <div className="mb-[10px]">
+                  <span className="font-[500] text-[15px]">Người nhận: </span>{" "}
+                  <span className="font-[400] text-[15px] text-[red] ">
+                    {data?.shippingAddress?.fullName}
+                  </span>
                 </div>
-                <div className="address-info">
-                  <span>Địa chỉ: </span>{" "}
-                  {`${data?.shippingAddress?.address} ${data?.shippingAddress?.city}`}
+                <div className="mb-[10px]">
+                  <span className="font-[500] text-[15px]">Địa chỉ: </span>{" "}
+                  <span className="font-[400] text-[15px] text-[red] ">{`${data?.shippingAddress?.address} ${data?.shippingAddress?.city}`}</span>
                 </div>
-                <div className="phone-info">
-                  <span>Điện thoại: </span> {data?.shippingAddress?.phone}
+                <div>
+                  <span className="font-[500] text-[15px]">Điện thoại: </span>{" "}
+                  <span className="font-[400] text-[15px] text-[red] ">
+                    {data?.shippingAddress?.phone}
+                  </span>
                 </div>
               </WrapperContentInfo>
             </WrapperInfoUser>
@@ -86,28 +92,38 @@ const DetailsOrderPage = () => {
               <WrapperLabel>Hình thức giao hàng</WrapperLabel>
               <WrapperContentInfo>
                 {data?.shippingPrice > 10000 ? (
-                  <div className="delivery-info">
-                    <span className="name-delivery">FAST </span>Giao hàng nhanh
+                  <div className="delivery-info mb-[10px]">
+                    <span className="name-delivery text-orange-400 italic">
+                      FAST{" "}
+                    </span>{" "}
+                    <span className=" text-orange-400 font-bold  text-[15px] ">
+                      Giao hàng nhanh
+                    </span>
                   </div>
                 ) : (
-                  <div className="delivery-info">
-                    <span className="name-delivery">GO_JEK </span>Giao hàng tiết
-                    kiệm
+                  <div className="delivery-info mb-[10px]">
+                    <span className="name-delivery text-orange-400 italic">
+                      GO_JEK{" "}
+                    </span>
+                    <span className=" text-orange-400 font-bold  text-[15px] ">
+                      {" "}
+                      Giao hàng tiết kiệm
+                    </span>
                   </div>
                 )}
-                <div className="delivery-fee">
-                  <span>Phí giao hàng: </span>{" "}
-                  {convertPrice(data?.shippingPrice)}
+                <div className="text-[15px]">
+                  <span className="font-[500]">Phí giao hàng: </span>{" "}
+                  <span className="font-[400] text-[15px] text-[red] ">{convertPrice(data?.shippingPrice)}</span>
                 </div>
               </WrapperContentInfo>
             </WrapperInfoUser>
             <WrapperInfoUser>
               <WrapperLabel>Hình thức thanh toán</WrapperLabel>
               <WrapperContentInfo>
-                <div className="payment-info">
+                <div className="text-[15px] font-[500]">
                   {orderContant.payment[data?.paymentMethod]}
                 </div>
-                <div className="status-payment">
+                <div className="status-payment text-[red]">
                   {data?.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
                 </div>
               </WrapperContentInfo>
@@ -122,7 +138,7 @@ const DetailsOrderPage = () => {
                 justifyContent: "space-between",
               }}
             >
-              <div style={{ width: "670px", fontWeight: "bold" }}>Sản phẩm</div>
+              <div style={{ width: "670px", fontWeight: "bold", fontSize: '15px' }}>Sản phẩm</div>
               <WrapperItemLabel>Giá tiền</WrapperItemLabel>
               <WrapperItemLabel>Số lượng</WrapperItemLabel>
               <WrapperItemLabel>Giảm giá</WrapperItemLabel>

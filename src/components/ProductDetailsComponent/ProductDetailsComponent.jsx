@@ -113,8 +113,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
           span={10}
           className="border-r-[1px] border-solid border-[#e5e5e5] pr-[8px]"
         >
-          <Image
-            src="https://down-vn.img.susercontent.com/file/30be6d3c9a25aeb7403a2b9fad7e2bb2"
+          <img
+            className='w-[507px] h-[507px]'
+            src={productDetails?.image}
             alt=""
             preview={false}
           />
@@ -122,46 +123,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
             <Col span={4} style={{ flexBasis: "unset" }}>
               <Image
                 className="h-[64px] w-[64px]"
-                src="	https://down-vn.img.susercontent.com/file/1abd769c5cdd3dcb1ea6294aeed2b561_tn"
+                src={productDetails?.image}
                 alt=""
                 preview="false"
               />
             </Col>
-            <Col span={4} style={{ flexBasis: "unset" }}>
-              <Image
-                src="	https://down-vn.img.susercontent.com/file/1abd769c5cdd3dcb1ea6294aeed2b561_tn"
-                alt=""
-                preview="false"
-              />
-            </Col>
-            <Col span={4} style={{ flexBasis: "unset" }}>
-              <Image
-                src="	https://down-vn.img.susercontent.com/file/1abd769c5cdd3dcb1ea6294aeed2b561_tn"
-                alt=""
-                preview="false"
-              />
-            </Col>
-            <Col span={4} style={{ flexBasis: "unset" }}>
-              <Image
-                src="	https://down-vn.img.susercontent.com/file/1abd769c5cdd3dcb1ea6294aeed2b561_tn"
-                alt=""
-                preview="false"
-              />
-            </Col>
-            <Col span={4} style={{ flexBasis: "unset" }}>
-              <Image
-                src="	https://down-vn.img.susercontent.com/file/1abd769c5cdd3dcb1ea6294aeed2b561_tn"
-                alt=""
-                preview="false"
-              />
-            </Col>
-            <Col span={4} style={{ flexBasis: "unset" }}>
-              <Image
-                src="	https://down-vn.img.susercontent.com/file/1abd769c5cdd3dcb1ea6294aeed2b561_tn"
-                alt=""
-                preview="false"
-              />
-            </Col>
+      
           </Row>
         </Col>
         <Col span={14} className="pl-[10px]">

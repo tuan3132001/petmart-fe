@@ -9,10 +9,10 @@ import * as message from "../../components/Message/Message";
 import { updateUser } from "../../redux/slides/userSlide";
 import { UploadOutlined, LeftOutlined } from "@ant-design/icons"; // Import LeftOutlined icon
 import { getBase64 } from "../../utils";
-import moment from 'moment'; // Import moment
+import moment from "moment"; // Import moment
 import { WrapperUploadFile } from "./style";
 import { useNavigate } from "react-router-dom";
-
+import { provinces } from "./provinces";
 export const ProfilePage = () => {
   const user = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
@@ -22,9 +22,9 @@ export const ProfilePage = () => {
   const [avatar, setAvatar] = useState("");
   const [gender, setGender] = useState("");
   const [city, setCity] = useState("");
-  
+
   const [birthday, setBirthday] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const mutation = useMutationHooks((data) => {
     const { id, access_token, ...rests } = data;
     UserService.updateUser(id, rests, access_token);
@@ -40,7 +40,7 @@ export const ProfilePage = () => {
     setAvatar(user?.avatar);
     setGender(user?.gender);
     setBirthday(user?.birthday);
-    setCity(user?.city); 
+    setCity(user?.city);
   }, [user]);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export const ProfilePage = () => {
   const handleOnchangeAddress = (value) => {
     setAddress(value);
   };
-  const handleOnchangeCity = (value) => { 
+  const handleOnchangeCity = (value) => {
     setCity(value);
   };
   const handleOnchangeAvatar = async ({ fileList }) => {
@@ -104,18 +104,14 @@ export const ProfilePage = () => {
   };
 
   const handleGoBack = () => {
-    navigate('/')
+    navigate("/");
   };
 
   return (
     <div className="w-[1270px] mx-auto h-[500px] relative">
       <div className="absolute top-[20px] left-[20px]">
-        <Button
-          type="text"
-          icon={<LeftOutlined />}
-          onClick={handleGoBack}
-        >
-          Trở về 
+        <Button type="text" icon={<LeftOutlined />} onClick={handleGoBack}>
+          Trở về
         </Button>
       </div>
       <h1 className="text-[#030] text-[20px] font-bold mt-[4px] mb-[20px] text-center">
@@ -170,19 +166,27 @@ export const ProfilePage = () => {
           </div>
           <div className="flex items-center gap-[20px]">
             <label
-              htmlFor="city" // Thêm label cho trường "city"
-              className="text-[#000] text-[14px] leading-[30px] font-[600] "
+              htmlFor="city"
+              className="text-[#000] text-[14px] leading-[30px] font-[600]"
               style={{ minWidth: "120px" }}
             >
               Thành phố
             </label>
-            <InputForm
+            <select
               id="city"
               className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
-              value={city} 
-              onChange={handleOnchangeCity}
-            />
+              value={city}
+              onChange={(e) => handleOnchangeCity(e.target.value)}
+            >
+              {/* Lặp qua danh sách các tỉnh/thành phố */}
+              {provinces.map((province) => (
+                <option key={province} value={province}>
+                  {province}
+                </option>
+              ))}
+            </select>
           </div>
+
           <div className="flex items-center gap-[20px]">
             <label
               htmlFor="phone"

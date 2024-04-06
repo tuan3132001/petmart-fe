@@ -168,6 +168,10 @@ const PaymentPage = () => {
       message.success("Đặt hàng thành công");
       navigate("/orderSuccess", {
         state: {
+          name: user?.name,
+          address:user?.address,
+          phone:user?.phone,
+          city:user?.city,
           delivery,
           payment,
           orders: order?.orderItemsSlected,

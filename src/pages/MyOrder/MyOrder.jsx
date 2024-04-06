@@ -66,8 +66,6 @@ const MyOrderPage = () => {
     return data?.orderItems?.map((order) => {
       // Kiểm tra xem userId của hóa đơn có trùng khớp với userId bạn muốn kiểm tra hay không
       if (data?.user === userId) {
-        console.log('id',data?.user)
-        console.log('di',userId)
         return (
           <WrapperHeaderItem key={order?._id}> 
             <img src={order?.image} 
@@ -85,9 +83,10 @@ const MyOrderPage = () => {
               overflow: 'hidden',
               textOverflow:'ellipsis',
               whiteSpace:'nowrap',
-              marginLeft: '10px'
+              marginLeft: '10px',
+              fontSize: '15px'
             }}>{order?.name}</div>
-            <span style={{ fontSize: '13px', color: '#242424',marginLeft: 'auto' }}>{convertPrice(order?.price)}</span>
+            <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#242424',marginLeft: 'auto' }}>{convertPrice(order?.price)}</span>
           </WrapperHeaderItem>
         );
       }
@@ -105,23 +104,22 @@ const MyOrderPage = () => {
               return (
                 <WrapperItemOrder key={order?._id}>
                   <WrapperStatus>
-                    <span style={{fontSize: '14px', fontWeight: 'bold', color: 'green'}}>Trạng thái</span>
+                    <span style={{fontSize: '15px', fontWeight: 'bold', color: 'green'}} className='mb-[10px]'>Trạng thái</span>
                     <div>
-                      <span style={{color: 'rgb(255, 66, 78)'}}>Giao hàng: </span>
-                      <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</span>
+                      <span className='text-[15px] font-[500] ' style={{color: 'rgb(255, 66, 78)'}}>Giao hàng: </span>
+                      <span className='text-[15px]' style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</span>
                     </div>
                     <div>
-                      <span style={{color: 'rgb(255, 66, 78)'}}>Thanh toán: </span>
-                      <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isPaid ? 'Đã thanh toán': 'Chưa thanh toán'}`}</span>
+                      <span className='text-[15px] font-[500]' style={{color: 'rgb(255, 66, 78)'}}>Thanh toán: </span>
+                      <span className='text-[15px]' style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isPaid ? 'Đã thanh toán': 'Chưa thanh toán'}`}</span>
                     </div>
                   </WrapperStatus>
                   {renderProduct(order, user?.id)}
-                  {console.log('order',order)}
                   <WrapperFooterItem>
                     <div>
-                      <span style={{color: 'rgb(255, 66, 78)'}}>Tổng tiền: </span>
+                      <span style={{color: 'rgb(255, 66, 78)'}} className='text-[15px]'>Tổng tiền: </span>
                       <span 
-                        style={{ fontSize: '13px', color: 'rgb(56, 56, 61)',fontWeight: 700 }}
+                        style={{ fontSize: '15px', color: 'rgb(56, 56, 61)',fontWeight: 700 }}
                       >{convertPrice(order?.totalPrice)}</span>
                     </div>
                     <div style={{display: 'flex', gap: '10px'}}>
@@ -134,7 +132,7 @@ const MyOrderPage = () => {
                             borderRadius: '4px'
                         }}
                         textbutton={'Hủy đơn hàng'}
-                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                        styleTextButton={{ color: '#9255FD', fontSize: '15px' }}
                       >
                       </ButtonComponent>
                       <ButtonComponent
@@ -146,7 +144,7 @@ const MyOrderPage = () => {
                             borderRadius: '4px'
                         }}
                         textbutton={'Xem chi tiết'}
-                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                        styleTextButton={{ color: '#9255FD', fontSize: '15px' }}
                       >
                       </ButtonComponent>
                     </div>

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import * as PostService from "../../services/PostService";
 import { Button } from "antd";
 import * as message from "../../components/Message/Message";
-import { SendOutlined, UserOutlined,LeftOutlined } from "@ant-design/icons";
+import { SendOutlined, UserOutlined, LeftOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
+import * as UserService from "../../services/UserService";
 function PostPage() {
   const [posts, setPosts] = useState([]);
   const [postComments, setPostComments] = useState({});
   const [commentContents, setCommentContents] = useState({});
+  const [usersInfo, setUsersInfo] = useState([]);
   const user = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,6 +23,10 @@ function PostPage() {
   useEffect(() => {
     fetchComments();
   }, [posts]);
+
+  useEffect(() => {
+    fetchUsersInfo();
+  }, []);
 
   useEffect(() => {
     const initialCommentContents = {};
@@ -37,6 +42,24 @@ function PostPage() {
       [postId]: content,
     }));
   };
+
+  const fetchUsersInfo = async () => {
+    try {
+      const res = await UserService.getUsersInfo();
+      localStorage.setItem("usersInfo", JSON.stringify(res.data));
+      setUsersInfo(res.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      throw new Error(error);
+    }
+  };
+
+  useEffect(() => {
+    const usersInfoFromStorage = localStorage.getItem("usersInfo");
+    if (usersInfoFromStorage) {
+      setUsersInfo(JSON.parse(usersInfoFromStorage));
+    }
+  }, []);
 
   const fetchPosts = async (postId) => {
     try {
@@ -70,9 +93,19 @@ function PostPage() {
     try {
       posts.forEach(async (post) => {
         const res = await PostService.getAllComment(post.id);
+        // Thực hiện việc so sánh id của người dùng trong comment với id đã lưu từ usersInfo
+        const commentsWithUserInfo = res.data.map((comment) => {
+          const userInfo = usersInfo.find((user) => user._id === comment.user);
+          console.log('user',userInfo)
+          return {
+            ...comment,
+            user: userInfo ? userInfo?.information?.name || userInfo.email : comment.user,
+            avatar: userInfo ? userInfo?.information?.avatar : null,
+          };
+        });
         setPostComments((prevComments) => ({
           ...prevComments,
-          [post.id]: res.data,
+          [post.id]: commentsWithUserInfo,
         }));
       });
     } catch (error) {
@@ -80,6 +113,8 @@ function PostPage() {
       throw new Error(error);
     }
   };
+  
+  
 
   const handleSubmitComment = async (userId, postId, token) => {
     const commentContent = commentContents[postId];
@@ -116,17 +151,13 @@ function PostPage() {
     }
   };
   const handleGoBack = () => {
-    navigate('/post')
-  };  
+    navigate("/post");
+  };
   return (
     <div className="grid grid-cols-6 gap-4 mx-8 mt-[45px]">
       <div className="absolute top-[160px] left-[10px]">
-        <Button
-          type="text"
-          icon={<LeftOutlined />}
-          onClick={handleGoBack}
-        >
-          Trở về 
+        <Button type="text" icon={<LeftOutlined />} onClick={handleGoBack}>
+          Trở về
         </Button>
       </div>
       {/* Phần hiển thị bài viết */}
@@ -171,20 +202,20 @@ function PostPage() {
                 </div>
               )}
             </div>
-  
+
             {post.sections.map((section, sectionIndex) => (
               <div key={sectionIndex}>
                 <h3 className="text-[18px] font-[500]">
                   {section.sectionTitle}
                 </h3>
-  
+
                 <p className="text-[16px]">{section.content}</p>
               </div>
             ))}
           </div>
         ))}
       </div>
-  
+
       {/* Phần hiển thị comment và gửi comment */}
       <div className="col-span-2" style={{ position: "sticky", top: 0 }}>
         {posts.map((post, index) => (
@@ -196,7 +227,7 @@ function PostPage() {
               backgroundColor: "#f9f9f9",
             }}
           >
-            <h1 className="text-[15px] font-[600]">Bình luận</h1> 
+            <h1 className="text-[15px] font-[600]">Bình luận</h1>
             {/* Phần hiển thị comment */}
             <div className="comments-section" style={styles.commentsSection}>
               {postComments[post.id] && (
@@ -232,6 +263,7 @@ function PostPage() {
                           </div>
                         )}
                         <p className="text-[14px] font-bold">{comment.user}</p>
+                        {console.log('cmt',comment.user)}
                       </div>
                       <p className="text-[14px]">{comment.content}</p>
                       <p className="italic opacity-80">
@@ -243,7 +275,7 @@ function PostPage() {
                 </div>
               )}
             </div>
-  
+
             {/* Phần gửi comment */}
             <div className="new-comment" style={styles.newComment}>
               <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
@@ -282,7 +314,6 @@ function PostPage() {
       </div>
     </div>
   );
-  
 }
 
 const styles = {

@@ -101,7 +101,9 @@ const HomePage = () => {
             arrImages={[slide1, slide2, slide3]}
             style={{ width: "100%", minWidth: "300px", maxWidth: "100%" }}
           />
-          <h1 className="text-[20px] font-[700] mt-[15px] mb-4">
+          <h1 className="text-[20px] font-[700] mt-[25px] mb-4"
+          style={{ borderBottom: '1px solid #ccc', width: '100%', marginBottom: '40px', paddingBottom: '20px' }}
+          >
             {" "}
             Sản phẩm bán chạy
           </h1>
@@ -122,6 +124,7 @@ const HomePage = () => {
                 type={product.type}
                 unit={product.unit}
                 id={product._id}
+                selled={product.selled}
                 promotion={product.promotion}
                 style={{ minWidth: "200px" }}
               />
@@ -148,7 +151,9 @@ const HomePage = () => {
           className="text-left mt-[20px] mb-4 ml-4"
           style={{ maxWidth: "1200px", width: "100%", margin: "0 auto" }}
         >
-          <h2 className="text-[20px] font-[700] mb-[25px]">
+          <h2 className="text-[20px] font-[700] mb-[25px] mt-[30px]"
+          style={{ borderBottom: '1px solid #ccc', width: '100%', marginBottom: '40px', paddingBottom: '20px' }}
+          >
             Hệ thống của hàng
           </h2>
         </div>

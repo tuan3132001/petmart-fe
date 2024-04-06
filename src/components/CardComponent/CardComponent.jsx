@@ -7,14 +7,27 @@ import * as PromotionService from "../../services/PromotionService";
 const CardComponent = (props) => {
   const [promotions, setPromotions] = useState([]);
 
-  const { costPrice, countInStock, description, image, name, price, status, type, unit, id ,promotion} = props;
+  const {
+    selled,
+    costPrice,
+    countInStock,
+    description,
+    image,
+    name,
+    price,
+    status,
+    type,
+    unit,
+    id,
+    promotion,
+  } = props;
   const navigate = useNavigate();
 
   const handelDetailsProduct = (id) => {
     navigate(`/product-details/${id}`);
   };
   useEffect(() => {
-    fetchPromotionAll()
+    fetchPromotionAll();
   }, []);
   const fetchPromotionAll = async () => {
     try {
@@ -27,9 +40,8 @@ const CardComponent = (props) => {
   };
 
   const findPromotionById = (promotionId) => {
-    return promotions.find(promotion => promotion._id === promotionId);
+    return promotions.find((promotion) => promotion._id === promotionId);
   };
-  
 
   // Lấy dữ liệu khuyến mãi cho sản phẩm
   const productPromotion = findPromotionById(promotion);
@@ -47,28 +59,36 @@ const CardComponent = (props) => {
           <img
             className="object-center h-full w-full"
             alt="example"
-            src="https://www.petmart.vn/wp-content/uploads/2021/06/thuc-an-cho-meo-truong-thanh-royal-canin-regular-fit-321-400x400.jpg"
+            src={image}
           />
         </div>
       </div>
       <div className="h-1/2 px-2">
-      {promotions.length > 0 && productPromotion && (
-        <div className="bg-[#ffe97a] w-[40px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
-          <span className="text-[#bc2848] text-[12px] font-[roboto] font-[500] block">-{productPromotion.discount}%</span>
-        </div>
-         )}
+        {promotions.length > 0 && productPromotion && (
+          <div className="bg-[#ffe97a] w-[40px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
+            <span className="text-[#bc2848] text-[12px] font-[roboto] font-[500] block">
+              -{productPromotion.discount}%
+            </span>
+          </div>
+        )}
         <div className="mt-4">
           <div className="font-[400] font-[roboto] text-[15px] mb-2 leading-[1.4em] text-[#000000]">
             {name}
           </div>
           <span className="text-[#bc2848] text-[1.8rem] font-[roboto] font-bold">
             {convertPrice(price)}
-           
           </span>
-          {/* Hiển thị phần description */}
-          <div className="text-[15px] mt-2">Mô tả: {description}</div>
-          {/* Hiển thị phần status */}
-          <div className="text-[15px] mt-2">Tình trạng: {status}</div>
+        
+          <div className="text-[15px] mt-2">
+            {" "}
+            <span className=" text-[rgb(120,120,120)]">
+              {" "}
+            Đã bán {selled === 0 ? 0 : selled}+
+            </span>
+          </div>
+
+         
+          <div className="text-[15px] mt-2"><span className="font-[500]">Trạng thái:</span> <span className="text-[green]">{status}</span></div>
         </div>
       </div>
     </Card>

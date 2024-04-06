@@ -21,7 +21,19 @@ export const WrapperValue = styled.div`
   width: fit-content;
   border-radius: 6px;
   margin-top: 4px;
-  font-weight: bold;
+  font-weight: 500 ;
+`
+
+export const WrapperValueTotal = styled.div`
+  background: rgb(240, 248, 255);
+  border: 1px solid rgb(194, 225, 255);
+  padding: 10px;
+  width: fit-content;
+  border-radius: 6px;
+  margin-top: 4px;
+  font-weight: 500 ;
+  font-size: 16px;
+  color: red;
 `
 
 export const WrapperContainer = styled.div`
@@ -94,7 +106,7 @@ export const WrapperTotal = styled.div`
 `
 
 export const Lable = styled.span`
-  font-size: 12px;
+  font-size: 15px;
   color: #000;
   font-weight: bold
 `
@@ -112,4 +124,45 @@ export const WrapperRadio = styled(Radio.Group)`
   flex-direction: column;
   gap: 10px;
   justify-content: center;
+`
+
+
+export const WrapperInfoUser = styled.div`
+  .name-info {
+    font-size: 13px;
+    color: rgb(36, 36, 36);
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .address,.phone-info,.delivery-info,.delivery-fee,.payment-info {
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .name-delivery {
+    color: rgb(234, 133, 0); 
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .status-payment {
+    margin-top: 8px;
+    color: rgb(234, 133, 0); 
+  }
+`
+
+export const WrapperContentInfo = styled.div`
+  height: 118px;
+  width: 320px;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 10px;
+`
+
+export const WrapperLabel = styled.div`
+  color: red;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  
 `
