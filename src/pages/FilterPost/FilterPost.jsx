@@ -12,7 +12,7 @@ export const FilterPost = () => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(null);
   const [selectedTagIndex, setSelectedTagIndex] = useState(null);
   const [topSellingProducts, setTopSellingProducts] = useState([]);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     fetchPosts();
@@ -24,7 +24,6 @@ export const FilterPost = () => {
 
   const fetchProductAllSelled = async () => {
     try {
-
       const res = await ProductService.getAllProductSelled();
       const products = res.data;
       // Sắp xếp sản phẩm theo số lượng bán giảm dần
@@ -54,7 +53,6 @@ export const FilterPost = () => {
     fetchTopSellingProducts();
   }, []);
 
-
   const fetchComments = async (postId) => {
     try {
       const res = await PostService.getAllComment(postId);
@@ -66,7 +64,7 @@ export const FilterPost = () => {
     }
   };
 
- const fetchPosts = async () => {
+  const fetchPosts = async () => {
     try {
       setLoading(true); // Bắt đầu fetching dữ liệu, hiển thị loading
       const res = await PostService.getAllPost();
@@ -77,6 +75,7 @@ export const FilterPost = () => {
           return {
             id: post._id,
             title: post.title,
+            createdAt: post.createdAt,
             user: post.user,
             sections: post.sections.map((section) => ({
               sectionTitle: section.sectionTitle,
@@ -149,66 +148,70 @@ export const FilterPost = () => {
     <div className="grid grid-cols-6 gap-4 ml-[20px] mt-[40px]">
       {/* Menu bên trái */}
       <div
-        className="col-span-6 md:col-span-2 sticky top-[80px] "
-        style={{ overflowY: "auto", minHeight: "calc(100vh - 80px)" }}
+        className="col-span-6 md:col-span-2 sticky top-0"
+        style={{...styles.postContainer}}
       >
         <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold mb-[30px]">
           Chuyên mục bài viết
         </h4>
         <div className="flex flex-col gap-[12px] text-[15px]">
           {/* Danh sách thể loại */}
-          <Spin spinning={loading}> {/* Hiển thị loading nếu đang fetching dữ liệu */}
-          <ul>
-            <li
-              className={`menu-item ${
-                selectedCategoryIndex === null ? "font-bold" : ""
-              }`}
-              style={{
-                borderBottom: "1px solid #ccc",
-                paddingBottom: "10px",
-                marginBottom: "12px",
-                width: "360px",
-                transition: "background-color 0.3s ease",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedCategory("");
-                setSelectedCategoryIndex(null);
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "")}
-            >
-              Tất cả thể loại
-            </li>
-            {[...new Set(posts.map((post) => post.category))].map(
-              (category, index) => (
-                <li
-                  key={index}
-                  className={`menu-item ${
-                    selectedCategory === category ? "font-bold" : ""
-                  }`}
-                  style={{
-                    borderBottom: "1px solid #ccc",
-                    paddingBottom: "10px",
-                    marginBottom: "12px",
-                    width: "360px",
-                    transition: "background-color 0.3s ease",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setSelectedCategoryIndex(index);
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "#f0f0f0")
-                  }
-                  onMouseLeave={(e) => (e.target.style.backgroundColor = "")}
-                >
-                  {category} ({countPostsInCategory(category)})
-                </li>
-              )
-            )}
-          </ul>
+          <Spin spinning={loading}>
+            {" "}
+            {/* Hiển thị loading nếu đang fetching dữ liệu */}
+            <ul>
+              <li
+                className={`menu-item ${
+                  selectedCategoryIndex === null ? "font-bold" : ""
+                }`}
+                style={{
+                  borderBottom: "1px solid #ccc",
+                  paddingBottom: "10px",
+                  marginBottom: "12px",
+                  width: "360px",
+                  transition: "background-color 0.3s ease",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setSelectedCategory("");
+                  setSelectedCategoryIndex(null);
+                }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#f0f0f0")
+                }
+                onMouseLeave={(e) => (e.target.style.backgroundColor = "")}
+              >
+                Tất cả thể loại
+              </li>
+              {[...new Set(posts.map((post) => post.category))].map(
+                (category, index) => (
+                  <li
+                    key={index}
+                    className={`menu-item ${
+                      selectedCategory === category ? "font-bold" : ""
+                    }`}
+                    style={{
+                      borderBottom: "1px solid #ccc",
+                      paddingBottom: "10px",
+                      marginBottom: "12px",
+                      width: "360px",
+                      transition: "background-color 0.3s ease",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setSelectedCategoryIndex(index);
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.backgroundColor = "#f0f0f0")
+                    }
+                    onMouseLeave={(e) => (e.target.style.backgroundColor = "")}
+                  >
+                    {category} ({countPostsInCategory(category)})
+                  </li>
+                )
+              )}
+            </ul>
           </Spin>
         </div>
         <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold mt-[30px] mb-[30px]">
@@ -287,11 +290,11 @@ export const FilterPost = () => {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.querySelector(".text-container").style.color =
-                    "#007bff"; 
+                    "#007bff";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.querySelector(".text-container").style.color =
-                    "inherit"; 
+                    "inherit";
                 }}
               >
                 <img
@@ -305,7 +308,7 @@ export const FilterPost = () => {
                   style={{
                     overflowWrap: "break-word",
                     flex: "1",
-                    transition: "color 0.3s ease", 
+                    transition: "color 0.3s ease",
                   }}
                 >
                   <p className="font-[500] text-[15px] mb-1">{product.name}</p>
@@ -336,6 +339,16 @@ export const FilterPost = () => {
                   />
                 </div>
               )}
+              <div className="bg-[#3e3ed9] w-[50px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
+                <span className="text-[white] text-[12px] font-[roboto] font-[500] block">
+                  {new Date(post.createdAt).getDate()} TH{" "}
+                  {String(new Date(post.createdAt).getMonth() + 1).padStart(
+                    2,
+                    "0"
+                  )}
+                </span>
+              </div>
+
               <h3 className="text-[15px] font-bold mb-2">{post.title}</h3>
               <p
                 className="text-gray-600 overflow-hidden text-[14px]"
@@ -356,4 +369,18 @@ export const FilterPost = () => {
       </div>
     </div>
   );
+};
+
+const styles = {
+  postContainer: {
+    position: "sticky",
+    top: "80px", // hoặc số pixel tương ứng
+    overflowY: "auto",
+    minHeight: "calc(100vh - 80px)",
+    maxWidth: "800px",
+    margin: "0 auto",
+    padding: "20px",
+    borderRadius: "5px",
+    backgroundColor: "white",
+  },
 };

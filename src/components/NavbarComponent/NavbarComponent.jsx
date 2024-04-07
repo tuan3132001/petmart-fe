@@ -73,10 +73,10 @@ const NavbarComponent = () => {
 
   return (
     <div>
-      <h4 className="text-[rgb(56,56,61)] text-[15px] font-bold text-center mb-[10px]">
+      <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold text-center mb-[10px]">
         Loại sản phẩm
       </h4>
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[15px]">
         {typeProducts.map((item) => (
           <div
             key={item}

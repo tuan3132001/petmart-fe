@@ -11,6 +11,7 @@ function PostPage() {
   const [postComments, setPostComments] = useState({});
   const [commentContents, setCommentContents] = useState({});
   const [usersInfo, setUsersInfo] = useState([]);
+  const [expandedComments, setExpandedComments] = useState({});
   const user = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,11 +30,11 @@ function PostPage() {
   }, []);
 
   useEffect(() => {
-    const initialCommentContents = {};
+    const initialExpandedComments = {};
     posts.forEach((post) => {
-      initialCommentContents[post.id] = "";
+      initialExpandedComments[post.id] = false;
     });
-    setCommentContents(initialCommentContents);
+    setExpandedComments(initialExpandedComments);
   }, [posts]);
 
   const handleChangeCommentContent = (postId, content) => {
@@ -68,6 +69,7 @@ function PostPage() {
         id: res.data._id,
         title: res.data.title,
         user: res.data.user,
+        createdAt: res.data.createdAt,
         sections: res.data.sections.map((section) => ({
           sectionTitle: section.sectionTitle,
           content: section.content,
@@ -96,10 +98,12 @@ function PostPage() {
         // Thực hiện việc so sánh id của người dùng trong comment với id đã lưu từ usersInfo
         const commentsWithUserInfo = res.data.map((comment) => {
           const userInfo = usersInfo.find((user) => user._id === comment.user);
-          console.log('user',userInfo)
+
           return {
             ...comment,
-            user: userInfo ? userInfo?.information?.name || userInfo.email : comment.user,
+            user: userInfo
+              ? userInfo?.information?.name || userInfo.email
+              : comment.user,
             avatar: userInfo ? userInfo?.information?.avatar : null,
           };
         });
@@ -113,8 +117,6 @@ function PostPage() {
       throw new Error(error);
     }
   };
-  
-  
 
   const handleSubmitComment = async (userId, postId, token) => {
     const commentContent = commentContents[postId];
@@ -150,6 +152,14 @@ function PostPage() {
       }
     }
   };
+
+  const handleToggleExpandComments = (postId) => {
+    setExpandedComments((prevExpandedComments) => ({
+      ...prevExpandedComments,
+      [postId]: !prevExpandedComments[postId],
+    }));
+  };
+
   const handleGoBack = () => {
     navigate("/post");
   };
@@ -174,6 +184,25 @@ function PostPage() {
             <h2 className=" font-[700] text-center text-[25px] mb-[15px]">
               {post.title}
             </h2>
+            <h3 className="text-[13px] font-[400]">
+              POSTED ON{" "}
+              <span className="text-blue-700">
+                {new Date(post.createdAt).toLocaleString()}
+              </span>{" "}
+              BY{" "}
+              <span
+                className="text-blue-700 cursor-pointer"
+                onClick={() => navigate("/")}
+                style={{
+                  transition: "color 0.3s",
+                }}
+                onMouseEnter={(e) => (e.target.style.color = "#0044cc")}
+                onMouseLeave={(e) => (e.target.style.color = "")}
+              >
+                PETMART - CỬA HÀNG THÚ CƯNG
+              </span>
+            </h3>
+
             <h3 className="text-[14px] mt-[20px]">
               <span className="font-[500]">Thể loại:</span>{" "}
               <span className="text-blue-700">{post.category}</span>
@@ -217,7 +246,8 @@ function PostPage() {
       </div>
 
       {/* Phần hiển thị comment và gửi comment */}
-      <div className="col-span-2" style={{ position: "sticky", top: 0 }}>
+      <div className="col-span-2" style={{ position: "sticky", top: 0, overflowY: "auto", maxHeight: "calc(100vh - 45px)" }}>
+
         {posts.map((post, index) => (
           <div
             key={index}
@@ -232,49 +262,69 @@ function PostPage() {
             <div className="comments-section" style={styles.commentsSection}>
               {postComments[post.id] && (
                 <div>
-                  {postComments[post.id].map((comment, index) => (
-                    <div key={index} className="comment" style={styles.comment}>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        {comment.avatar ? (
-                          <img
-                            src={comment.avatar}
-                            alt="Avatar"
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                              borderRadius: "50%",
-                              marginRight: "10px",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                              borderRadius: "50%",
-                              marginRight: "10px",
-                              backgroundColor: "#f0f0f0",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <UserOutlined style={{ color: "black" }} />
-                          </div>
-                        )}
-                        <p className="text-[14px] font-bold">{comment.user}</p>
-                        {console.log('cmt',comment.user)}
+                  {postComments[post.id]
+                    .slice(0, expandedComments[post.id] ? undefined : 5) // Chỉ hiển thị 5 bình luận đầu tiên hoặc tất cả nếu đã mở rộng
+                    .map((comment, index) => (
+                      <div
+                        key={index}
+                        className="comment"
+                        style={styles.comment}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          {comment.avatar ? (
+                            <img
+                              src={comment.avatar}
+                              alt="Avatar"
+                              style={{
+                                width: "25px",
+                                height: "25px",
+                                borderRadius: "50%",
+                                marginRight: "10px",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: "25px",
+                                height: "25px",
+                                borderRadius: "50%",
+                                marginRight: "10px",
+                                backgroundColor: "#f0f0f0",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <UserOutlined style={{ color: "black" }} />
+                            </div>
+                          )}
+                          <p className="text-[14px] font-bold">
+                            {comment.user}
+                          </p>
+                        </div>
+                        <p className="text-[14px]">{comment.content}</p>
+                        <p className="italic opacity-80">
+                          Posted at:{" "}
+                          {new Date(comment.createdAt).toLocaleString()}
+                        </p>
                       </div>
-                      <p className="text-[14px]">{comment.content}</p>
-                      <p className="italic opacity-80">
-                        Posted at:{" "}
-                        {new Date(comment.createdAt).toLocaleString()}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             </div>
+            {/* Nếu có nhiều hơn 5 bình luận, hiển thị nút Xem thêm */}
+            {postComments[post.id] &&
+              postComments[post.id].length > 5 && (
+                <Button
+                  className="text-[12px]"
+                  type="link"
+                  onClick={() => handleToggleExpandComments(post.id)}
+                >
+                  {expandedComments[post.id]
+                    ? "Ẩn bớt bình luận"
+                    : "Xem thêm bình luận"}
+                </Button>
+              )}
 
             {/* Phần gửi comment */}
             <div className="new-comment" style={styles.newComment}>
