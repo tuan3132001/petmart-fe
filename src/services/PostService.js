@@ -29,6 +29,30 @@ export const postComment = async (userId,commentContent,postId,token) => {
     return res.data
 }
 
+export const deleteComment = async (userId,cmtId,token) => {
+    const res = await axios.delete(`http://localhost:3000/comment/delete/${userId}/${cmtId}`,
+    {
+        headers: {
+            token: `Bearer ${token}`,
+          },    
+    }
+);
+    return res.data
+}
+
+export const updateComment = async (userId,cmtId,token,data) => {
+    console.log('data',userId)
+    const res = await axios.put(`http://localhost:3000/comment/update/${userId}/${cmtId}`,
+    data,
+    {
+        headers: {
+            token: `Bearer ${token}`,
+          },    
+    }
+);
+    return res.data
+}
+
 export const getDetailsPost = async (id) => {
     const res = await axios.get(`http://localhost:3000/post/get-detail-post/${id}`)
     return res.data

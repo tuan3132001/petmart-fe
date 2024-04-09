@@ -12,7 +12,9 @@ function PostPage() {
   const [commentContents, setCommentContents] = useState({});
   const [usersInfo, setUsersInfo] = useState([]);
   const [expandedComments, setExpandedComments] = useState({});
+  
   const user = useSelector((state) => state.user);
+  
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -36,6 +38,8 @@ function PostPage() {
     });
     setExpandedComments(initialExpandedComments);
   }, [posts]);
+
+ 
 
   const handleChangeCommentContent = (postId, content) => {
     setCommentContents((prevState) => ({
@@ -160,6 +164,20 @@ function PostPage() {
     }));
   };
 
+  const handleDeleteComment = async ( commentId, token, userId) => {  
+    try {
+      await PostService.deleteComment(userId, commentId, token);
+     
+      fetchComments();
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      message.error("Đã xảy ra lỗi khi xóa bình luận");
+    }
+  };
+
+ 
+  
+
   const handleGoBack = () => {
     navigate("/post");
   };
@@ -246,8 +264,15 @@ function PostPage() {
       </div>
 
       {/* Phần hiển thị comment và gửi comment */}
-      <div className="col-span-2" style={{ position: "sticky", top: 0, overflowY: "auto", maxHeight: "calc(100vh - 45px)" }}>
-
+      <div
+        className="col-span-2"
+        style={{
+          position: "sticky",
+          top: 0,
+          overflowY: "auto",
+          maxHeight: "calc(100vh - 45px)",
+        }}
+      >
         {posts.map((post, index) => (
           <div
             key={index}
@@ -307,24 +332,35 @@ function PostPage() {
                           Posted at:{" "}
                           {new Date(comment.createdAt).toLocaleString()}
                         </p>
+                        {user.name === comment.user && (
+                          <Button
+                            className="text-[12px]"
+                            type="link"
+                            onClick={() =>
+                              handleDeleteComment( comment._id, user.access_token, user.id)
+                            }
+                          >
+                    
+                            Xóa
+                          </Button>
+                        )}
                       </div>
                     ))}
                 </div>
               )}
             </div>
             {/* Nếu có nhiều hơn 5 bình luận, hiển thị nút Xem thêm */}
-            {postComments[post.id] &&
-              postComments[post.id].length > 5 && (
-                <Button
-                  className="text-[12px]"
-                  type="link"
-                  onClick={() => handleToggleExpandComments(post.id)}
-                >
-                  {expandedComments[post.id]
-                    ? "Ẩn bớt bình luận"
-                    : "Xem thêm bình luận"}
-                </Button>
-              )}
+            {postComments[post.id] && postComments[post.id].length > 5 && (
+              <Button
+                className="text-[12px]"
+                type="link"
+                onClick={() => handleToggleExpandComments(post.id)}
+              >
+                {expandedComments[post.id]
+                  ? "Ẩn bớt bình luận"
+                  : "Xem thêm bình luận"}
+              </Button>
+            )}
 
             {/* Phần gửi comment */}
             <div className="new-comment" style={styles.newComment}>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import * as ProductService from "../../services/ProductService";
 import { convertPrice } from "../../utils";
 import { Spin } from "antd";
+
 export const FilterPost = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -133,7 +134,6 @@ export const FilterPost = () => {
   const handleDetailPost = (postId) => {
     navigate(`/postDetail/${postId}`);
     fetchComments(postId);
-    console.log("post", postId);
   };
   useEffect(() => {
     if (filteredPosts.length > 0) {
@@ -142,14 +142,13 @@ export const FilterPost = () => {
   }, [filteredPosts]);
   const handelDetailsProduct = (id) => {
     navigate(`/product-details/${id}`);
-    console.log("id", id);
   };
+
   return (
-    <div className="grid grid-cols-6 gap-4 ml-[20px] mt-[40px]">
+    <div className="grid grid-cols-6 gap-4 ml-[20px] mt-[40px] ">
       {/* Menu bên trái */}
       <div
-        className="col-span-6 md:col-span-2 sticky top-0"
-        style={{...styles.postContainer}}
+        className="col-span-6 md:col-span-2" 
       >
         <h4 className="text-[rgb(56,56,61)] text-[20px] font-bold mb-[30px]">
           Chuyên mục bài viết
@@ -371,16 +370,4 @@ export const FilterPost = () => {
   );
 };
 
-const styles = {
-  postContainer: {
-    position: "sticky",
-    top: "80px", // hoặc số pixel tương ứng
-    overflowY: "auto",
-    minHeight: "calc(100vh - 80px)",
-    maxWidth: "800px",
-    margin: "0 auto",
-    padding: "20px",
-    borderRadius: "5px",
-    backgroundColor: "white",
-  },
-};
+
