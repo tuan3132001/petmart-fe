@@ -37,9 +37,10 @@ function App() {
 
   UserService.axiosJWT.interceptors.request.use(
     async (config) => {
+      console.log("Interceptor is called"); // Thêm log ở đây
       const currentTime = new Date();
       const { decoded } = handleDecoded();
-
+  
       if (decoded?.exp < currentTime.getTime() / 1000) {
         const data = await UserService.refreshToken();
         config.headers["token"] = `Bearer ${data?.access_token}`;
@@ -50,6 +51,7 @@ function App() {
       return Promise.reject(err);
     }
   );
+  
 
   const handleGetDetailsUser = async (id, token) => {
     

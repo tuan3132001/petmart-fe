@@ -5,6 +5,8 @@ import {
   CaretDownOutlined,
   ShoppingCartOutlined,
   SolutionOutlined,
+  ContactsOutlined,
+  HomeOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -96,15 +98,44 @@ const HeaderComponent = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <Row className="pl-20 pr-120 bg-transparent items-center h-[150px] w-full gap-[16px] flex flex-nowrap justify-between">
-        <Col span={6}>
+        <Col span={3}>
           <img
             src="https://www.petmart.vn/wp-content/uploads/2020/09/petmart-logo-trang.png"
             alt=""
             className="w-[250px] h-[66.28px] box-border cursor-pointer transition-transform duration-300 transform hover:scale-110"
             onClick={() => navigate("/")}
-          />
+          />       
         </Col>
-        <Col span={10}>
+        <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+            <div>
+              <span
+                className="font-[500]
+                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                onClick={() => navigate("/")}
+              >
+                {" "}
+                <HomeOutlined />
+                Home
+              </span>
+            </div>
+          </div>
+          <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+            <div>
+              <span
+                className="font-[500]
+                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                onClick={() => navigate("/introduction")}
+              >
+                {" "}
+                <ContactsOutlined />
+                Giới thiệu
+              </span>
+            </div>
+          </div>
+
+
+        <Col span={9}>
+          
           <ButtonInputSearch
             size="large"
             placeholder="Tìm kiếm thông tin tại đây..."
@@ -113,7 +144,7 @@ const HeaderComponent = () => {
             className="hover:bg-gray-200 transition-colors duration-300"
           />
         </Col>
-        <Col span={8} className="flex items-center ml-[40px]">
+        <Col span={7} className="flex items-center ml-[10px]">
           <Loading isPending={loading}>
             <div className="flex items-center text-white text-[12px]">
               {userAvatar ? (
@@ -190,26 +221,6 @@ const HeaderComponent = () => {
               </span>
             </div>
           </div>
-
-          {/* <div className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
-            <span
-              className="font-[500]
-              text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
-            >
-              {" "}
-              Hotline
-            </span>
-
-            <div>
-              <span
-                className="font-[500]
-                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
-              >
-                {" "}
-                0362019318
-              </span>
-            </div>
-          </div> */}
         </Col>
       </Row>
     </div>

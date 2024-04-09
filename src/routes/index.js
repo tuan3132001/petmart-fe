@@ -2,6 +2,7 @@
 import DetailsOrderPage from "../pages/DetailOrderPage/DetailOrderPage";
 import { FilterPost } from "../pages/FilterPost/FilterPost";
 import HomePage from "../pages/HomePage/HomePage";
+import { IntroductionPage } from "../pages/IntroductionPage/IntroductionPage";
 import MyOrderPage from "../pages/MyOrder/MyOrder";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import OrderPage from "../pages/OrderPage/OrderPage";
@@ -85,6 +86,11 @@ export const routes = [
     {
         path: '/details-order/:id',
         page: DetailsOrderPage,
+        isShowHeader: true
+    },
+    {
+        path: '/introduction',
+        page: IntroductionPage,
         isShowHeader: true
     },
     {
