@@ -154,7 +154,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             <span>Giao đến </span>
             {user?.address && user?.city ? (
               <span className="text-[15px]  leading-[24px] font-[500]  underline truncate text-[blue] ">
-                {user.address} {user.city}
+                {user.address}, {user.city}
               </span>
             ) : (
               <span onClick={handleUpdate} className="cursor-pointer text-[15px]  leading-[24px] font-[500]  underline truncate text-[red] ">

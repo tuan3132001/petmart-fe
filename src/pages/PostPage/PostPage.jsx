@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as PostService from "../../services/PostService";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import * as message from "../../components/Message/Message";
 import { SendOutlined, UserOutlined, LeftOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
@@ -12,9 +12,14 @@ function PostPage() {
   const [commentContents, setCommentContents] = useState({});
   const [usersInfo, setUsersInfo] = useState([]);
   const [expandedComments, setExpandedComments] = useState({});
-  
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedCommentContent, setEditedCommentContent] = useState("");
+  const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
+    useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+
   const user = useSelector((state) => state.user);
-  
+
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -39,7 +44,36 @@ function PostPage() {
     setExpandedComments(initialExpandedComments);
   }, [posts]);
 
- 
+  const showDeleteConfirmation = (commentId) => {
+    setDeletingCommentId(commentId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setDeletingCommentId(null);
+    setDeleteConfirmationVisible(false);
+  };
+
+  const handleEditComment = (commentId, content) => {
+    setEditingCommentId(commentId);
+    setEditedCommentContent(content);
+  };
+
+  const handleUpdateComment = async (commentId, token, userId) => {
+    try {
+      await PostService.updateComment(userId, commentId, token, {
+        content: editedCommentContent,
+      });
+      // Cập nhật lại nội dung bình luận sau khi đã cập nhật thành công
+      fetchComments();
+      // Đặt lại state để kết thúc chế độ chỉnh sửa
+      setEditingCommentId(null);
+      setEditedCommentContent("");
+    } catch (error) {
+      console.error("Error updating comment:", error);
+      message.error("Đã xảy ra lỗi khi cập nhật bình luận");
+    }
+  };
 
   const handleChangeCommentContent = (postId, content) => {
     setCommentContents((prevState) => ({
@@ -164,19 +198,16 @@ function PostPage() {
     }));
   };
 
-  const handleDeleteComment = async ( commentId, token, userId) => {  
+  const handleDeleteComment = async (commentId, token, userId) => {
     try {
       await PostService.deleteComment(userId, commentId, token);
-     
+
       fetchComments();
     } catch (error) {
       console.error("Error deleting comment:", error);
       message.error("Đã xảy ra lỗi khi xóa bình luận");
     }
   };
-
- 
-  
 
   const handleGoBack = () => {
     navigate("/post");
@@ -199,7 +230,7 @@ function PostPage() {
               backgroundColor: "#f9f9f9",
             }}
           >
-            <h2 className=" font-[700] text-center text-[25px] mb-[15px]">
+            <h2 className="font-[700] text-center text-[25px] mb-[15px]">
               {post.title}
             </h2>
             <h3 className="text-[13px] font-[400]">
@@ -255,7 +286,6 @@ function PostPage() {
                 <h3 className="text-[18px] font-[500]">
                   {section.sectionTitle}
                 </h3>
-
                 <p className="text-[16px]">{section.content}</p>
               </div>
             ))}
@@ -327,22 +357,82 @@ function PostPage() {
                             {comment.user}
                           </p>
                         </div>
-                        <p className="text-[14px]">{comment.content}</p>
-                        <p className="italic opacity-80">
-                          Posted at:{" "}
-                          {new Date(comment.createdAt).toLocaleString()}
-                        </p>
-                        {user.name === comment.user && (
-                          <Button
-                            className="text-[12px]"
-                            type="link"
-                            onClick={() =>
-                              handleDeleteComment( comment._id, user.access_token, user.id)
-                            }
+                        {editingCommentId === comment._id ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              flex: 1,
+                            }}
                           >
-                    
-                            Xóa
-                          </Button>
+                            <textarea
+                              value={editedCommentContent}
+                              onChange={(e) =>
+                                setEditedCommentContent(e.target.value)
+                              }
+                              placeholder="Chỉnh sửa bình luận"
+                              style={{
+                                ...styles.textArea,
+                                marginRight: "10px",
+                                marginBottom: 0,
+                              }}
+                            />
+                            <Button
+                              onClick={() =>
+                                handleUpdateComment(
+                                  comment._id,
+                                  user.access_token,
+                                  user.id
+                                )
+                              }
+                              style={{
+                                ...styles.submitButton,
+                                marginBottom: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: "40px",
+                                height: "40px",
+                              }}
+                            >
+                              <SendOutlined />
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="text-[14px]">{comment.content}</p>
+                            <p className="italic opacity-80">
+                              {comment.updatedAt ? "Updated at" : "Posted at"}:{" "}
+                              {new Date(
+                                comment.updatedAt || comment.createdAt
+                              ).toLocaleString()}
+                            </p>
+                            {user.name === comment.user && (
+                              <>
+                                <Button
+                                  className="text-[12px] mr-2"
+                                  type="link"
+                                  onClick={() =>
+                                    handleEditComment(
+                                      comment._id,
+                                      comment.content
+                                    )
+                                  }
+                                >
+                                  Chỉnh sửa
+                                </Button>
+                                <Button
+                                  className="text-[12px]"
+                                  type="link"
+                                  onClick={() =>
+                                    showDeleteConfirmation(comment._id)
+                                  }
+                                >
+                                  Xóa
+                                </Button>
+                              </>
+                            )}
+                          </>
                         )}
                       </div>
                     ))}
@@ -398,6 +488,22 @@ function PostPage() {
           </div>
         ))}
       </div>
+      <Modal
+        title="Xác nhận xóa"
+        visible={deleteConfirmationVisible}
+        onCancel={hideDeleteConfirmation}
+        onOk={() => {
+          handleDeleteComment(deletingCommentId, user.access_token, user.id);
+          hideDeleteConfirmation();
+        }}
+        okText="Xóa"
+        cancelText="Hủy"
+        okButtonProps={{
+          style: { backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" },
+        }}
+      >
+        <p>Bạn có chắc chắn muốn xóa bình luận này?</p>
+      </Modal>
     </div>
   );
 }
