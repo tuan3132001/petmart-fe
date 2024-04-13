@@ -18,11 +18,14 @@ export const IntroductionPage = () => {
   };
   return (
     <div>
-        <button onClick={scrollToTop} className="fixed bottom-10 right-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">
-       
-      </button>
-      <h1  ref={introductionRef}
-      className="font-bold text-center mt-[20px]  text-[25px] bg-gray-200 pt-[15px] pb-[15px] ml-[20px] mr-[20px]">
+      <button
+        onClick={scrollToTop}
+        className="fixed bottom-10 right-10 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full"
+      ></button>
+      <h1
+        ref={introductionRef}
+        className="font-bold text-center mt-[20px]  text-[25px] bg-gray-200 pt-[15px] pb-[15px] ml-[20px] mr-[20px]"
+      >
         GIỚI THIỆU VỀ PET MART
       </h1>
       <div className="grid grid-cols-2 gap-4">
@@ -211,9 +214,18 @@ export const IntroductionPage = () => {
           Giấy chứng nhận ĐKKD số: 0106683363 do Sở KH & ĐT Hà Nội cấp ngày
           05/11/2014.
         </p>
-        <li className="mb-[15px] mt-[15px] text-[16px] ml-[25px] text-white">CHI NHÁNH TẠI THÀNH PHỐ HỒ CHÍ MINH – Mã số chi nhánh: 0106683363-001 do Sở KH & ĐT Thành Phố Hồ Chí Minh cấp ngày 17/06/2016.</li>
-        <li className="mb-[15px] text-[16px] ml-[25px] text-white">CHI NHÁNH TẠI THÀNH PHỐ ĐÀ NẴNG – Mã số chi nhánh: 0106683363-002 do Sở KH & ĐT Thành Phố Đà Nẵng cấp ngày 30/08/2018.</li>
-        <li className="mb-[15px] text-[16px] ml-[25px] text-white">CHI NHÁNH TẠI THÀNH PHỐ HẢI PHÒNG – Mã số chi nhánh: 0106683363-003 do Sở KH & ĐT Thành Phố Hải Phòng cấp ngày 20/09/2019.</li>
+        <li className="mb-[15px] mt-[15px] text-[16px] ml-[25px] text-white">
+          CHI NHÁNH TẠI THÀNH PHỐ HỒ CHÍ MINH – Mã số chi nhánh: 0106683363-001
+          do Sở KH & ĐT Thành Phố Hồ Chí Minh cấp ngày 17/06/2016.
+        </li>
+        <li className="mb-[15px] text-[16px] ml-[25px] text-white">
+          CHI NHÁNH TẠI THÀNH PHỐ ĐÀ NẴNG – Mã số chi nhánh: 0106683363-002 do
+          Sở KH & ĐT Thành Phố Đà Nẵng cấp ngày 30/08/2018.
+        </li>
+        <li className="mb-[15px] text-[16px] ml-[25px] text-white">
+          CHI NHÁNH TẠI THÀNH PHỐ HẢI PHÒNG – Mã số chi nhánh: 0106683363-003 do
+          Sở KH & ĐT Thành Phố Hải Phòng cấp ngày 20/09/2019.
+        </li>
       </div>
       <Footer />
     </div>

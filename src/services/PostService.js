@@ -1,21 +1,21 @@
 import axios from "axios";
 import { axiosJWT } from "./UserService";
 export const getAllPost = async () => {
-    const res = await axios.get(`http://localhost:3000/post/get-post`)
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/post/get-post`)
     return res.data
 }
 
 
 
 export const getAllComment = async (postId) => {
-    const res = await axios.get(`http://localhost:3000/comment/get-comment?post=${postId}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/comment/get-comment?post=${postId}`);
     return res.data
 }
 
 
 export const postComment = async (userId,commentContent,postId,token) => {
     console.log('post',token)
-    const res = await axiosJWT.post(`http://localhost:3000/comment/add/${userId}`,
+    const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/comment/add/${userId}`,
     {
         content: commentContent,
         post: postId,  
@@ -30,7 +30,7 @@ export const postComment = async (userId,commentContent,postId,token) => {
 }
 
 export const deleteComment = async (userId,cmtId,token) => {
-    const res = await axios.delete(`http://localhost:3000/comment/delete/${userId}/${cmtId}`,
+    const res = await axios.delete(`${process.env.REACT_APP_API_URL}/comment/delete/${userId}/${cmtId}`,
     {
         headers: {
             token: `Bearer ${token}`,
@@ -42,7 +42,7 @@ export const deleteComment = async (userId,cmtId,token) => {
 
 export const updateComment = async (userId,cmtId,token,data) => {
     console.log('data',userId)
-    const res = await axios.put(`http://localhost:3000/comment/update/${userId}/${cmtId}`,
+    const res = await axios.put(`${process.env.REACT_APP_API_URL}/comment/update/${userId}/${cmtId}`,
     data,
     {
         headers: {
@@ -54,6 +54,6 @@ export const updateComment = async (userId,cmtId,token,data) => {
 }
 
 export const getDetailsPost = async (id) => {
-    const res = await axios.get(`http://localhost:3000/post/get-detail-post/${id}`)
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/post/get-detail-post/${id}`)
     return res.data
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import InputForm from "../../components/InputForm/InputForm";
 import { Image } from "antd";
 import imageLogo from "../../assets/images/logo.png";
-import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
@@ -10,7 +9,8 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { updateUser } from "../../redux/slides/userSlide";
-
+import { Button } from "antd";
+import {CloseOutlined } from "@ant-design/icons";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -25,7 +25,6 @@ const SignInPage = () => {
     if (data?.newRequest?.status === "OK") {
       if (location?.state) {
         navigate(location?.state);
-        
       } else {
         navigate("/");
       }
@@ -39,9 +38,11 @@ const SignInPage = () => {
         if (decoded?.id) {
           handleGetDetailsUser(decoded?.id, data?.newRequest?.access_token);
         }
-      }else{
-        console.log("LocalStorage trống. Không thể thực hiện các hành động sau khi lấy dữ liệu.");
-      return;
+      } else {
+        console.log(
+          "LocalStorage trống. Không thể thực hiện các hành động sau khi lấy dữ liệu."
+        );
+        return;
       }
     }
   }, [data]);
@@ -52,7 +53,6 @@ const SignInPage = () => {
     // const refreshToken = JSON.parse(storage)
     const res = await UserService.getDetailsUser(id, token);
     dispatch(updateUser({ ...res?.data, access_token: token }));
-    
   };
 
   const handleNavigateSignUp = () => {
@@ -70,12 +70,21 @@ const SignInPage = () => {
       password,
     });
   };
+
+  const handleGoBack = () => {
+    navigate("/");
+  };
+
   return (
     <div className="flex items-center justify-center bg-[rgba(0,0,0,0.53)] h-[100vh]">
+      <div className="absolute top-[160px] left-[800px] ">
+        <Button  type="text" icon={<CloseOutlined />} onClick={handleGoBack}>
+        </Button>
+      </div>
       <div className="w-[800px] h-[445px] rounded-[6px] bg-white flex">
         <div className="flex-1 p-[40px] md:p-[45px] pb-[24px] flex flex-col">
-          <h4 className="font-[500] text-[24px] ">Xin chào,</h4>
-          <p className="mt-[15px] mb-[10px] text-[15px] font-[400]">
+          <h4 className="font-bold text-[24px] ">Xin chào,</h4>
+          <p className="mt-[15px] mb-[15px] text-[15px] font-[400] text-blue-500">
             Đăng nhập và tạo tài khoản
           </p>
           <InputForm
@@ -93,14 +102,8 @@ const SignInPage = () => {
                 top: "8px",
                 right: "8px",
               }}
-            >
-              {isShowPassword ? (
-                <EyeFilled className="text-[13px]" />
-              ) : (
-                <EyeInvisibleFilled className="text-[13px]" />
-              )}
-            </span>
-            
+            ></span>
+
             <InputForm
               className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
               placeholder="password"
@@ -112,17 +115,20 @@ const SignInPage = () => {
           {data?.newRequest?.status === "ERR" && (
             <span style={{ color: "red" }}>{data?.newRequest?.message}</span>
           )}
-           {data?.status === "ERR" && (
+          {data?.status === "ERR" && (
             <span style={{ color: "red" }}>{data?.message}</span>
           )}
           <Loading isPending={isPending}>
             <button
               onClick={handleSignIn}
               className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
-                !email || !password
-                  ? "bg-[#ccc] cursor-not-allowed pointer-events-none"
-                  : "cursor-pointer"
+                !email || !password ? "cursor-not-allowed" : "cursor-pointer"
               }`}
+              style={
+                !email || !password
+                  ? { backgroundColor: "#ccc", cursor: "not-allowed" }
+                  : {}
+              }
             >
               Đăng nhập
             </button>
@@ -147,7 +153,7 @@ const SignInPage = () => {
             alt="logo"
             style={{ width: "203px", height: "203px" }}
           />
-          <h4 className="text-[17px] text-[#0B74E5] leading-[1.15] text-normal">
+          <h4 className="text-[20px] text-[#0B74E5] font-bold leading-[1.15] text-normal">
             Mua sắm tại PetMart
           </h4>
         </div>

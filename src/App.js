@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlide";
 import * as UserService from "../src/services/UserService";
-import Footer from "./components/FooterComponent/FooterComponent";
+
 function App() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();

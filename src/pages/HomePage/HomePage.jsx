@@ -13,14 +13,12 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useDebounce } from "../../hooks/useDebounce";
 import Footer from "../../components/FooterComponent/FooterComponent";
 
-
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct, 1000);
   const [typeProducts, setTypeProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(6);
-
   const fetchProductAll = async (context) => {
     const limit = context?.queryKey && context?.queryKey[1];
     const search = context?.queryKey && context?.queryKey[2];

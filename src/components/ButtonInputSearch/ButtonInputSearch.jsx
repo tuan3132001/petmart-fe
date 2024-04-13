@@ -11,13 +11,10 @@ const ButtonInputSearch = (props) => {
     textbutton,
     backgroundColorInput = '#fff',
     backgroundColorButton = 'rgb(0, 56, 168)',
-    onChange  
   } = props;
-  const [searchValue, setSearchValue] = useState('');
 
-  const handleSearch = () => {
-    onChange(searchValue); 
-  };
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -32,30 +29,22 @@ const ButtonInputSearch = (props) => {
             size={size}
             style={{
               backgroundColor: backgroundColorInput,
-              borderRadius: '20px 0 0 20px',
-              borderRight: 'none', 
+              borderRadius: '20px',
+              border: '2px solid', // Add border to make sure it's visible
+              borderColor: isFocused ? backgroundColorButton : 'transparent', // Change border color when focused
+              transition: 'border-color 0.2s ease-in-out', // Add transition for smooth effect
+              transform: isFocused ? 'scale(1.05)' : 'scale(1)', // Scale effect when focused
+              transition: 'transform 0.2s ease-in-out', // Add transition for smooth effect
+              '&:hover': {
+                transform: 'scale(1.05)', // Scale effect when hovered
+              }
             }}
             className="rounded-none"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)} 
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            {...props}
           />
         </div>
-        <Button
-          style={{
-            borderRadius: 0,
-            backgroundColor: backgroundColorButton,
-            borderTopRightRadius: '10px',
-            borderBottomRightRadius: '10px',
-            border: !bordered && 'none',
-            color: 'white',
-          }}
-          size={size}
-          icon={<SearchOutlined/>}
-          onClick={handleSearch} 
-
-        >
-          <span>{textbutton}</span>
-        </Button>
       </div>
     </motion.div>
   );

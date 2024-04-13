@@ -80,11 +80,11 @@ const NavbarComponent = () => {
         {typeProducts.map((item) => (
           <div
             key={item}
-            className={`relative cursor-pointer transition duration-300 ease-in-out ${selectedType === item ? 'text-blue-500' : 'text-[rgb(56,56,61)]'} flex items-center mb-4`}
+            className={`font-[500] text-[15px] relative cursor-pointer transition duration-300 ease-in-out ${selectedType === item ? 'text-blue-500' : 'text-[rgb(56,56,61)]'} flex items-center mb-4`}
             onClick={() => setSelectedType(item)}
           >
             <TypeProduct name={item} />
-            <span className="ml-1">{typeProductIcons[item]}</span>
+            <span className="ml-1 ">{typeProductIcons[item]}</span>
           </div>
         ))}
       </div>

@@ -132,7 +132,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
           </Row>
         </Col>
         <Col span={14} className="pl-[10px]">
-          <div className="font-[400] font-[roboto] text-[15px] mb-2 leading-[1.4em] text-[#000000]">
+          <div className="font-[400] font-[roboto] text-[20px] mb-2 leading-[1.4em] text-[#000000]">
             {productDetails?.name}
           </div>
           <div>

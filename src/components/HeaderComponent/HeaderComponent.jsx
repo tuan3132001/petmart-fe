@@ -87,10 +87,10 @@ const HeaderComponent = () => {
     navigate("/sign-in");
   };
 
-  const onSearch = (value) => {
-    setSearch(value);
-    dispatch(searchProduct(value));
-  };
+  const onSearch = (e) => {
+    setSearch(e.target.value)
+    dispatch(searchProduct(e.target.value));
+  }
 
   return (
     <div
@@ -109,21 +109,21 @@ const HeaderComponent = () => {
         <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
             <div>
               <span
-                className="font-[500]
-                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                className="font-bold
+                text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
                 onClick={() => navigate("/")}
               >
                 {" "}
                 <HomeOutlined />
-                Home
+                Trang chủ
               </span>
             </div>
           </div>
           <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
             <div>
               <span
-                className="font-[500]
-                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                className="font-bold
+                text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
                 onClick={() => navigate("/introduction")}
               >
                 {" "}
@@ -144,7 +144,7 @@ const HeaderComponent = () => {
             className="hover:bg-gray-200 transition-colors duration-300"
           />
         </Col>
-        <Col span={7} className="flex items-center ml-[10px]">
+        <Col span={7} className="flex items-center ml-[10px] mr-[10px]">
           <Loading isPending={loading}>
             <div className="flex items-center text-white text-[12px]">
               {userAvatar ? (
@@ -161,7 +161,7 @@ const HeaderComponent = () => {
                 <>
                   <Popover content={content} trigger="click" open={isOpenPopup}>
                     <div
-                      className="cursor-pointer text-[15px] font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                      className="cursor-pointer text-[16px] font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
                       onClick={() => setIsOpenPopup((prev) => !prev)}
                     >
                       {userName?.length ? userName : user?.email}
@@ -173,11 +173,11 @@ const HeaderComponent = () => {
                   className="ml-2 cursor-pointer"
                   onClick={handleNavigateLogin}
                 >
-                  <span className="text-[15px] cursor-pointer font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                  <span className="text-[16px] cursor-pointer font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
                     Đăng nhập/Đăng ký
                   </span>
                   <div>
-                    <span className="text-[15px] font-[500] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                    <span className="text-[16px] font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
                       Tài khoản
                     </span>
                     <CaretDownOutlined className=" text-blue-800 hover:text-blue-950 transition-colors duration-300" />
@@ -186,11 +186,11 @@ const HeaderComponent = () => {
               )}
             </div>
           </Loading>
-          <div className=" text-[12px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+          <div className=" text-[16px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
             <div>
               <span
-                className="font-[500]
-                text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                className="font-bold
+                text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
                 onClick={() => navigate("/post")}
               >
                 {" "}
@@ -216,7 +216,7 @@ const HeaderComponent = () => {
               <ShoppingCartOutlined className="text-[30px] text-blue-800 hover:text-blue-950 transition-colors duration-300" />
             </Badge>
             <div className="ml-2">
-              <span className="font-[500] text-[15px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+              <span className="font-bold text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
                 Giỏ hàng
               </span>
             </div>

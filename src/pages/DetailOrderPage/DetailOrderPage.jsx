@@ -113,7 +113,9 @@ const DetailsOrderPage = () => {
                 )}
                 <div className="text-[15px]">
                   <span className="font-[500]">Phí giao hàng: </span>{" "}
-                  <span className="font-[400] text-[15px] text-[red] ">{convertPrice(data?.shippingPrice)}</span>
+                  <span className="font-[400] text-[15px] text-[red] ">
+                    {convertPrice(data?.shippingPrice)}
+                  </span>
                 </div>
               </WrapperContentInfo>
             </WrapperInfoUser>
@@ -138,7 +140,11 @@ const DetailsOrderPage = () => {
                 justifyContent: "space-between",
               }}
             >
-              <div style={{ width: "670px", fontWeight: "bold", fontSize: '15px' }}>Sản phẩm</div>
+              <div
+                style={{ width: "670px", fontWeight: "bold", fontSize: "15px" }}
+              >
+                Sản phẩm
+              </div>
               <WrapperItemLabel>Giá tiền</WrapperItemLabel>
               <WrapperItemLabel>Số lượng</WrapperItemLabel>
               <WrapperItemLabel>Giảm giá</WrapperItemLabel>

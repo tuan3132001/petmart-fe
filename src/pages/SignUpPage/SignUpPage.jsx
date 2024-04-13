@@ -8,6 +8,8 @@ import * as UserService from "../../services/UserService";
 import * as message from "../../components/Message/Message";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
+import { Button } from "antd";
+import {CloseOutlined } from "@ant-design/icons";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -19,13 +21,13 @@ const SignUpPage = () => {
   const mutation = useMutationHooks((data) => UserService.signupUser(data));
   const { data, isPending } = mutation;
   useEffect(() => {
-    if (data?.status === 'OK') {
-      message.success()
-      handleNavigateSignIn()
-    } else if (data?.status === 'ERR'){
-      message.error()
+    if (data?.status === "OK") {
+      message.success();
+      handleNavigateSignIn();
+    } else if (data?.status === "ERR") {
+      message.error();
     }
-  }, [data])
+  }, [data]);
 
   const handleOnchangeEmail = (value) => {
     setEmail(value);
@@ -40,14 +42,23 @@ const SignUpPage = () => {
     navigate("/Sign-in");
   };
   const handleSignUp = () => {
-    mutation.mutate({ email, password, confirmPassword })
+    mutation.mutate({ email, password, confirmPassword });
   };
+
+  const handleGoBack = () => {
+    navigate("/");
+  };
+  
   return (
     <div className="flex items-center justify-center bg-[rgba(0,0,0,0.53)] h-[100vh]">
+       <div className="absolute top-[160px] left-[800px] ">
+        <Button  type="text" icon={<CloseOutlined />} onClick={handleGoBack}>
+        </Button>
+      </div>
       <div className="w-[800px] h-[445px] rounded-[6px] bg-white flex">
         <div className="flex-1 p-[40px] md:p-[45px] pb-[24px] flex flex-col">
           <h4 className="font-[500] text-[24px] ">Xin chào,</h4>
-          <p className="mt-[15px] mb-[10px] text-[15px] font-[400]">
+          <p className="mt-[15px] mb-[10px] text-[15px] text-blue-500 font-[400]">
             Tạo tài khoản
           </p>
           <InputForm
@@ -65,13 +76,7 @@ const SignUpPage = () => {
                 top: "8px",
                 right: "8px",
               }}
-            >
-              {isShowPassword ? (
-                <EyeFilled className="text-[13px]" />
-              ) : (
-                <EyeInvisibleFilled className="text-[13px]" />
-              )}
-            </span>
+            ></span>
             <InputForm
               className="border-b mb-[10px] border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
               placeholder="password"
@@ -89,13 +94,7 @@ const SignUpPage = () => {
                 top: "8px",
                 right: "8px",
               }}
-            >
-              {isShowConfirmPassword ? (
-                <EyeFilled className="text-[13px]" />
-              ) : (
-                <EyeInvisibleFilled className="text-[13px]" />
-              )}
-            </span>
+            ></span>
             <InputForm
               className='className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"'
               placeholder="comfirm password"
@@ -104,15 +103,21 @@ const SignUpPage = () => {
               onChange={handleOnchangeConfirmPassword}
             />
           </div>
-          {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+          {data?.status === "ERR" && (
+            <span style={{ color: "red" }}>{data?.message}</span>
+          )}
           <Loading isPending={isPending}>
             <button
               onClick={handleSignUp}
-              className={`bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px] ${
-                !email || !password || !confirmPassword
-                  ? "cursor-not-allowed bg-[#ccc] pointer-events-none"
-                  : "cursor-pointer"
-              }`}
+              className="bg-red-500 hover:bg-red-700 text-white text-[15px] leading-[28px] py-2 px-4 rounded-[4px] font-[700] border-none transition duration-300 ease-in-out h-[48px] w-[100%] my-[26px] mb-[10px]"
+              style={{
+                cursor:
+                  !email || !password || !confirmPassword
+                    ? "not-allowed"
+                    : "pointer",
+                backgroundColor:
+                  !email || !password || !confirmPassword ? "#ccc" : null,
+              }}
             >
               Đăng ký
             </button>
@@ -134,7 +139,7 @@ const SignUpPage = () => {
             alt="logo"
             style={{ width: "203px", height: "203px" }}
           />
-          <h4 className="text-[17px] text-[#0B74E5] leading-[1.15] text-normal">
+          <h4 className="text-[20px] text-[#0B74E5] font-bold leading-[1.15] text-normal">
             Mua sắm tại PetMart
           </h4>
         </div>
