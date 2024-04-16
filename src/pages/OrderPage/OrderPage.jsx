@@ -107,7 +107,7 @@ const OrderPage = () => {
   }, [order, user]);
 
   const diliveryPriceMemo = useMemo(() => {
-    if (priceMemo >= 20000 && priceMemo < 500000) {
+    if (priceMemo >= 200000 && priceMemo < 500000) {
       return 10000;
     } else if (priceMemo >= 500000 || order?.orderItemsSlected?.length === 0) {
       return 0;
@@ -400,7 +400,7 @@ const OrderPage = () => {
                         <span
                           style={{
                             color: "rgb(255, 66, 78)",
-                            fontSize: "13px",
+                            fontSize: "14px",
                             fontWeight: 500,
                           }}
                         >

@@ -5,7 +5,7 @@ import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import { isJsonString } from "./utils";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "./redux/slides/userSlide";
+import {resetUser, updateUser } from "./redux/slides/userSlide";
 import * as UserService from "../src/services/UserService";
 
 function App() {
@@ -35,30 +35,37 @@ function App() {
     return { decoded, storageData };
   };
 
-  UserService.axiosJWT.interceptors.request.use(
-    async (config) => {
-      console.log("Interceptor is called"); // Thêm log ở đây
-      const currentTime = new Date();
-      const { decoded } = handleDecoded();
-  
-      if (decoded?.exp < currentTime.getTime() / 1000) {
-        const data = await UserService.refreshToken();
-        config.headers["token"] = `Bearer ${data?.access_token}`;
+  UserService.axiosJWT.interceptors.request.use(async (config) => {
+    const currentTime = new Date();
+    const { decoded } = handleDecoded();
+    if (decoded?.exp < currentTime.getTime() / 1000) {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          const data = await UserService.refreshToken(refreshToken);
+          config.headers['token'] = `Bearer ${data?.access_token}`;
+          localStorage.setItem('access_token', data.access_token);
+        } catch (error) {
+          console.error("Lỗi khi làm mới token:", error);
+          dispatch(resetUser());
+        }
+      } else {
+        dispatch(resetUser());
       }
-      return config;
-    },
-    (err) => {
-      return Promise.reject(err);
     }
-  );
+    return config;
+  }, (err) => {
+    return Promise.reject(err);
+  });
+
   
 
   const handleGetDetailsUser = async (id, token) => {
-    
-    const res = await UserService.getDetailsUser(id, token);
-    dispatch(updateUser({ ...res?.data, access_token: token }));
-    setIsLoading(false);
-  };
+    let storageRefreshToken = localStorage.getItem('refresh_token')
+    const refreshToken = JSON.parse(storageRefreshToken)
+    const res = await UserService.getDetailsUser(id, token)
+    dispatch(updateUser({ ...res?.data, access_token: token, refreshToken: refreshToken}))
+  }
   return (
     
       <BrowserRouter>

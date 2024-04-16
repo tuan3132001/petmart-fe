@@ -105,6 +105,7 @@ const MyOrderPage = () => {
                 whiteSpace: "nowrap",
                 marginLeft: "10px",
                 fontSize: "15px",
+                fontWeight: 'bold'
               }}
             >
               {order?.name}
@@ -207,22 +208,22 @@ const MyOrderPage = () => {
                         size={40}
                         styleButton={{
                           height: "36px",
-                          border: "1px solid #9255FD",
+                          border: "1px solid red",
                           borderRadius: "4px",
                         }}
                         textbutton={"Hủy đơn hàng"}
-                        styleTextButton={{ color: "#9255FD", fontSize: "15px" }}
+                        styleTextButton={{ color: "red", fontSize: "15px" }}
                       ></ButtonComponent>
                       <ButtonComponent
                         onClick={() => handleDetailsOrder(order?._id, user?.id)}
                         size={40}
                         styleButton={{
                           height: "36px",
-                          border: "1px solid #9255FD",
+                          border: "1px solid green",
                           borderRadius: "4px",
                         }}
                         textbutton={"Xem chi tiết"}
-                        styleTextButton={{ color: "#9255FD", fontSize: "15px" }}
+                        styleTextButton={{ color: "green", fontSize: "15px" }}
                       ></ButtonComponent>
                     </div>
                   </WrapperFooterItem>

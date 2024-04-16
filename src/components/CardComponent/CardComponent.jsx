@@ -4,6 +4,7 @@ import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { convertPrice } from "../../utils";
 import * as PromotionService from "../../services/PromotionService";
+import "./CardComponent.css";
 const CardComponent = (props) => {
   const [promotions, setPromotions] = useState([]);
 
@@ -65,30 +66,46 @@ const CardComponent = (props) => {
       </div>
       <div className="h-1/2 px-2">
         {promotions.length > 0 && productPromotion && (
-          <div className="bg-[#ffe97a] w-[40px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
-            <span className="text-[#bc2848] text-[12px] font-[roboto] font-[500] block">
+          <div className="bg-[#ffe97a] w-[40px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0 flex justify-center items-center">
+            <span
+              className={`promotion-text text-[#bc2848] text-[12px] font-[roboto] font-[500] block ${
+                productPromotion ? "animate-promotion" : ""
+              }`}
+            >
               -{productPromotion.discount}%
             </span>
           </div>
         )}
         <div className="mt-4">
-          <div className="font-[400] font-[roboto] text-[15px] mb-2 leading-[1.4em] text-[#000000]">
+          <div
+            className="font-[400] font-[roboto] text-[18px] mb-2 leading-[1.4em] text-[#000000]"
+            style={{
+              maxHeight: "2.8em",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
             {name}
           </div>
           <span className="text-[#bc2848] text-[1.8rem] font-[roboto] font-bold">
             {convertPrice(price)}
           </span>
-        
-          <div className="text-[15px] mt-2">
+
+          <div className="text-[15px] ">
             {" "}
-            <span className=" text-[rgb(120,120,120)]">
+            <span className="text-[rgb(120,120,120)]">
               {" "}
-            Đã bán {selled === 0 ? 0 : selled}+
+              Đã bán {selled || 0}+
             </span>
           </div>
 
-         
-          <div className="text-[15px] mt-2"><span className="font-[500]">Trạng thái:</span> <span className="text-[green]">{status}</span></div>
+          <div className="text-15px mt-2">
+            <span className="font-500">Trạng thái:</span>{" "}
+            <span style={{ color: status === "available" ? "green" : "red" }}>
+              {status === "available" ? "Có sẵn" : "Hết hàng"}
+            </span>
+          </div>
         </div>
       </div>
     </Card>

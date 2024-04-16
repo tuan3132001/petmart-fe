@@ -1,13 +1,17 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const TypeProduct = ({name}) => {
+const TypeProduct = ({ name, id }) => {
   const navigate = useNavigate()
   const handleNavigateType = (type) => {
-    navigate(`/product/${type.normalize('NFD').replace(/[\u0300-\u036f]/g, '')?.replace(/ /g, '_')}`, {state: type})
+    if (type) {
+      // Check if type is not undefined or null before calling replace
+      const cleanType = type.replace(/[\u0300-\u036f]/g, '')?.replace(/ /g, '_');
+      navigate(`/product/${cleanType}`, { state: type })
+    }
   }
   return (
-    <div className="cursor-pointer" onClick={() => handleNavigateType(name)}>{name}</div>
+    <div className="cursor-pointer" onClick={() => handleNavigateType(id)}>{name}</div>
   )
 }
 

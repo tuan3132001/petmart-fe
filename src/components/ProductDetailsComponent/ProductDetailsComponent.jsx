@@ -27,7 +27,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
     setNumProduct(Number(value));
   };
   useEffect(() => {
-    fetchPromotionAll()
+    fetchPromotionAll();
   }, []);
   const fetchPromotionAll = async () => {
     try {
@@ -39,12 +39,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
     }
   };
   const findPromotionById = (promotionId) => {
-    return promotions.find(promotion => promotion._id === promotionId);
+    return promotions.find((promotion) => promotion._id === promotionId);
   };
-  
 
   // Lấy dữ liệu khuyến mãi cho sản phẩm
-  
+
   useEffect(() => {
     initFacebookSDK();
   }, []);
@@ -61,7 +60,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
     enabled: !!idProduct,
   });
   const productPromotion = findPromotionById(productDetails?.promotion);
- 
+
   const handleChangeCount = (type, limited) => {
     if (type === "increase") {
       if (!limited && productDetails?.countInStock > 0) {
@@ -76,10 +75,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
   const handleUpdate = () => {
     if (!user?.id) {
       navigate("/sign-in", { state: location?.pathname });
-    }else{
-      navigate('/profile-user')
+    } else {
+      navigate("/profile-user");
     }
-  }
+  };
 
   const handleAddOrderProduct = () => {
     if (!user?.id) {
@@ -105,7 +104,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
       }
     }
   };
- 
+
   return (
     <Loading isPending={isPending}>
       <Row className="p-[16px] bg-white rounded-[4px]">
@@ -114,11 +113,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
           className="border-r-[1px] border-solid border-[#e5e5e5] pr-[8px]"
         >
           <img
-            className='w-[507px] h-[507px]'
+            className="max-w-full max-h-[450px]"
             src={productDetails?.image}
             alt=""
             preview={false}
           />
+
           <Row className="h-[100px] w-[full] flex pt-[10px]">
             <Col span={4} style={{ flexBasis: "unset" }}>
               <Image
@@ -128,7 +128,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 preview="false"
               />
             </Col>
-      
           </Row>
         </Col>
         <Col span={14} className="pl-[10px]">
@@ -141,8 +140,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             <StarFilled className="text-[13px] text-yellow-400 ml-1" />
             <span className="ml-1 text-[rgb(120,120,120)]">
               {" "}
-              | Đã bán{" "}
-              {productDetails?.selled === 0 ? 0 : productDetails?.selled}+
+              | Đã bán {productDetails?.selled || 0}+
             </span>
           </div>
           <div className="bg-[rgb(250,250,250)] rounded-[4px] ">
@@ -157,7 +155,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 {user.address}, {user.city}
               </span>
             ) : (
-              <span onClick={handleUpdate} className="cursor-pointer text-[15px]  leading-[24px] font-[500]  underline truncate text-[red] ">
+              <span
+                onClick={handleUpdate}
+                className="cursor-pointer text-[15px]  leading-[24px] font-[500]  underline truncate text-[red] "
+              >
                 Cập nhật thông tin
               </span>
             )}
@@ -203,9 +204,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             </div>
           </div>
           <div>
-            <span className="text-[gray]">
-              Mô tả: {productDetails?.description}
-            </span>
+            <span className="text-[gray]">Mô tả: {productDetails?.note}</span>
           </div>
           <div className="gap-[30px] text-center mt-[60px]">
             <button

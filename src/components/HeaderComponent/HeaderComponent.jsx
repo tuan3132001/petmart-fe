@@ -6,7 +6,7 @@ import {
   ShoppingCartOutlined,
   SolutionOutlined,
   ContactsOutlined,
-  HomeOutlined
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,10 @@ const HeaderComponent = () => {
   const [userAvatar, setUserAvatar] = useState("");
   const [isOpenPopup, setIsOpenPopup] = useState(false);
   const [search, setSearch] = useState("");
+  const [placeholder, setPlaceholder] = useState(
+    "Tìm kiếm thông tin tại đây..."
+  );
+  const [index, setIndex] = useState(0);
   const user = useSelector((state) => state.user);
 
   const content = (
@@ -50,6 +54,20 @@ const HeaderComponent = () => {
       </p>
     </div>
   );
+
+  useEffect(() => {
+    const placeholderText = "Tìm kiếm thông tin tại đây...";
+    const timer = setTimeout(() => {
+      if (index < placeholderText.length) {
+        setPlaceholder(placeholderText.slice(0, index + 1));
+        setIndex(index + 1);
+      } else {
+        setIndex(0);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [index]);
 
   useEffect(() => {
     setLoading(true);
@@ -88,9 +106,9 @@ const HeaderComponent = () => {
   };
 
   const onSearch = (e) => {
-    setSearch(e.target.value)
+    setSearch(e.target.value);
     dispatch(searchProduct(e.target.value));
-  }
+  };
 
   return (
     <div
@@ -104,41 +122,39 @@ const HeaderComponent = () => {
             alt=""
             className="w-[250px] h-[66.28px] box-border cursor-pointer transition-transform duration-300 transform hover:scale-110"
             onClick={() => navigate("/")}
-          />       
+          />
         </Col>
         <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
-            <div>
-              <span
-                className="font-bold
+          <div>
+            <span
+              className="font-bold
                 text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
-                onClick={() => navigate("/")}
-              >
-                {" "}
-                <HomeOutlined />
-                Trang chủ
-              </span>
-            </div>
+              onClick={() => navigate("/")}
+            >
+              {" "}
+              <HomeOutlined />
+              Trang chủ
+            </span>
           </div>
-          <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
-            <div>
-              <span
-                className="font-bold
+        </div>
+        <div className=" text-[12px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+          <div>
+            <span
+              className="font-bold
                 text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
-                onClick={() => navigate("/introduction")}
-              >
-                {" "}
-                <ContactsOutlined />
-                Giới thiệu
-              </span>
-            </div>
+              onClick={() => navigate("/introduction")}
+            >
+              {" "}
+              <ContactsOutlined />
+              Giới thiệu
+            </span>
           </div>
-
+        </div>
 
         <Col span={9}>
-          
           <ButtonInputSearch
             size="large"
-            placeholder="Tìm kiếm thông tin tại đây..."
+            placeholder={placeholder}
             textbutton="Tìm kiếm"
             onChange={onSearch}
             className="hover:bg-gray-200 transition-colors duration-300"
@@ -161,7 +177,7 @@ const HeaderComponent = () => {
                 <>
                   <Popover content={content} trigger="click" open={isOpenPopup}>
                     <div
-                      className="cursor-pointer text-[16px] font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+                      className="cursor-pointer text-[16px] font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300 truncate"
                       onClick={() => setIsOpenPopup((prev) => !prev)}
                     >
                       {userName?.length ? userName : user?.email}
@@ -173,11 +189,11 @@ const HeaderComponent = () => {
                   className="ml-2 cursor-pointer"
                   onClick={handleNavigateLogin}
                 >
-                  <span className="text-[16px] cursor-pointer font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                  <span className="text-[16px] cursor-pointer font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300 truncate">
                     Đăng nhập/Đăng ký
                   </span>
                   <div>
-                    <span className="text-[16px] font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+                    <span className="text-[16px] font-bold whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300 truncate">
                       Tài khoản
                     </span>
                     <CaretDownOutlined className=" text-blue-800 hover:text-blue-950 transition-colors duration-300" />
@@ -186,11 +202,11 @@ const HeaderComponent = () => {
               )}
             </div>
           </Loading>
-          <div className=" text-[16px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
+          <div className="text-[16px] ml-[20px] cursor-pointer text-blue-800 hover:text-blue-950 transition-colors duration-300">
             <div>
               <span
                 className="font-bold
-                text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300"
+        text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300 truncate"
                 onClick={() => navigate("/post")}
               >
                 {" "}
@@ -216,7 +232,7 @@ const HeaderComponent = () => {
               <ShoppingCartOutlined className="text-[30px] text-blue-800 hover:text-blue-950 transition-colors duration-300" />
             </Badge>
             <div className="ml-2">
-              <span className="font-bold text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300">
+              <span className="font-bold text-[16px] whitespace-nowrap text-blue-800 hover:text-blue-950 transition-colors duration-300 truncate">
                 Giỏ hàng
               </span>
             </div>

@@ -175,6 +175,7 @@ const DetailsOrderPage = () => {
                         whiteSpace: "nowrap",
                         marginLeft: "10px",
                         height: "70px",
+                        fontWeight: 'bold'
                       }}
                     >
                       {order?.name}

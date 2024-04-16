@@ -35,7 +35,7 @@ export const userSlide = createSlice({
             state.id = _id || '';
             state.access_token = access_token || '';
             state.role = role || '';
-            state.refreshToken = refreshToken ? refreshToken : state.refreshToken;
+            state.refreshToken = refreshToken || '';
         },
         resetUser: (state) => {
             state.name = '';

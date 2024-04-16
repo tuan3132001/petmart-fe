@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import * as ProductService from "../../services/ProductService";
 import { convertPrice } from "../../utils";
 import { Spin } from "antd";
-
+import "./style.css";
 export const FilterPost = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -19,9 +19,27 @@ export const FilterPost = () => {
     fetchPosts();
   }, []);
 
-  // useEffect(() => {
-  //   fetchComments(postId);
-  // }, [postId]);
+  useEffect(() => {
+    // Lặp lại hiệu ứng cho từng thẻ li
+    const blinkLi = () => {
+      const liElements = document.querySelectorAll(".menu-item");
+      liElements.forEach((li, index) => {
+        setTimeout(() => {
+          li.classList.add("blinking-li");
+        }, index * 2000); // Khoảng thời gian giữa mỗi thẻ là 2 giây (2000ms)
+      });
+    };
+
+    // Kích hoạt hiệu ứng nhấp nháy
+    blinkLi();
+
+    // Lặp lại hiệu ứng sau mỗi chu kỳ
+    const intervalId = setInterval(() => {
+      blinkLi();
+    }, posts.length * 2000); // Lặp lại sau mỗi khoảng thời gian bằng tổng thời gian của mỗi chu kỳ
+
+    return () => clearInterval(intervalId); // Xóa interval khi component bị unmounted
+  }, [posts]);
 
   const fetchProductAllSelled = async () => {
     try {
@@ -31,7 +49,6 @@ export const FilterPost = () => {
       const sortedProducts = products.sort((a, b) => b.selled - a.selled);
       // Chọn ra 4 sản phẩm đầu tiên
       const topSellingProducts = sortedProducts.slice(0, 4);
-      console.log("Top selling products:", topSellingProducts);
       return topSellingProducts;
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -69,6 +86,7 @@ export const FilterPost = () => {
     try {
       setLoading(true); // Bắt đầu fetching dữ liệu, hiển thị loading
       const res = await PostService.getAllPost();
+      console.log("res", res.data);
       const formattedPosts = await Promise.all(
         res.data.map(async (post) => {
           const commentRes = await PostService.getAllComment(post._id);
@@ -85,11 +103,14 @@ export const FilterPost = () => {
             category: post.category,
             views: post.views,
             tags: post.tags,
-            images: post.images.map((image) => ({
-              url: image.url,
-              alt: image.alt,
-              key: image.url,
-            })),
+            images:
+              post.images.length > 0
+                ? [
+                    {
+                      url: post.images[0],
+                    },
+                  ]
+                : [],
             comments: comments,
           };
         })
@@ -123,6 +144,9 @@ export const FilterPost = () => {
 
   // Tính số lượng bài viết trong mỗi thể loại
   const countPostsInCategory = (category) => {
+    if (!posts || posts.length === 0) {
+      return 0;
+    }
     return posts.filter((post) => post.category === category).length;
   };
 
@@ -329,15 +353,15 @@ export const FilterPost = () => {
               {post.images.length > 0 && (
                 <div className="flex justify-center">
                   <img
-                    src={post.images[0].image}
+                    src={post.images[0].url}
                     style={{ width: "470px", height: "264px" }}
-                    alt={post.images[0].alt}
+                    alt="ảnh"
                     className="mb-2 rounded-lg"
                   />
                 </div>
               )}
-              <div className="bg-[#3e3ed9] w-[50px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0">
-                <span className="text-[white] text-[12px] font-[roboto] font-[500] block">
+              <div className="bg-[#3e3ed9] w-[50px] h-[20px] py-[2px] px-[4px] absolute top-0 right-0 flex justify-center items-center">
+                <span className="text-[white] text-[10px] font-[roboto] font-[500] block">
                   {new Date(post.createdAt).getDate()} TH{" "}
                   {String(new Date(post.createdAt).getMonth() + 1).padStart(
                     2,

@@ -32,7 +32,7 @@ const SignInPage = () => {
         "access_token",
         JSON.stringify(data?.newRequest?.access_token)
       );
-      // localStorage.setItem('refresh_token', JSON.stringify(data?.newRequest?.refresh_token))
+      localStorage.setItem('refresh_token', JSON.stringify(data?.refresh_token))
       if (data?.newRequest?.access_token) {
         const decoded = jwtDecode(data?.newRequest?.access_token);
         if (decoded?.id) {
@@ -48,11 +48,10 @@ const SignInPage = () => {
   }, [data]);
 
   const handleGetDetailsUser = async (id, token) => {
-    // const storage = localStorage.getItem('refresh_token')
-    // console.log(storage, 'storage')
-    // const refreshToken = JSON.parse(storage)
+    const storage = localStorage.getItem('refresh_token')
+    const refreshToken = JSON.parse(storage)
     const res = await UserService.getDetailsUser(id, token);
-    dispatch(updateUser({ ...res?.data, access_token: token }));
+    dispatch(updateUser({ ...res?.data, access_token: token,refreshToken  }));
   };
 
   const handleNavigateSignUp = () => {

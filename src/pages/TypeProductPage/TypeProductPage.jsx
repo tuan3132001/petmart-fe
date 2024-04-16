@@ -15,27 +15,22 @@ const TypeProductPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [panigate, setPanigate] = useState({ page: 0, limit: 10, total: 1 });
-  const fetchProductType = async (type, page, limit) => {
-    try {
-      setLoading(true);
-      const res = await ProductService.getProductType(type, page, limit);
-      if (res?.status === "OK") {
-        setLoading(false);
-        setProducts(res?.data);
-        setPanigate({ ...panigate, total: res?.totalPage });
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    if (state) {
-      fetchProductType(state, panigate.page, panigate.limit);
-    }
-  }, [state, panigate.page, panigate.limit]);
+    const fetchProductAll = async () => {
+      try {
+        setLoading(true);
+        const res = await ProductService.getAllProduct();
+        setProducts(res.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProductAll();
+  }, []);
 
   const onChange = (current, pageSize) => {
     setPanigate({ ...panigate, page: current - 1, limit: pageSize });
@@ -53,7 +48,7 @@ const TypeProductPage = () => {
             }}
           >
             <Col
-              span={4}
+              span={5}
               className="bg-[#fff] mr-[50px] p-[10px] rounded-[6px] h-[fit-content] mt-[20px] w-full"
             >
               <NavbarComponent />
@@ -80,22 +75,27 @@ const TypeProductPage = () => {
                     }
                   })
                   ?.map((product) => {
-                    return (
-                      <CardComponent
-                        key={product._id}
-                        countInStock={product.countInStock}
-                        description={product.description}
-                        image={product.image}
-                        name={product.name}
-                        price={product.price}
-                        status={product.status}
-                        type={product.type}
-                        selled={product.selled}
-                        discount={product.discount}
-                        id={product._id}
-                        promotion={product.promotion}
-                      />
-                    );
+                    if (product?.type === state) {                    
+                      return (
+                        <CardComponent
+                          key={product._id}
+                          countInStock={product.countInStock}
+                          description={product.description}
+                          image={product.image}
+                          name={product.name}
+                          price={product.price}
+                          status={product.status}
+                          type={product.type}
+                          selled={product.selled}
+                          discount={product.discount}
+                          id={product._id}
+                          promotion={product.promotion}
+                        />
+                      );
+                      
+                    } else {
+                      return null;
+                    }
                   })}
               </div>
               <Pagination

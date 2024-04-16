@@ -115,11 +115,14 @@ function PostPage() {
         category: res.data.category,
         views: res.data.views,
         tags: res.data.tags,
-        images: res.data.images.map((image) => ({
-          url: image.url,
-          alt: image.alt,
-          key: image.url,
-        })),
+        images:
+        res.data.images.length > 0
+          ? [
+              {
+                url: res.data.images[0],
+              },
+            ]
+          : [],
         comments: res.data.comment,
       };
       setPosts([formattedPost]);
@@ -269,8 +272,8 @@ function PostPage() {
               {post.images.length > 0 && (
                 <div className="image-wrapper" style={styles.imageWrapper}>
                   <img
-                    src="https://www.petmart.vn/wp-content/uploads/2015/04/cach-tri-ran-cho-meo.jpg"
-                    alt={post.images[0].alt}
+                    src={post.images[0].url}
+                    alt='ảnh'
                     style={{
                       ...styles.image,
                       maxWidth: "100%",

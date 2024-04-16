@@ -1,0 +1,18 @@
+@keyframes pulse {
+    0% {
+      opacity: 1;
+      color: #bc2848; /* Màu nổi bật */
+    }
+    50% {
+      opacity: 0.2; /* Điều chỉnh độ mờ */
+    }
+    100% {
+      opacity: 1;
+      color: #bc2848; /* Màu nổi bật */
+    }
+  }
+  
+  .animate-promotion {
+    animation: pulse 1s infinite;
+  }
+  

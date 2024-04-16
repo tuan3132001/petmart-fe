@@ -1,0 +1,12 @@
+@keyframes blink-color {
+    0% {
+      color: initial; /* Màu sắc ban đầu */
+    }
+    50% {
+      color: blue; /* Màu sắc muốn nhấp nháy */
+    }
+    100% {
+      color: initial; /* Trở lại màu sắc ban đầu */
+    }
+  }
+  
