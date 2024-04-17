@@ -94,6 +94,7 @@ const OrderSucess = () => {
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
+                              fontWeight:'bold'
                             }}
                           >
                             {order?.name}

@@ -105,7 +105,7 @@ const MyOrderPage = () => {
                 whiteSpace: "nowrap",
                 marginLeft: "10px",
                 fontSize: "15px",
-                fontWeight: 'bold'
+                fontWeight: "bold",
               }}
             >
               {order?.name}
@@ -150,37 +150,58 @@ const MyOrderPage = () => {
                     </span>
                     <div>
                       <span
-                        className="text-[15px] font-[500] "
-                        style={{ color: "rgb(255, 66, 78)" }}
+                        style={{
+                          fontSize: "15px",
+                          opacity: "0.7",
+                          fontStyle: "italic",
+                        }}
+                        className="mb-[10px]"
+                      >
+                        <span className="">Thời gian đặt hàng: </span>
+                        {new Date(order?.createdAt).toLocaleString("en-US", {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        })}
+                        , ngày{" "}
+                        {new Date(order?.createdAt).toLocaleDateString("en-US")}
+                      </span>
+                    </div>
+                    <div>
+                      <span
+                        className="text-[15px] font-bold "
+                        style={{ color: "black" }}
                       >
                         Giao hàng:{" "}
                       </span>
                       <span
                         className="text-[15px]"
                         style={{
-                          color: "rgb(90, 32, 193)",
+                          color: order.isDelivered ? "green" : "red",
                           fontWeight: "bold",
                         }}
-                      >{`${
-                        order.isDelivered ? "Đã giao hàng" : "Chưa giao hàng"
-                      }`}</span>
+                      >
+                        {order.isDelivered
+                          ? "Đang giao hàng"
+                          : "Chưa giao hàng"}
+                      </span>
                     </div>
                     <div>
                       <span
-                        className="text-[15px] font-[500]"
-                        style={{ color: "rgb(255, 66, 78)" }}
+                        className="text-[15px] font-bold"
+                        style={{ color: "black" }}
                       >
                         Thanh toán:{" "}
                       </span>
                       <span
                         className="text-[15px]"
                         style={{
-                          color: "rgb(90, 32, 193)",
+                          color: order.isPaid ? "green" : "red",
                           fontWeight: "bold",
                         }}
-                      >{`${
-                        order.isPaid ? "Đã thanh toán" : "Chưa thanh toán"
-                      }`}</span>
+                      >
+                        {order.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+                      </span>
                     </div>
                   </WrapperStatus>
                   {renderProduct(order, user?.id)}
