@@ -46,7 +46,6 @@ const DetailsOrderPage = () => {
     return result;
   }, [data]);
 
-  console.log("data", data);
   const handleGoBack = () => {
     navigate(`/my-order`);
   };
@@ -78,7 +77,7 @@ const DetailsOrderPage = () => {
                 </div>
                 <div className="mb-[10px]">
                   <span className="font-[500] text-[15px]">Địa chỉ: </span>{" "}
-                  <span className="font-[400] text-[15px] text-[red] ">{`${data?.shippingAddress?.address} ${data?.shippingAddress?.city}`}</span>
+                  <span className="font-[400] text-[15px] text-[red] ">{`${data?.shippingAddress?.address}, ${data?.shippingAddress?.district}, ${data?.shippingAddress?.city}`}</span>
                 </div>
                 <div>
                   <span className="font-[500] text-[15px]">Điện thoại: </span>{" "}

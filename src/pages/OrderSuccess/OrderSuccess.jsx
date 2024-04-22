@@ -58,7 +58,7 @@ const OrderSucess = () => {
                     <p class="mb-2">Số điện thoại: {state?.phone}</p>
                     <p class="mb-2">
                       {" "}
-                      Địa chỉ: {state?.address}, {state?.city}
+                      Địa chỉ: {state?.address}, {state?.district}, {state?.city}
                     </p>
                   </WrapperValue>
                 </div>

@@ -40,6 +40,7 @@ const PaymentPage = () => {
     phone: "",
     address: "",
     city: "",
+    district: "",
   });
   const [form] = Form.useForm();
 
@@ -56,6 +57,7 @@ const PaymentPage = () => {
         name: user?.name,
         address: user?.address,
         phone: user?.phone,
+        district: user?.district,
       });
     }
   }, [isOpenModalUpdateInfo]);
@@ -85,16 +87,18 @@ const PaymentPage = () => {
   }, [order, user]);
 
   const diliveryPrice = useMemo(() => {
-    if (priceMemo > 500000) {
-      return 0;
-    } else if (priceMemo > 200000) {
-      return 10000;
-    } else if (priceMemo === 0) {
-      return 0;
+    const hanoiInnerDistricts = ['Ba Đình', 'Hoàn Kiếm', 'Hai Bà Trưng', 'Đống Đa', 'Tây Hồ', 'Cầu Giấy', 'Thanh Xuân', 'Hoàng Mai', 'Long Biên', 'Nam Từ Liêm', 'Bắc Từ Liêm', 'Hà Đông'];
+    const hanoiOuterDistricts = ['Ba Vì', 'Chương Mỹ', 'Đan Phượng', 'Đông Anh', 'Gia Lâm', 'Hoài Đức', 'Mê Linh', 'Mỹ Đức', 'Phú Xuyên', 'Phúc Thọ', 'Quốc Oai', 'Sóc Sơn', 'Thanh Oai', 'Thanh Trì', 'Thường Tín', 'Ứng Hòa'];
+    const userDistrict = user?.district;
+  
+    if (hanoiInnerDistricts.includes(userDistrict) || order?.orderItemsSlected?.length === 0) {
+      return 0; 
+    } else if (hanoiOuterDistricts.includes(userDistrict)) {
+      return 10000; 
     } else {
-      return 20000;
+      return 20000; 
     }
-  }, [priceMemo]);
+  }, [user, order]);
 
   const diliveryPriceMemo = useMemo(() => {
     if (delivery === "fast") {
@@ -116,6 +120,7 @@ const PaymentPage = () => {
       order?.orderItemsSlected &&
       user?.name &&
       user?.address &&
+      user?.district &&
       user?.phone &&
       user?.city &&
       priceMemo &&
@@ -130,6 +135,7 @@ const PaymentPage = () => {
           address: user?.address,
           phone: user?.phone,
           city: user?.city,
+          district: user?.district
         },   
         paymentMethod: payment,
         itemsPrice: priceMemo,
@@ -174,6 +180,7 @@ const PaymentPage = () => {
           address:user?.address,
           phone:user?.phone,
           city:user?.city,
+          district:user?.district,
           delivery,
           payment,
           orders: order?.orderItemsSlected,
@@ -205,6 +212,7 @@ const PaymentPage = () => {
         address: user?.address,
         phone: user?.phone,
         city: user?.city,
+        district: user?.district
       },   
       paymentMethod: payment,
       itemsPrice: priceMemo,
@@ -218,13 +226,13 @@ const PaymentPage = () => {
   };
 
   const handleUpdateInforUser = () => {
-    const { name, address, city, phone } = stateUserDetails;
-    if (name && address && city && phone) {
+    const { name, address, city, phone, district } = stateUserDetails;
+    if (name && address && city && phone && district) {
       mutationUpdate.mutate(
         { id: user?.id, token: user?.access_token, ...stateUserDetails },
         {
           onSuccess: () => {
-            dispatch(updateUser({ name, address, city, phone }));
+            dispatch(updateUser({ name, address, city, phone, district }));
             setIsOpenModalUpdateInfo(false);
           },
         }
@@ -327,7 +335,7 @@ const PaymentPage = () => {
                   <div>
                     <span>Địa chỉ: </span>
                     <span style={{ fontWeight: "bold" }}>
-                      {`${user?.address} ${user?.city}`}{" "}
+                      {`${user?.address}, ${user?.district}, ${user?.city}`}{" "}
                     </span>
                   </div>
                 </WrapperInfo>

@@ -13,7 +13,7 @@ import {
   PlusOutlined,
   LeftOutlined,
 } from "@ant-design/icons";
-import { Button, Checkbox, Form } from "antd";
+import { Button, Checkbox, Form, Select } from "antd";
 import { convertPrice } from "../../utils";
 import ModalComponent from "../../components/ModalComponent/ModalComponent";
 import Loading from "../../components/LoadingComponent/Loading";
@@ -24,15 +24,54 @@ import { updateUser } from "../../redux/slides/userSlide";
 import * as message from "../../components/Message/Message";
 import { useNavigate } from "react-router-dom";
 import StepComponent from "../../components/StepComponent/StepComponent";
+import { provinces } from "./provinces";
 const OrderPage = () => {
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
   const [listChecked, setListChecked] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
+  const [districtOptions, setDistrictOptions] = useState([]);
   const dispatch = useDispatch();
+  const { Option } = Select;
+  const hanoiDistricts  = {
+    "Hà Nội": [
+      "Ba Đình",
+      "Bắc Từ Liêm",
+      "Cầu Giấy",
+      "Đống Đa",
+      "Hà Đông",
+      "Hai Bà Trưng",
+      "Hoàn Kiếm",
+      "Hoàng Mai",
+      "Long Biên",
+      "Nam Từ Liêm",
+      "Tây Hồ",
+      "Thanh Xuân",
+      "Sơn Tây",
+      "Ba Vì",
+      "Chương Mỹ",
+      "Đan Phượng",
+      "Đông Anh",
+      "Gia Lâm",
+      "Hoài Đức",
+      "Mê Linh",
+      "Mỹ Đức",
+      "Phú Xuyên",
+      "Phúc Thọ",
+      "Quốc Oai",
+      "Sóc Sơn",
+      "Thanh Oai",
+      "Thanh Trì",
+      "Thường Tín",
+      "Ứng Hòa",
+    ],
+  };
+
   const [stateUserDetails, setStateUserDetails] = useState({
     name: "",
     phone: "",
+    district: "",
     city: "",
     address: "",
     id: "",
@@ -54,6 +93,59 @@ const OrderPage = () => {
     setListChecked(newListChecked);
   };
 
+  
+
+  const handleCityChange = (value) => {
+    setSelectedCity(value);
+    setStateUserDetails({
+      ...stateUserDetails,
+      city: value,
+      district: "", // Reset giá trị của quận/huyện khi chọn một tỉnh/thành phố mới
+    });
+    
+    // Filter districts based on the selected city
+    if (value === "Hà Nội") {
+      // If Hà Nội is selected, set the district options for Hà Nội
+      setDistrictOptions(hanoiDistricts);
+    } else {
+      // If other provinces are selected, clear the district options
+      setDistrictOptions([]);
+    }
+  };
+  
+  
+
+  const handleDistrictChange = (value) => {
+    setStateUserDetails({
+      ...stateUserDetails,
+      district: value,
+    });
+  };
+
+  <Select value={stateUserDetails.district} onChange={handleDistrictChange}>
+    {hanoiDistricts["Hà Nội"].map((district) => (
+  <Option key={district} value={district}>
+    {district}
+  </Option>
+))}
+  </Select>;
+
+ 
+
+  useEffect(() => {
+    if (selectedCity === "Hà Nội") {
+      setDistrictOptions(hanoiDistricts);
+    } else {
+      setDistrictOptions([]);
+    }
+  }, [selectedCity, hanoiDistricts]);
+
+  const cityOptions = provinces.map((city) => (
+    <Option key={city} value={city}>
+      {city}
+    </Option>
+  ));
+
   const handleChangeCount = (type, idProduct, limited) => {
     if (type === "increase") {
       if (!limited) {
@@ -74,7 +166,9 @@ const OrderPage = () => {
   };
 
   const handleDeleteOrder = (idProduct) => {
-    const orderItem = order.orderItems.find(item => item.product === idProduct);
+    const orderItem = order.orderItems.find(
+      (item) => item.product === idProduct
+    );
     if (orderItem.userId === user.id) {
       dispatch(removeOrderProduct({ idProduct }));
     } else {
@@ -107,14 +201,50 @@ const OrderPage = () => {
   }, [order, user]);
 
   const diliveryPriceMemo = useMemo(() => {
-    if (priceMemo >= 200000 && priceMemo < 500000) {
-      return 10000;
-    } else if (priceMemo >= 500000 || order?.orderItemsSlected?.length === 0) {
+    const hanoiInnerDistricts = [
+      "Ba Đình",
+      "Hoàn Kiếm",
+      "Hai Bà Trưng",
+      "Đống Đa",
+      "Tây Hồ",
+      "Cầu Giấy",
+      "Thanh Xuân",
+      "Hoàng Mai",
+      "Long Biên",
+      "Nam Từ Liêm",
+      "Bắc Từ Liêm",
+      "Hà Đông",
+    ];
+    const hanoiOuterDistricts = [
+      "Ba Vì",
+      "Chương Mỹ",
+      "Đan Phượng",
+      "Đông Anh",
+      "Gia Lâm",
+      "Hoài Đức",
+      "Mê Linh",
+      "Mỹ Đức",
+      "Phú Xuyên",
+      "Phúc Thọ",
+      "Quốc Oai",
+      "Sóc Sơn",
+      "Thanh Oai",
+      "Thanh Trì",
+      "Thường Tín",
+      "Ứng Hòa",
+    ];
+    const userDistrict = user?.district;
+    if (
+      hanoiInnerDistricts.includes(userDistrict) ||
+      order?.orderItemsSlected?.length === 0
+    ) {
       return 0;
+    } else if (hanoiOuterDistricts.includes(userDistrict)) {
+      return 10000;
     } else {
       return 20000;
     }
-  }, [priceMemo, order]);
+  }, [user, order]);
 
   const totalPriceMemo = useMemo(() => {
     return (
@@ -141,7 +271,7 @@ const OrderPage = () => {
     const productsToRemove = order.orderItems
       .filter((item) => item.userId === user.id)
       .map((item) => item.product);
-  
+
     // Gọi action để xóa các orderItem của người dùng hiện tại
     dispatch(removeAllOrderProduct({ listChecked: productsToRemove }));
   };
@@ -152,6 +282,7 @@ const OrderPage = () => {
         city: user?.city,
         name: user?.name,
         address: user?.address,
+        district: user?.district,
         phone: user?.phone,
       });
     }
@@ -176,7 +307,13 @@ const OrderPage = () => {
   const handleAddCard = () => {
     if (!order?.orderItemsSlected?.length) {
       message.error("Vui lòng chọn sản phẩm");
-    } else if (!user?.phone || !user.address || !user.name || !user.city) {
+    } else if (
+      !user?.phone ||
+      !user.address ||
+      !user.name ||
+      !user.city ||
+      !user.district
+    ) {
       setIsOpenModalUpdateInfo(true);
     } else {
       navigate("/payment");
@@ -189,6 +326,7 @@ const OrderPage = () => {
       email: "",
       phone: "",
       city: "",
+      district: "",
     });
     form.resetFields();
     setIsOpenModalUpdateInfo(false);
@@ -225,15 +363,15 @@ const OrderPage = () => {
   const itemsDelivery = [
     {
       title: "20.000 VND",
-      description: "Dưới 200.000 VND",
+      description: "Các tỉnh thành khác",
     },
     {
       title: "10.000 VND",
-      description: "Từ 200.000 VND đến dưới 500.000 VND",
+      description: "Ngoại thành Hà Nội",
     },
     {
       title: "Free ship",
-      description: "Trên 500.000 VND",
+      description: "Nội thành Hà nội",
     },
   ];
   const handleGoBack = () => {
@@ -423,20 +561,18 @@ const OrderPage = () => {
                 <div>
                   <span className="text-[14px]">Địa chỉ: </span>
                   <span className="text-[14px]" style={{ fontWeight: "bold" }}>
-                    {`${user?.address} ${user?.city}`}{" "}
-                  </span>
-                  <span
-                    onClick={handleChangeAddress}
-                    style={{
-                      color: "#9255FD",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Thay đổi
+                    {`${user?.address},${user?.district},${user?.city}`}{" "}
                   </span>
                 </div>
+                <div
+                  style={{ marginTop: "8px" }}
+                  onClick={handleChangeAddress}
+                  className="text-[14px] text-blue-600 cursor-pointer"
+                >
+                  Đổi địa chỉ
+                </div>
               </div>
+
               <div className="py-[17px] px-[20px] border-b-[1px] rounded-l-[6px] border-solid border-gray-200 bg-white rounded-t-[6px] w-full">
                 <div className="flex items-center justify-between">
                   <span className="text-[14px] ">Tạm tính</span>
@@ -543,6 +679,46 @@ const OrderPage = () => {
             </Form.Item>
 
             <Form.Item
+  label="Tỉnh/Thành phố"
+  name="city"
+  rules={[{ required: true, message: "Please select your city!" }]}
+>
+  <Select value={selectedCity} onChange={handleCityChange}>
+    {cityOptions}
+  </Select>
+</Form.Item>
+
+<Form.Item
+  label="Quận/Huyện"
+  name="district"
+  rules={[
+    { required: true, message: "Please select your district!" },
+  ]}
+>
+  {selectedCity === "Hà Nội" ? (
+    // Nếu là Hà Nội, hiển thị Select để chọn quận/huyện
+    <Select
+      value={stateUserDetails.district}
+      onChange={handleDistrictChange}
+    >
+      {hanoiDistricts["Hà Nội"].map((district) => ( // Access the array by key "Hà Nội"
+        <Option key={district} value={district}>
+          {district}
+        </Option>
+      ))}
+    </Select>
+  ) : (
+    // Nếu không phải Hà Nội, hiển thị input để người dùng nhập quận/huyện
+    <InputComponent
+      value={stateUserDetails.district}
+      onChange={handleOnchangeDetails}
+      name="district"
+    />
+  )}
+</Form.Item>
+
+
+            <Form.Item
               label="Số nhà, đường"
               name="address"
               rules={[
@@ -553,17 +729,6 @@ const OrderPage = () => {
                 value={stateUserDetails.address}
                 onChange={handleOnchangeDetails}
                 name="address"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Thành phố"
-              name="city"
-              rules={[{ required: true, message: "Please input your  city!" }]}
-            >
-              <InputComponent
-                value={stateUserDetails.city}
-                onChange={handleOnchangeDetails}
-                name="city"
               />
             </Form.Item>
           </Form>

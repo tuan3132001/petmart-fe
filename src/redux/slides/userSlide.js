@@ -13,6 +13,7 @@ const initialState = {
     gender:'',
     birthday:'',
     city:'',
+    district:'',
 }
 
 export const userSlide = createSlice({
@@ -22,7 +23,7 @@ export const userSlide = createSlice({
         updateUser: (state, action) => {
             const { email, access_token, role, information, _id='', refreshToken = '' } = action.payload;
             if (information) {
-                const { name, address, avatar, phone, gender, birthday, city } = information;
+                const { name, address, avatar, phone, gender, birthday, city, district } = information;
                 state.name = name || '';
                 state.address = address || '';
                 state.phone = phone || '';
@@ -30,6 +31,7 @@ export const userSlide = createSlice({
                 state.gender = gender || '';
                 state.birthday = birthday || '';
                 state.city = city || '';
+                state.district = district || '';
             }
             state.email = email || '';
             state.id = _id || '';
@@ -47,7 +49,8 @@ export const userSlide = createSlice({
             state.id = '';
             state.role = '';
             state.city = '';
-            state.refreshToken = ''
+            state.refreshToken = '';
+            state.district = '';
          },
         
     },

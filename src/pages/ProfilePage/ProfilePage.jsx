@@ -22,7 +22,8 @@ export const ProfilePage = () => {
   const [avatar, setAvatar] = useState("");
   const [gender, setGender] = useState("");
   const [city, setCity] = useState("");
-
+  const [districtName, setDistrictName] = useState(user?.district || "");
+  const [districts, setDistricts] = useState([]);
   const [birthday, setBirthday] = useState(null);
   const navigate = useNavigate();
   const mutation = useMutationHooks((data) => {
@@ -31,6 +32,47 @@ export const ProfilePage = () => {
   });
   const dispatch = useDispatch();
   const { isPending, isSuccess, isError } = mutation;
+  const districtsByProvince = {
+    "Hà Nội": [
+      "Ba Đình",
+      "Bắc Từ Liêm",
+      "Cầu Giấy",
+      "Đống Đa",
+      "Hà Đông",
+      "Hai Bà Trưng",
+      "Hoàn Kiếm",
+      "Hoàng Mai",
+      "Long Biên",
+      "Nam Từ Liêm",
+      "Tây Hồ",
+      "Thanh Xuân",
+      "Sơn Tây",
+      "Ba Vì",
+      "Chương Mỹ",
+      "Đan Phượng",
+      "Đông Anh",
+      "Gia Lâm",
+      "Hoài Đức",
+      "Mê Linh",
+      "Mỹ Đức",
+      "Phú Xuyên",
+      "Phúc Thọ",
+      "Quốc Oai",
+      "Sóc Sơn",
+      "Thanh Oai",
+      "Thanh Trì",
+      "Thường Tín",
+      "Ứng Hòa",
+    ],
+  };
+
+  useEffect(() => {
+    if (city === "Hà Nội") {
+      setDistricts(districtsByProvince[city]);
+    } else {
+      setDistricts([]);
+    }
+  }, [city, districtName]);
 
   useEffect(() => {
     setEmail(user?.email);
@@ -41,6 +83,7 @@ export const ProfilePage = () => {
     setGender(user?.gender);
     setBirthday(user?.birthday);
     setCity(user?.city);
+    setDistrictName(user?.district);
   }, [user]);
 
   useEffect(() => {
@@ -64,9 +107,17 @@ export const ProfilePage = () => {
   const handleOnchangeAddress = (value) => {
     setAddress(value);
   };
+  const handleOnchangeDistrict = (value) => {
+    setDistrictName(value);
+  };
   const handleOnchangeCity = (value) => {
     setCity(value);
+    if (value !== "Hà Nội") {
+      // Nếu không phải là "Hà Nội", xóa quận/huyện
+      setDistrictName("");
+    }
   };
+
   const handleOnchangeAvatar = async ({ fileList }) => {
     const file = fileList[0];
     if (!file.url && !file.preview) {
@@ -98,6 +149,7 @@ export const ProfilePage = () => {
         avatar,
         gender,
         birthday,
+        district: districtName,
       },
       access_token: user?.access_token,
     });
@@ -149,28 +201,14 @@ export const ProfilePage = () => {
               onChange={handleOnchangeEmail}
             />
           </div>
-          <div className="flex items-center gap-[20px]">
-            <label
-              htmlFor="address"
-              className="text-[#000] text-[14px] leading-[30px] font-[600] "
-              style={{ minWidth: "120px" }}
-            >
-              Số nhà, đường
-            </label>
-            <InputForm
-              id="address"
-              className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
-              value={address}
-              onChange={handleOnchangeAddress}
-            />
-          </div>
+
           <div className="flex items-center gap-[20px]">
             <label
               htmlFor="city"
               className="text-[#000] text-[14px] leading-[30px] font-[600]"
               style={{ minWidth: "120px" }}
             >
-              Thành phố
+              Tỉnh, thành phố
             </label>
             <select
               id="city"
@@ -185,6 +223,54 @@ export const ProfilePage = () => {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="flex items-center gap-[20px]">
+            <label
+              htmlFor="district"
+              className="text-[#000] text-[14px] leading-[30px] font-[600] "
+              style={{ minWidth: "120px" }}
+            >
+              Quận, huyện
+            </label>
+            {/* Kiểm tra nếu là Hà Nội, hiển thị dropdown danh sách quận/huyện từ state districts */}
+            {city === "Hà Nội" ? (
+              <select
+                id="district"
+                className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+                value={districtName}
+                onChange={(e) => setDistrictName(e.target.value)}
+              >
+                {districts.map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              // Ngược lại, hiển thị input để người dùng nhập tay
+              <InputForm
+                id="district"
+                className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+                value={districtName}
+                onChange={(value) => handleOnchangeDistrict(value)} // Thay đổi thành truyền giá trị vào hàm handleOnchangeDistrict
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-[20px]">
+            <label
+              htmlFor="address"
+              className="text-[#000] text-[14px] leading-[30px] font-[600] "
+              style={{ minWidth: "120px" }}
+            >
+              Số nhà, đường
+            </label>
+            <InputForm
+              id="address"
+              className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+              value={address}
+              onChange={handleOnchangeAddress}
+            />
           </div>
 
           <div className="flex items-center gap-[20px]">
