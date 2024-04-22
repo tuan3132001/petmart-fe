@@ -71,8 +71,9 @@ export const ProfilePage = () => {
       setDistricts(districtsByProvince[city]);
     } else {
       setDistricts([]);
+      setDistrictName(""); 
     }
-  }, [city, districtName]);
+  }, [city]);
 
   useEffect(() => {
     setEmail(user?.email);

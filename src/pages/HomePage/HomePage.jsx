@@ -20,7 +20,7 @@ const HomePage = () => {
   const searchDebounce = useDebounce(searchProduct, 1000);
   const [typeProducts, setTypeProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [limit, setLimit] = useState(6);
+  const [limit, setLimit] = useState(10);
   const [menuVisible, setMenuVisible] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(null);
   const prevMenuVisible = usePrevious(menuVisible);
@@ -73,7 +73,7 @@ const HomePage = () => {
   }, []);
 
   const toggleMenu = () => {
-    setMenuVisible(!menuVisible); // Toggle menu visibility
+    setMenuVisible(!menuVisible); 
   };
 
   return (

@@ -7,30 +7,52 @@ import * as ProductService from "../../services/ProductService";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useSelector } from "react-redux";
 import { useDebounce } from "../../hooks/useDebounce";
+import { useQuery } from "@tanstack/react-query";
 
 const TypeProductPage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct, 500);
   const { state } = useLocation();
   const [products, setProducts] = useState([]);
+  const [limit, setLimit] = useState(30);
   const [loading, setLoading] = useState(false);
   const [panigate, setPanigate] = useState({ page: 0, limit: 10, total: 1 });
 
-  useEffect(() => {
-    const fetchProductAll = async () => {
-      try {
-        setLoading(true);
-        const res = await ProductService.getAllProduct();
-        setProducts(res.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setLoading(false);
-      }
-    };
+ 
+  const fetchProductAll = async (context) => {
+    const limit = context?.queryKey && context?.queryKey[1];
+    const search = context?.queryKey && context?.queryKey[2];
+    try {
+      setLoading(true);
+      const res = await ProductService.getAllProduct(search, limit);
+      setProducts(res.data);
+      setLoading(false);
+      return res.data; 
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setLoading(false);
+      return []; 
+    }
+  };
+  
 
-    fetchProductAll();
+  useEffect(() => {
+    
   }, []);
+
+  const {
+    isPending,
+    data: product,
+    isFetching,
+  } = useQuery({
+    queryKey: ["products", limit, searchDebounce],
+    queryFn: fetchProductAll, // Truyền hàm fetchProductAll vào queryFn
+    config: {
+      retries: 3,
+      retryDelay: 1000,
+      keepPreviousData: true,
+    },
+  });
 
   const onChange = (current, pageSize) => {
     setPanigate({ ...panigate, page: current - 1, limit: pageSize });
@@ -75,7 +97,7 @@ const TypeProductPage = () => {
                     }
                   })
                   ?.map((product) => {
-                    if (product?.type === state) {                    
+                    if (product.type === state) {                 
                       return (
                         <CardComponent
                           key={product._id}
