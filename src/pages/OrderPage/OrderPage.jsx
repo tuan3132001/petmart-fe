@@ -380,7 +380,7 @@ const OrderPage = () => {
   return (
     <div style={{ background: "#f5f5fa", width: "100%", height: "100vh" }}>
       <div style={{ height: "100%", width: "1270px", margin: "0 auto" }}>
-        <h3 className="text-[20px] font-bold mb-[10px] text-center">
+        <h3 className="text-[20px] font-bold mb-[10px] text-center pt-[10px] pb-[10px]">
           Giỏ hàng của tôi
         </h3>
         <div style={{ display: "flex", justifyContent: "center" }}>

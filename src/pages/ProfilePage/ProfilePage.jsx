@@ -7,9 +7,9 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 import * as message from "../../components/Message/Message";
 import { updateUser } from "../../redux/slides/userSlide";
-import { UploadOutlined, LeftOutlined } from "@ant-design/icons"; // Import LeftOutlined icon
+import { UploadOutlined, LeftOutlined } from "@ant-design/icons"; 
 import { getBase64 } from "../../utils";
-import moment from "moment"; // Import moment
+import moment from "moment"; 
 import { WrapperUploadFile } from "./style";
 import { useNavigate } from "react-router-dom";
 import { provinces } from "./provinces";
@@ -101,7 +101,7 @@ export const ProfilePage = () => {
     } else if (isError) {
       message.errorUpdate();
     }
-  }, [isSuccess, isError]);
+  }, [user]);
 
   const handleOnchangeEmail = (value) => {
     setEmail(value);
@@ -177,7 +177,7 @@ export const ProfilePage = () => {
           Trở về
         </Button>
       </div>
-      <h1 className="text-[#030] text-[20px] font-bold mt-[4px] mb-[20px] text-center">
+      <h1 className="text-[#030] text-[20px] font-bold mt-[4px] mb-[10px] text-center pt-[10px]">
         Thông tin người dùng
       </h1>
       <Loading isPending={isPending}>
@@ -223,14 +223,14 @@ export const ProfilePage = () => {
             </label>
             <select
               id="city"
-              className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+              className="text-[14px] border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
               value={city}
               onChange={(e) => handleOnchangeCity(e.target.value)}
             >
               {/* Lặp qua danh sách các tỉnh/thành phố */}
               {provinces.map((province) => (
-                <option key={province} value={province}>
-                  {province}
+                <option className="text-[14px]" key={province} value={province}>
+                  {province }
                 </option>
               ))}
             </select>
@@ -248,7 +248,7 @@ export const ProfilePage = () => {
             {city === "Hà Nội" ? (
               <select
                 id="district"
-                className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+                className="text-[14px] border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
                 value={districtName}
                 onChange={(e) => setDistrictName(e.target.value)}
               >
@@ -262,7 +262,7 @@ export const ProfilePage = () => {
               // Ngược lại, hiển thị input để người dùng nhập tay
               <InputForm
                 id="district"
-                className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+                className="text-[14px] border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
                 value={districtName}
                 onChange={(value) => handleOnchangeDistrict(value)} // Thay đổi thành truyền giá trị vào hàm handleOnchangeDistrict
               />
@@ -349,7 +349,7 @@ export const ProfilePage = () => {
               id="birthday"
               value={birthday ? moment(birthday).format("YYYY-MM-DD") : ""}
               onChange={(e) => handleOnchangeBirthday(moment(e.target.value))}
-              className="border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
+              className="text-[14px] border-b border-gray-300 focus:outline-none focus:border-none focus:border-b-2 focus:border-blue-500 focus:bg-blue-100"
             />
           </div>
           <Button onClick={handleUpdate} className="mx-auto">

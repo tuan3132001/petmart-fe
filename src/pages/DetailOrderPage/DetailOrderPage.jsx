@@ -54,7 +54,7 @@ const DetailsOrderPage = () => {
     <Loading isPending={isPending}>
       <div style={{ width: "100%", height: "100%", background: "#f5f5fa" }}>
         <div style={{ width: "1270px", margin: "0 auto", height: "1270px" }}>
-          <h4 className="text-[20px] font-bold  text-center">
+          <h4 className="text-[20px] font-bold  text-center pt-[10px] pb-[10px]">
             Chi tiết đơn đặt hàng
           </h4>
           <Button
@@ -176,15 +176,16 @@ const DetailsOrderPage = () => {
                         height: "70px",
                         fontWeight: 'bold'
                       }}
+                      className="text-[14px]"
                     >
                       {order?.name}
                     </div>
                   </WrapperNameProduct>
-                  <WrapperItem>{convertPrice(order?.price)}</WrapperItem>
-                  <WrapperItem className="ml-[20px]">
+                  <WrapperItem className="text-[14px]">{convertPrice(order?.price)}</WrapperItem>
+                  <WrapperItem className="ml-[20px] text-[14px]">
                     {order?.amount}
                   </WrapperItem>
-                  <WrapperItem>
+                  <WrapperItem className="text-[14px]">
                     {/* Kiểm tra userId trước khi tính giảm giá */}
                     {isUserMatched && order?.discount
                       ? convertPrice(
@@ -197,17 +198,17 @@ const DetailsOrderPage = () => {
             })}
 
             <WrapperAllPrice>
-              <WrapperItemLabel>Tạm tính</WrapperItemLabel>
-              <WrapperItem>{convertPrice(priceMemo)}</WrapperItem>
+              <WrapperItemLabel >Tạm tính</WrapperItemLabel>
+              <WrapperItem className="text-[14px]">{convertPrice(priceMemo)}</WrapperItem>
             </WrapperAllPrice>
             <WrapperAllPrice>
               <WrapperItemLabel>Phí vận chuyển</WrapperItemLabel>
-              <WrapperItem>{convertPrice(data?.shippingPrice)}</WrapperItem>
+              <WrapperItem className="text-[14px]">{convertPrice(data?.shippingPrice)}</WrapperItem>
             </WrapperAllPrice>
             <WrapperAllPrice>
-              <WrapperItemLabel>Tổng cộng</WrapperItemLabel>
+              <WrapperItemLabel >Tổng cộng</WrapperItemLabel>
               <WrapperItem>
-                <WrapperItem>{convertPrice(data?.totalPrice)}</WrapperItem>
+                <WrapperItem className="text-[14px]">{convertPrice(data?.totalPrice)}</WrapperItem>
               </WrapperItem>
             </WrapperAllPrice>
           </WrapperStyleContent>

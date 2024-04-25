@@ -1,3 +1,4 @@
+
 import { Button, Form, Radio } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -333,8 +334,8 @@ const PaymentPage = () => {
               <div style={{ width: "100%" }}>
                 <WrapperInfo>
                   <div>
-                    <span>Địa chỉ: </span>
-                    <span style={{ fontWeight: "bold" }}>
+                    <span className="text-[14px]">Địa chỉ: </span>
+                    <span style={{ fontWeight: "bold" }} className="text-[14px]">
                       {`${user?.address}, ${user?.district}, ${user?.city}`}{" "}
                     </span>
                   </div>
@@ -347,7 +348,7 @@ const PaymentPage = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <span>Tạm tính</span>
+                    <span className="text-[14px]">Tạm tính</span>
                     <span
                       style={{
                         color: "#000",
@@ -365,7 +366,7 @@ const PaymentPage = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <span>Giảm giá</span>
+                    <span className="text-[14px]">Giảm giá</span>
                     <span
                       style={{
                         color: "#000",
@@ -383,7 +384,7 @@ const PaymentPage = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <span>Phí giao hàng</span>
+                    <span className="text-[14px]">Phí giao hàng</span>
                     <span
                       style={{
                         color: "#000",
@@ -396,7 +397,7 @@ const PaymentPage = () => {
                   </div>
                 </WrapperInfo>
                 <WrapperTotal>
-                  <span>Tổng tiền</span>
+                  <span className="text-[14px]">Tổng tiền</span>
                   <span style={{ display: "flex", flexDirection: "column" }}>
                     <span
                       style={{

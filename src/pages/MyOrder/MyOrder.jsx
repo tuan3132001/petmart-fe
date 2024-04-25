@@ -130,7 +130,7 @@ const MyOrderPage = () => {
     <Loading isPending={isPending || isPendingCancel}>
       <WrapperContainer>
         <div style={{ height: "100%", width: "1270px", margin: "0 auto" }}>
-          <h4 className="text-center text-[20px] font-bold ">
+          <h4 className="text-center text-[20px] font-bold pt-[10px] pb-[10px] ">
             Đơn hàng của tôi
           </h4>
           <WrapperListOrder>

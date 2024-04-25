@@ -23,7 +23,7 @@ const OrderSucess = () => {
     <div style={{ background: "#f5f5fa", with: "100%", height: "100%" }}>
       <Loading isPending={false}>
         <div style={{ height: "100%", width: "1270px", margin: "0 auto" }}>
-          <h3 className="text-center font-bold text-[20px]  mb-[10px]">
+          <h3 className="text-center font-bold text-[20px]  mb-[10px] pt-[10px]">
             Đơn hàng đặt thành công
           </h3>
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -32,7 +32,7 @@ const OrderSucess = () => {
                 <div>
                   <Lable>Phương thức giao hàng</Lable>
                   <WrapperValue>
-                    <span style={{ color: "#ea8500", fontWeight: "bold" }}>
+                    <span style={{ color: "#ea8500", fontWeight: "bold" }} className="text-[14px]">
                       {state?.delivery &&
                       orderContant.delivery[state?.delivery] === "FAST"
                         ? "Giao hàng nhanh"
@@ -45,7 +45,7 @@ const OrderSucess = () => {
                 <div>
                   <Lable>Phương thức thanh toán</Lable>
 
-                  <WrapperValue>
+                  <WrapperValue className="text-[14px]">
                     {orderContant.payment[state?.payment]}
                   </WrapperValue>
                 </div>
@@ -53,7 +53,7 @@ const OrderSucess = () => {
               <WrapperInfo>
                 <div>
                   <Lable>Thông tin nhận hàng</Lable>
-                  <WrapperValue>
+                  <WrapperValue className="text-[14px]">
                     <p class="mb-2">Người nhận: {state?.name}</p>
                     <p class="mb-2">Số điện thoại: {state?.phone}</p>
                     <p class="mb-2">
@@ -70,7 +70,7 @@ const OrderSucess = () => {
                   // Kiểm tra xem order có thuộc người dùng hiện tại không
                   if (order.userId === user?.id) {
                     return (
-                      <WrapperItemOrder key={order?.name}>
+                      <WrapperItemOrder className="text-[14px]" key={order?.name}>
                         <div
                           style={{
                             width: "500px",
