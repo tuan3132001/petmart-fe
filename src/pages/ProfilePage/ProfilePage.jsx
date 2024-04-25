@@ -71,9 +71,16 @@ export const ProfilePage = () => {
       setDistricts(districtsByProvince[city]);
     } else {
       setDistricts([]);
-      setDistrictName(""); 
     }
   }, [city]);
+
+  useEffect(() => {
+    if (city === "Hà Nội") {
+      setDistrictName(user?.district || "");
+    }
+  }, [city, user]);
+
+  
 
   useEffect(() => {
     setEmail(user?.email);
@@ -116,6 +123,9 @@ export const ProfilePage = () => {
     if (value !== "Hà Nội") {
       // Nếu không phải là "Hà Nội", xóa quận/huyện
       setDistrictName("");
+      setDistricts([]); // Đảm bảo rằng danh sách quận/huyện sẽ được xóa khi thành phố không phải là "Hà Nội"
+    } else {
+      setDistricts(districtsByProvince[value]);
     }
   };
 

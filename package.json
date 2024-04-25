@@ -55,5 +55,5 @@
   "devDependencies": {
     "tailwindcss": "^3.4.1"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "https://petmart-be.onrender.com"
 }

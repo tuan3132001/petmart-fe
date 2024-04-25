@@ -48,7 +48,6 @@ const OrderPage = () => {
       "Nam Từ Liêm",
       "Tây Hồ",
       "Thanh Xuân",
-      "Sơn Tây",
       "Ba Vì",
       "Chương Mỹ",
       "Đan Phượng",

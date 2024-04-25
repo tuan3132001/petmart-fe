@@ -1,20 +1,3 @@
 .go3489369143 button {
     display: none !important;
 }
-@keyframes highlight {
-    0% {
-      background-color: transparent;
-    }
-    50% {
-      background-color: #B3E5FC; 
-    }
-    100% {
-      background-color: transparent;
-    }
-  }
-  
-  .menu-item-highlight {
-    animation: highlight 3s infinite;
-  }
-  
-  
