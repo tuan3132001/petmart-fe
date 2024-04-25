@@ -25,6 +25,7 @@ export const ProfilePage = () => {
   const [districtName, setDistrictName] = useState(user?.district || "");
   const [districts, setDistricts] = useState([]);
   const [birthday, setBirthday] = useState(null);
+  const [isUpdated, setIsUpdated] = useState(false);
   const navigate = useNavigate();
   const mutation = useMutationHooks((data) => {
     const { id, access_token, ...rests } = data;
@@ -72,13 +73,13 @@ export const ProfilePage = () => {
     } else {
       setDistricts([]);
     }
-  }, [city]);
+  }, [city,user]);
 
   useEffect(() => {
     if (city === "Hà Nội") {
       setDistrictName(user?.district || "");
     }
-  }, [city, user]);
+  }, [city, user]);  
 
   
 
@@ -92,16 +93,18 @@ export const ProfilePage = () => {
     setBirthday(user?.birthday);
     setCity(user?.city);
     setDistrictName(user?.district);
-  }, [user]);
+    setIsUpdated(false);
+  }, [user,isUpdated]);
 
   useEffect(() => {
     if (isSuccess === true) {
       message.successUpdate();
       handleGetDetailsUser(user?.id, user?.access_token);
+      setIsUpdated(true);
     } else if (isError) {
       message.errorUpdate();
     }
-  }, [user]);
+  }, [isSuccess, isError]);
 
   const handleOnchangeEmail = (value) => {
     setEmail(value);
@@ -120,14 +123,9 @@ export const ProfilePage = () => {
   };
   const handleOnchangeCity = (value) => {
     setCity(value);
-    if (value !== "Hà Nội") {
-      // Nếu không phải là "Hà Nội", xóa quận/huyện
-      setDistrictName("");
-      setDistricts([]); // Đảm bảo rằng danh sách quận/huyện sẽ được xóa khi thành phố không phải là "Hà Nội"
-    } else {
-      setDistricts(districtsByProvince[value]);
-    }
+   
   };
+  
 
   const handleOnchangeAvatar = async ({ fileList }) => {
     const file = fileList[0];

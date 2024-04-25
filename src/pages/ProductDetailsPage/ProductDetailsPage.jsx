@@ -8,7 +8,7 @@ const ProductDetailsPage = () => {
   return (
     <div className='w-full bg-[#efefef] h-full' >
       <div className="w-[1270px] h-full mx-auto" >
-        <h1 className='text-[20px]  mb-[15px]'><span className='cursor-pointer font-bold' onClick={() => {navigate('/')}}>Trang chủ</span> - Chi tiết sản phẩm</h1>
+        <h1 className='text-[20px]  mb-[10px] pt-[10px]'><span className='cursor-pointer font-bold' onClick={() => {navigate('/')}}>Trang chủ</span> - Chi tiết sản phẩm</h1>
         <ProductDetailsComponent idProduct={id} />
       </div>
     </div>
