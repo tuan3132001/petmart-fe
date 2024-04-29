@@ -96,6 +96,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
           product: productDetails?._id,
           countInStock: productDetails?.countInStock,
           discount: productPromotion?.discount,
+          idProduct:productDetails?.idProduct,
           userId: user?.id,
         };
         // Gọi action addOrderProduct với userId của người dùng hiện tại và thông tin sản phẩm
