@@ -73,7 +73,7 @@ const HomePage = () => {
   }, []);
 
   const toggleMenu = () => {
-    setMenuVisible(!menuVisible); 
+    setMenuVisible(!menuVisible);
   };
 
   return (
@@ -126,17 +126,16 @@ const HomePage = () => {
               bottom: 0,
               zIndex: 1000,
               width: 300,
-              marginTop: 50,
-              marginBottom: 150,
-              border: "1px solid #82cfff", 
+              border: "1px solid #82cfff",
               boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-              borderRadius: 10, 
+              borderRadius: 10,
             }}
           >
-           
             <div style={{ height: 50 }}></div>
             {/* Content of the menu */}
-            <h1 className="text-center text-[20px] font-bold mb-[50px]">Loại sản phẩm </h1> 
+            <h1 className="text-center text-[20px] font-bold mb-[50px]">
+              Loại sản phẩm{" "}
+            </h1>
             {typeProducts.map((item, index) => (
               <Menu.Item
                 key={item._id}
@@ -150,10 +149,14 @@ const HomePage = () => {
                       : "1px solid rgba(0, 0, 0, 0.1)",
                 }}
               >
-                
                 <TypeProduct name={item.name} id={item._id} />
               </Menu.Item>
             ))}
+            <div style={{ height: 50 }}></div>
+
+            <p style={{ position: "absolute", bottom: 20, left: 20 }}>
+              Liên hệ: <span className="text-blue-600">petmart@gmail.com</span>
+            </p>
           </Menu>
 
           <h1
@@ -238,13 +241,13 @@ const HomePage = () => {
               />
               <p className="text-[17px] font-[500] mb-[30px] mt-[30px]">
                 Áp dụng theo chính sách giao hàng thông qua các đối tác giao
-                hàng như <span className="text-[blue]">FAST, GOJEK...</span> bao gồm các Quận, Huyện, Xã và tất cả
-                các tỉnh thành.
+                hàng như <span className="text-[blue]">FAST, GOJEK...</span> bao
+                gồm các Quận, Huyện, Xã và tất cả các tỉnh thành.
               </p>
               <p className="text-[17px] font-[500] mb-[30px]">
-              <span className="text-[blue]">Pet Mart</span> giao hàng miễn phí đối với đơn hàng trên 500,000₫.
-                10,000₫ cho đơn hàng dưới 200,000₫ và 20,000₫ cho đơn hàng từ
-                200,000₫ trở lên.
+                <span className="text-[blue]">Pet Mart</span> giao hàng miễn phí
+                đối với đơn hàng trên 500,000₫. 10,000₫ cho đơn hàng dưới
+                200,000₫ và 20,000₫ cho đơn hàng từ 200,000₫ trở lên.
               </p>
               <p className="text-[17px] font-[500]">
                 Phí vận chuyển đã bao gồm 10% VAT và phí dịch vụ COD nếu giá trị

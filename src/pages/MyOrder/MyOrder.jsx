@@ -30,7 +30,7 @@ const MyOrderPage = () => {
   const queryOrder = useQuery({
     queryKey: ["orders"],
     queryFn: fetchMyOrder,
-    enabled: !!state?.id && !!state?.token, // Chuyển đổi thành boolean
+    enabled: !!state?.id && !!state?.token, 
   });
   const { isPending, data } = queryOrder;
   const handleDetailsOrder = (id) => {
@@ -43,7 +43,6 @@ const MyOrderPage = () => {
 
   const mutation = useMutationHooks((data) => {
     const { id, token, userId } = data;
-    console.log("data", data);
     const res = OrderService.cancelOrder(id, token, userId);
     return res;
   });
@@ -135,6 +134,8 @@ const MyOrderPage = () => {
           </h4>
           <WrapperListOrder>
             {data?.map((order) => {
+              const isCancelable = !order.isDelivered && !order.isPaid;
+
               return (
                 <WrapperItemOrder key={order?._id}>
                   <WrapperStatus>
@@ -182,7 +183,7 @@ const MyOrderPage = () => {
                         }}
                       >
                         {order.isDelivered
-                          ? "Đang giao hàng"
+                          ? "Đã giao hàng"
                           : "Chưa giao hàng"}
                       </span>
                     </div>
@@ -200,7 +201,7 @@ const MyOrderPage = () => {
                           fontWeight: "bold",
                         }}
                       >
-                        {order.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+                        {order.isPaid ? "PayPal" : "Tiền mặt"}
                       </span>
                     </div>
                   </WrapperStatus>
@@ -213,6 +214,7 @@ const MyOrderPage = () => {
                       >
                         Tổng tiền:{" "}
                       </span>
+
                       <span
                         style={{
                           fontSize: "15px",
@@ -224,17 +226,19 @@ const MyOrderPage = () => {
                       </span>
                     </div>
                     <div style={{ display: "flex", gap: "10px" }}>
-                      <ButtonComponent
-                        onClick={() => handleCanceOrder(order)}
-                        size={40}
-                        styleButton={{
-                          height: "36px",
-                          border: "1px solid red",
-                          borderRadius: "4px",
-                        }}
-                        textbutton={"Hủy đơn hàng"}
-                        styleTextButton={{ color: "red", fontSize: "15px" }}
-                      ></ButtonComponent>
+                      {isCancelable && (
+                        <ButtonComponent
+                          onClick={() => handleCanceOrder(order)}
+                          size={40}
+                          styleButton={{
+                            height: "36px",
+                            border: "1px solid red",
+                            borderRadius: "4px",
+                          }}
+                          textbutton={"Hủy đơn hàng"}
+                          styleTextButton={{ color: "red", fontSize: "15px" }}
+                        />
+                      )}
                       <ButtonComponent
                         onClick={() => handleDetailsOrder(order?._id, user?.id)}
                         size={40}
@@ -245,7 +249,7 @@ const MyOrderPage = () => {
                         }}
                         textbutton={"Xem chi tiết"}
                         styleTextButton={{ color: "green", fontSize: "15px" }}
-                      ></ButtonComponent>
+                      />
                     </div>
                   </WrapperFooterItem>
                 </WrapperItemOrder>
